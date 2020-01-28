@@ -22,8 +22,8 @@
  */
 int main()
 {
-    Entity grid[X][Y];
-    Entity *matrix = &grid[0][0];           /**< Contains the pointer to the start of the matrix */
+    Entity grid[X][Y];                                  /**< Contains the pointer to the start of the matrix */
+    Entity *matrix = &grid[0][0];
 
     createGrid((Entity *)grid, X, Y);
 

@@ -13,8 +13,9 @@ LFLAGS   = -Wall -I. -lm
 SRCDIR   = src
 OBJDIR   = obj
 BINDIR   = bin
+LIBDIR	 = lib
 
-DIRS	 = $(OBJDIR) $(BINDIR) 
+DIRS	 = $(OBJDIR) $(BINDIR)
 
 .PHONY: DIRS
 all: $(DIRS) $(BINDIR)/$(TARGET)
@@ -47,6 +48,3 @@ clean:
 remove: clean
 	@$(rm) $(BINDIR)/$(TARGET)
 	@echo "Executable removed!"
-
-
-

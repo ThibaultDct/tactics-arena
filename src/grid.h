@@ -3,6 +3,6 @@
 
 #include "struct.h"
 
-void createGrid(entity * grid, int x, int y);
+void createGrid(Entity * grid, int x, int y);
 
 #endif

@@ -18,7 +18,7 @@
  * \param y Column's number
  * \brief Initialize the grid with x*y size in parameter with default entities
  */
-void createGrid(entity * grid, int x, int y)
+void createGrid(Entity * grid, int x, int y)
 // create the grid with x*y size
 {
     //Marche pas pendant la construction de structures

@@ -18,11 +18,10 @@
  * \param y Column's number
  * \brief Initialize the grid with x*y size in parameter with default entities
  */
-void createGrid(Entity * grid, int x, int y)
+void createGrid(entity * grid, int x, int y)
 // create the grid with x*y size
 {
-    Player test = {20};
-
+    //Marche pas pendant la construction de structures
     for (int i = 0; i < x; i++){
         for (int j = 0; j < y; j++){
             grid[i*x+j].player = test;

@@ -22,11 +22,11 @@
  */
 int main()
 {
-    Entity grid[X][Y];                                  /**< Contains the pointer to the start of the matrix */
-    Entity *matrix = &grid[0][0];
+    entity grid[X][Y];                                  /**< Contains the pointer to the start of the matrix */
+    entity *matrix = &grid[0][0];
 
-    createGrid((Entity *)grid, X, Y);
-
+    createGrid((entity *)grid, X, Y);
+    //Marche pas pendant la construction de structures
     for (int i = 0; i < X; i++){
         for (int j = 0; j < Y; j++){
             printf("%d ", (*(matrix+i)).pdv);

@@ -28,3 +28,14 @@ void createGrid(Entity * grid, int x, int y)
         }
     }
 }
+
+void debugGrid(Entity * grid, int x, int y)
+// Debug by displaying the grid on the cmd
+{
+    for (int i = 0; i < x; i++){
+        for (int j = 0; j < y; j++){
+            printf("%d ", (*(grid+i)).id);
+        }
+        printf("\n");
+    }
+}

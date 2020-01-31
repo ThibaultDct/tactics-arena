@@ -29,7 +29,7 @@ int main()
     //Marche pas pendant la construction de structures
     for (int i = 0; i < X; i++){
         for (int j = 0; j < Y; j++){
-            printf("%d ", (*(matrix+i)).pdv);
+            printf("%d ", (*(matrix+i)).id);
         }
         printf("\n");
     }

@@ -24,8 +24,7 @@ void createGrid(Entity * grid, int x, int y)
     //Marche pas pendant la construction de structures
     for (int i = 0; i < x; i++){
         for (int j = 0; j < y; j++){
-            grid[i*x+j].player = test;
-            grid[i*x+j].pdv = 20;
+            grid[i*x+j].id = j;
         }
     }
 }

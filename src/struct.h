@@ -1,34 +1,71 @@
 #ifndef struct_h
 #define struct_h
+#define NUM_STATS 6
+#define STR_SHORT 25
+#define STR_LONG 50
 
-typedef struct t_stats
-{
-    int pv;
-    int mv;
-    int atk;
-    int res_physic;
-    int res_magic;
-} Stat;
-
-typedef enum {pv, mv, atk, res_physic, res_magic} statId;
+typedef enum {pv, mv, atk, magic, res_physic, res_magic} statId;
 
 typedef enum {Berserker, Ranger, Mage, Valkyrie, Angel} classId;
 
-typedef struct t_class
+typedef enum {Slash, Bolt, Fireball, Focus} abilityId;
+
+typedef enum {Physical_Damage, Magic_Damage, Paralysed, Poisoned, Burning} effectId;
+
+typedef struct 
 {
-    classId class_id;
-    char class_name[25];
-    Stat stats;
+    int x;
+    int y;
+} Coord;
+
+typedef struct
+{
+    effectId effect_id;
+    //TBW
+} Effect;
+
+typedef struct
+{
+    Coord * zone;
+    int nb_effects;
+    Effect * Effects;
+} Cast;
+
+
+typedef struct
+{
+    abilityId ab_id;
+    char ab_name[STR_SHORT];
+    int ab_cost;
+    int ab_cooldown;
+    int nb_casts;
+    Cast * ab_casts;
+    int (*function)(int, Coord *);
+    char sprite_folder[STR_LONG];
+} Ability;
+
+typedef struct
+{
+    classId cla_id;
+    char cla_name[STR_SHORT];
+    int basic_stats[NUM_STATS];
+    //Ability * cla_abilities;
 } Class;
 
-typedef struct t_entity
+typedef struct
 {
-    int id;
-    char character_name[25];
-    Class character_class;
-    char sprite_folder[50];
+    int cha_id;
+    char cha_name[STR_SHORT];
+    Class * cha_class;
+    int act_points;
+    int stats[NUM_STATS];
+    int stat_mods[NUM_STATS];
+    char sprite_folder[STR_LONG];
 } Entity;
 
+//Structures pour gerer les effets temporaires d'une partie.
+
+//Structures pour la communication
 
 
 #endif

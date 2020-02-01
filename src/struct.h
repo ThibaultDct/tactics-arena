@@ -10,13 +10,13 @@ typedef struct t_stats
     int res_magic;
 } Stat;
 
-//Enum for indice to tableau for stats (better for stat changes)
+typedef enum {pv, mv, atk, res_physic, res_magic} statId;
 
-typedef enum {Berserker, Ranger, Sorcerer, Valkyrie, Angel} ClassId;
+typedef enum {Berserker, Ranger, Mage, Valkyrie, Angel} classId;
 
 typedef struct t_class
 {
-    ClassId class_id;
+    classId class_id;
     char class_name[25];
     Stat stats;
 } Class;

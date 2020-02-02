@@ -24,17 +24,24 @@ void createGrid(Entity * grid, int x, int y)
     //Marche pas pendant la construction de structures
     for (int i = 0; i < x; i++){
         for (int j = 0; j < y; j++){
-            grid[i*x+j].id = j;
+            grid[i*x+j].cha_id = j;
         }
     }
 }
 
+/**
+ * \fn void debugGrid(Entity * grid, int x, int y)
+ * \param grid Pointer to the begining of the entity matrix
+ * \param x Row's number
+ * \param y Column's number
+ * \brief Display the entity ids of the matrix
+ */
 void debugGrid(Entity * grid, int x, int y)
 // Debug by displaying the grid on the cmd
 {
     for (int i = 0; i < x; i++){
         for (int j = 0; j < y; j++){
-            printf("%d ", (*(grid+i)).id);
+            printf("%d ", (*(grid+i)).cha_id);
         }
         printf("\n");
     }

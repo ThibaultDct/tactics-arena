@@ -43,18 +43,3 @@ void debugGrid(Entity * grid, int x, int y)
         printf("\n");
     }
 }
-
-/**
- * \fn Entity getEntity(Entity * grid, int size, int x, int y)
- * \param grid Pointer to the begining of the entity matrix
- * \param size Size of the grid
- * \param x Row's number
- * \param y Column's number
- * \return The entity at x:y coordinates
- * \brief Return the entity at position x:y of the matrix "grid"
- */
-Entity getEntity(Entity * grid, int size, int x, int y)
-// Return the entity at the x:y position in the grid 
-{
-    return grid[x*size+y];
-}

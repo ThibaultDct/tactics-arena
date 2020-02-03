@@ -21,11 +21,8 @@
 void createGrid(Entity * grid, int x, int y)
 // create the grid with x*y size
 {
-    //Marche pas pendant la construction de structures
-    for (int i = 0; i < x; i++){
-        for (int j = 0; j < y; j++){
-            grid[i*x+j].cha_id = j;
-        }
+    for (int i = 0; i < x*y; i++){
+        grid[i].cha_id = i;
     }
 }
 
@@ -41,7 +38,7 @@ void debugGrid(Entity * grid, int x, int y)
 {
     for (int i = 0; i < x; i++){
         for (int j = 0; j < y; j++){
-            printf("%d ", (*(grid+i)).cha_id);
+            printf("%d ", (*(grid+i*x+j)).cha_id);
         }
         printf("\n");
     }

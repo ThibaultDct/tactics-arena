@@ -15,6 +15,13 @@ OBJDIR   = obj
 BINDIR   = bin
 LIBDIR	 = lib
 
+SDL_DIR				= GraphX/SDL2
+SDLLIB_DIR		= $(SDL_DIR)/lib
+SDLINC_DIR		= $(SDL_DIR)/include
+
+LIBS					=-L${SDLLIB_DIR} -lSDL2 -lSDL2_ttf -lSDL2_image
+INCLUDES			=-I${SDLINC_DIR}
+
 DIRS	 = $(OBJDIR) $(BINDIR)
 
 .PHONY: DIRS
@@ -32,7 +39,7 @@ rm       = rm -f
 
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
-	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
+	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@ $(LIBS) $(INCLUDES)
 	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c

@@ -22,7 +22,17 @@
  * \brief Main function
  */
 int main()
-{
+{   
+    #if defined (WIN32)
+    /*
+    * Change the cmd codepage on Windows
+    */
+    system("chcp 65001");
+    system("cls");
+    #elif __unix__ || defined __APPLE_
+    system("clear");
+    #endif
+    
     Entity grid[X][Y];                                  /**< Contains the pointer to the start of the matrix */
     Entity *matrix = &grid[0][0];
 

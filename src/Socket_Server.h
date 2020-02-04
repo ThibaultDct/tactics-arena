@@ -14,6 +14,7 @@ int sendMSg(int socket);
 const char * realStr();
 void getLocalIP();
 void startChat(int sock);
+const char * setServIP();
 // Personnage getStruct(int socket, Personnage monperso);
 
 #endif

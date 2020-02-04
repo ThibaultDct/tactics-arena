@@ -6,17 +6,32 @@
  * \version 0.0.1
  * \date 04/02/2020
  */
-
+#include <stdio.h>
 #include <stdlib.h>
 #include "struct.h"
 #include "common.h"
+
+//err_t get_ability
 
 err_t get_classes(Class all_classes[NUM_CLASS])
 {
     FILE *fp = NULL;
     fp=fopen("classes","r");
-    if(fp==NULL) return ERROR_1;
+    if(fp==NULL) return POINTER_NULL;
     fread(all_classes, sizeof(Class), NUM_CLASS, fp);
     fclose(fp);
-    
+
+    int i;
+    for(i=0; i<NUM_CLASS; i++)
+    {
+        //Ability * ab = malloc(sizeof(Ability)*NUM_AB)
+        //all_classes[i]
+    }
+}
+
+int main()
+{
+    Class all_classes[NUM_CLASS];
+    printf("%s", error_message[get_classes(all_classes)]);
+    return 0;
 }

@@ -9,5 +9,4 @@ typedef enum {OK, POINTER_NULL, ERROR} err_t;
 
 char error_message[NUM_ERROR][STR_LONG] = {"\0", "ERROR: Pointer is Null\n", "ERROR\n"};
 
-
 #endif

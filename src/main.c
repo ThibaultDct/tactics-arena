@@ -26,11 +26,28 @@ int main()
     Entity grid[X][Y];                                  /**< Contains the pointer to the start of the matrix */
     Entity *matrix = &grid[0][0];
 
-    createGrid((Entity *)grid, X, Y);
-    debugGrid(matrix, X, Y);
-    printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);
+    int choix = 0;
+    printf("Bienvenue dans le serveur :) \n");
 
-    free(matrix);
+
+    printf("Lancer le serveur (1) \n");
+    printf("Lancer le client (2) \n");
+    printf("Lancer le jeux (3) \n");
+    printf("\nFaites votre choix : \n");
+    scanf("%d", &choix);
+
+    switch (choix) {
+        case 1:startTCPSocketServ();break;
+        case 2:startTCPSocketCli();break;
+        case 3: createGrid((Entity *)grid, X, Y);
+                debugGrid(matrix, X, Y);
+                printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);
+                free(matrix);break;
+  }
+
+    
+
+    
 
     getchar();  // Wait for the user to press a key to end the program
 

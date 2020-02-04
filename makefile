@@ -4,6 +4,7 @@ TARGET   = TacticsArena
 CC       = gcc
 # compiling flags here
 CFLAGS   = -std=c99 -Wall -I.
+SOCKLIBFLAGS = lib/libws2_32.a
 
 LINKER   = gcc
 # linking flags here
@@ -19,8 +20,8 @@ SDL_DIR				= GraphX/SDL2
 SDLLIB_DIR		= $(SDL_DIR)/lib
 SDLINC_DIR		= $(SDL_DIR)/include
 
-LIBS					=-L${SDLLIB_DIR} -lSDL2 -lSDL2_ttf -lSDL2_image
-INCLUDES			=-I${SDLINC_DIR}
+SDL_LIBS					=-L${SDLLIB_DIR} -lSDL2 -lSDL2_ttf -lSDL2_image
+SDL_INC			=-I${SDLINC_DIR}
 
 DIRS	 = $(OBJDIR) $(BINDIR)
 
@@ -39,7 +40,7 @@ rm       = rm -f
 
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
-	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@ $(LIBS) $(INCLUDES)
+	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@ $(SDL_LIBS) $(SDL_INC) $(SOCKLIBFLAGS)
 	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c

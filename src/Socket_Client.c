@@ -91,13 +91,16 @@ int startTCPSocketCli(){
     * Check if the socket is correct
     */
     if(sock != INVALID_SOCKET){
+      const char * servIP = malloc(sizeof(char) * MAX_BUFF_SIZE);
 
       printf("\nLa socket numéro %d en mode TCP/IP est valide  !\n", (int)&sock);
       /*
       * Initialising struct
       * Can change s_addr with given ip inet_addr("192.168.0.0")
       */
-      sockIn.sin_addr.s_addr= inet_addr("127.0.0.1");
+     servIP = setServIP();
+     printf("\n%s\n", servIP);
+      sockIn.sin_addr.s_addr= inet_addr((char *)servIP);
       sockIn.sin_family = AF_INET;
       sockIn.sin_port = htons(PORT);
 

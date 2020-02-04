@@ -75,7 +75,14 @@ void getLocalIP(){
       printf("L'ip du serveur est : %s", monIP);
     }
 }
+const char * setServIP(){
+  const char * servIP = malloc(sizeof(char) * MAX_BUFF_SIZE);
+  printf("Saisir l'addresse IP du serveur : ");
+  scanf(" %s", servIP);
 
+  printf("\n%s\n", servIP);
+  return servIP;
+}
 
 int sendStruct(int socket, t_personnage monperso){
   int sockSendError;

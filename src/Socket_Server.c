@@ -70,7 +70,6 @@ int startTCPSocketServ(){
   #endif
 
   int choixCli = 2;
-  char buffer[128];
 
   t_personnage monpersoServ;
   monpersoServ.id = 1;

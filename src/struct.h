@@ -63,9 +63,10 @@ typedef struct
     char sprite_folder[STR_LONG];
 } Entity;
 
-//Structures pour gerer les effets temporaires d'une partie.
+
 
 //Structures pour la communication
+
 
 
 #endif

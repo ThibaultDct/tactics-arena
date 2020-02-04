@@ -1,8 +1,7 @@
 #ifndef struct_h
 #define struct_h
 #define NUM_STATS 6
-#define STR_SHORT 25
-#define STR_LONG 50
+#define NUM_CLASS 5
 
 typedef enum {pv, mv, atk, magic, res_physic, res_magic} statId;
 

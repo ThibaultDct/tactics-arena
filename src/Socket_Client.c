@@ -20,11 +20,9 @@
 /*
 * Else if program run on Linux
 */
-<<<<<<< HEAD
-#elif __UNIX__ || defined __APPLE__
-=======
+
 #elif __UNIX__ || defined __APPLE__ || defined  __linux__
->>>>>>> 07f036114a80ff9c85888611ba9dcd9d8ba32bce
+
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <netinet/in.h>
@@ -44,7 +42,6 @@
   typedef int SOCKET;
   typedef struct sockaddr_in SOCKADDR_IN;
   typedef struct sockaddr SOCKADDR;
-
 #endif
 
 

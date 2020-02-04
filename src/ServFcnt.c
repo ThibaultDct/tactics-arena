@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "Socket_Server.h"
 #define PORT 50135
-#define MAX_BUFF_SIZE 80
+#define MAX_BUFF_SIZE 128
 /*
 * If program run on Windows
 */
@@ -104,7 +104,7 @@ return monStr;
 
 int sendMSg(int socket){
   int sockCli;
-  const char * buffer = malloc(sizeof(char) * 128);
+  const char  * buffer = malloc(sizeof(char) * MAX_BUFF_SIZE);
   buffer = realStr();
 
   printf(" Message sendMSg : %s \n", buffer);
@@ -120,7 +120,7 @@ int sendMSg(int socket){
 
 void startChat(int sock){
   const char * buffer = malloc(sizeof(char) * 128);
-  char bufferRecv[128];
+  char bufferRecv[MAX_BUFF_SIZE];
   time_t seconds;
   time(&seconds);
   int choix = 0;
@@ -142,6 +142,6 @@ void startChat(int sock){
 
     printf("Attente : ");
     printf("%ld \n", (time(NULL) - seconds));
-    sleep(1);
+    Sleep(1);
   } while((time(NULL) -seconds)  != (1 *60));
 }

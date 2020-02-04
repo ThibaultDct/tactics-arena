@@ -28,10 +28,3 @@ err_t get_classes(Class all_classes[NUM_CLASS])
         get_ability(ab);
     }*/
 }
-
-int main()
-{
-    Class all_classes[NUM_CLASS];
-    printf("%s", error_message[get_classes(all_classes)]);
-    return 0;
-}

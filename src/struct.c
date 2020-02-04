@@ -11,7 +11,7 @@
 #include "struct.h"
 #include "common.h"
 
-//err_t get_ability
+//err_t get_ability()
 
 err_t get_classes(Class all_classes[NUM_CLASS])
 {
@@ -21,12 +21,12 @@ err_t get_classes(Class all_classes[NUM_CLASS])
     fread(all_classes, sizeof(Class), NUM_CLASS, fp);
     fclose(fp);
 
-    int i;
+    /*int i;
     for(i=0; i<NUM_CLASS; i++)
     {
-        //Ability * ab = malloc(sizeof(Ability)*NUM_AB)
-        //all_classes[i]
-    }
+        Ability * ab = malloc(sizeof(Ability)*NUM_AB);
+        get_ability(ab);
+    }*/
 }
 
 int main()

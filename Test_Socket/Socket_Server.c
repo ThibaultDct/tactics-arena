@@ -90,7 +90,6 @@ int startTCPSocketServ(){
     /*
     * Initialising struct
     * Can change s_addr with given ip inet_addr("192.168.0.0") or INADDR_ANY
-    * ptdr
     */
     sockServIn.sin_addr.s_addr=htonl(INADDR_ANY) ;
     sockServIn.sin_family = AF_INET;

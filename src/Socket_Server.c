@@ -60,7 +60,11 @@ int startTCPSocketServ(){
     * return 0 if there is no problems
     */
     windWSAError = WSAStartup(MAKEWORD(2,2), &WSAData);
+<<<<<<< HEAD
+  #elif defined __UNIX__ || defined __APPLE__
+=======
   #elif __UNIX__ || defined __APPLE__ || defined  __linux__
+>>>>>>> 07f036114a80ff9c85888611ba9dcd9d8ba32bce
     system("ifconfig | grep \"inet 192.*\" | sed \"s/netmask.*//g\" | sed \"s/inet//g\" > test.txt");
     int windWSAError= 0;
   #endif

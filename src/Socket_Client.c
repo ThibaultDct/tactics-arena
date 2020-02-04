@@ -20,7 +20,11 @@
 /*
 * Else if program run on Linux
 */
+<<<<<<< HEAD
+#elif __UNIX__ || defined __APPLE__
+=======
 #elif __UNIX__ || defined __APPLE__ || defined  __linux__
+>>>>>>> 07f036114a80ff9c85888611ba9dcd9d8ba32bce
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <netinet/in.h>
@@ -70,8 +74,6 @@ int startTCPSocketCli(){
   #elif __UNIX__ || defined __APPLE__ || defined  __linux__
     int windWSAError= 0;
   #endif
-
-  char buffer[128];
   printf("\nLancement de la créatoin du client...\n");
 
   /*
@@ -80,10 +82,6 @@ int startTCPSocketCli(){
 
   SOCKADDR_IN sockIn;
   SOCKET sock;
-  long hostAddr;
-  struct hostent *serveur_info;
-  int choixCli = 2;
-
   if(!windWSAError){
     /*
     * Creating socket :

@@ -20,7 +20,7 @@
 /*
 * Else if program run on Linux
 */
-#elif __unix__ || defined __APPLE__
+#elif __UNIX__ || defined __APPLE__ || defined  __linux__
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <netinet/in.h>
@@ -67,7 +67,7 @@ int startTCPSocketCli(){
     * return 0 if there is no problems
     */
     windWSAError = WSAStartup(MAKEWORD(2,2), &WSAData);
-  #else
+  #elif __UNIX__ || defined __APPLE__ || defined  __linux__
     int windWSAError= 0;
   #endif
 

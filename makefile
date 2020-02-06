@@ -20,7 +20,7 @@ SDL_DIR				= GraphX/SDL2
 SDLLIB_DIR		= $(SDL_DIR)/lib
 SDLINC_DIR		= $(SDL_DIR)/include
 
-SDL_LIBS					=-L${SDLLIB_DIR} -lSDL2 -lSDL2_ttf -lSDL2_image
+SDL_LIBS		=-L${SDLLIB_DIR} -lSDL2 -lSDL2_ttf -lSDL2_image
 SDL_INC			=-I${SDLINC_DIR}
 
 DIRS	 = $(OBJDIR) $(BINDIR)

@@ -12,6 +12,7 @@
 #include "grid.h"
 #include "struct.h"
 #include "entity.h"
+#include "graphics.h"
 
 #define X 10
 #define Y 10
@@ -49,7 +50,8 @@ int main()
     switch (choix) {
         case 1:startTCPSocketServ();break;
         case 2:startTCPSocketCli();break;
-        case 3: createGrid((Entity *)grid, X, Y);
+        case 3: 
+                createGrid((Entity *)grid, X, Y);
                 debugGrid(matrix, X, Y);
                 printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);
                 free(matrix);break;

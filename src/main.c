@@ -50,7 +50,7 @@ int main()
     switch (choix) {
         case 1:startTCPSocketServ();break;
         case 2:startTCPSocketCli();break;
-        case 3: 
+        case 3: createWindow(1920, 1080);
                 createGrid((Entity *)grid, X, Y);
                 debugGrid(matrix, X, Y);
                 printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);

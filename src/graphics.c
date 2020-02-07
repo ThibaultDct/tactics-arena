@@ -32,7 +32,6 @@ int createWindow(int x, int y)
     }
 
     SDL_Quit();
-    
 
     return OK;
 }

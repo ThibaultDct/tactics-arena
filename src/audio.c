@@ -38,3 +38,15 @@ int stopMenuMusic()
 
     return 0;
 }
+
+int pauseMenuMusic()
+// Pause menu music
+{
+    Mix_PauseMusic();
+}
+
+int resumeMenuMusic()
+// Pause menu music
+{
+    Mix_ResumeMusic();
+}

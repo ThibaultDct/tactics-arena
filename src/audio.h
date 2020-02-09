@@ -3,5 +3,7 @@
 
 int playMenuMusic(void);
 int stopMenuMusic(void);
+int pauseMenuMusic(void);
+int resumeMenuMusic(void);
 
 #endif

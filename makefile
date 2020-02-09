@@ -16,7 +16,7 @@ OBJDIR   = obj
 BINDIR   = bin
 LIBDIR	 = lib
 
-SDL_DIR				= GraphX/SDL2
+SDL_DIR			= SDL2
 SDLLIB_DIR		= $(SDL_DIR)/lib
 SDLINC_DIR		= $(SDL_DIR)/include
 

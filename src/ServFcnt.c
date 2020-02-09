@@ -149,6 +149,6 @@ void startChat(int sock){
 
     printf("Attente : ");
     printf("%ld \n", (time(NULL) - seconds));
-    Sleep(1);
+    sleep(1);
   } while((time(NULL) -seconds)  != (1 *60));
 }

@@ -145,7 +145,7 @@ int startTCPSocketServ(){
             printf("Fin de la communication \n");
             /* Il ne faut pas oublier de fermer la connexion (fermée dans les deux sens) */
             // printf("Press anny key to close socket... ");
-            Sleep(120);
+            sleep(120);
           }
             shutdown(socketConnected, 2);
           closesocket(sock);

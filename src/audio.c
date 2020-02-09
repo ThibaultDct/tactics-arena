@@ -34,5 +34,7 @@ int stopMenuMusic()
     /* On libère le matériel */
     Mix_CloseAudio();
 
+    Mix_Quit();
+
     return 0;
 }

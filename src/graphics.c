@@ -119,6 +119,7 @@ int createWindow(int x, int y)
 							case SDL_WINDOWEVENT_EXPOSED:
 							case SDL_WINDOWEVENT_SIZE_CHANGED:
 							case SDL_WINDOWEVENT_RESIZED:
+							case SDL_WINDOWEVENT_HIDDEN:
 							case SDL_WINDOWEVENT_SHOWN:
 
 								/* Le fond de la fenêtre sera blanc */
@@ -163,6 +164,7 @@ int createWindow(int x, int y)
 
 	TTF_CloseFont(police); /* Doit être avant TTF_Quit() */
 	TTF_Quit();
+	Mix_Quit();
     SDL_Quit();
 
     return 0;

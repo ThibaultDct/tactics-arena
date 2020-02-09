@@ -182,10 +182,6 @@ int createWindow(int x, int y)
 
 								displayText(renderer, 300, 300, 20, "Salut les gars !", 255, 255, 255);
 
-                                /* Ajout de la seconde image à une autre position
-								imgDestRect.x = 250;
-								SDL_RenderCopy(renderer, image_tex, NULL, &imgDestRect);*/
-
                                 /* On fait le rendu ! */
                                 SDL_RenderPresent(renderer);
 
@@ -198,7 +194,7 @@ int createWindow(int x, int y)
 						{
 							SDL_DestroyWindow(pWindow);
 						}
-					
+					break;
 				}
 			}
 		}

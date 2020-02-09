@@ -9,7 +9,7 @@ int createWindow(int x, int y)
     //Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	//Le pointeur vers la surface incluse dans la fenetre
-    SDL_Surface *texte=NULL, *image=NULL;
+    SDL_Surface *texte=NULL, *image=NULL, *start_button=NULL;
 	SDL_Renderer *renderer=NULL;
 	SDL_Rect txtDestRect,imgDestRect;
 
@@ -84,6 +84,19 @@ int createWindow(int x, int y)
 	}
 	SDL_FreeSurface(image); /* on a la texture, plus besoin de l'image */
 
+    // Start button menu
+	SDL_RWops *rwopStart=SDL_RWFromFile("../inc/img/start_button_256.png", "rb");
+	start_button=IMG_LoadPNG_RW(rwopStart);
+	if(!start_button) {
+	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	SDL_Texture *start_tex = SDL_CreateTextureFromSurface(renderer, start_button);
+	if(!start_tex){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	SDL_FreeSurface(start_button); /* on a la texture, plus besoin de l'image */
+
 
 
 
@@ -111,6 +124,12 @@ int createWindow(int x, int y)
 								imgDestRect.y = 0;
 								SDL_QueryTexture(image_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 								SDL_RenderCopy(renderer, image_tex, NULL, &imgDestRect);
+
+                                /* Ajout de la seconde image à une certaine position */
+                                imgDestRect.x = 500;
+								imgDestRect.y = 500;
+								SDL_QueryTexture(start_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+								SDL_RenderCopy(renderer, start_tex, NULL, &imgDestRect);
 
                                 /* Ajout du texte en noir */
                                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

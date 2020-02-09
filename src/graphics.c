@@ -3,6 +3,47 @@
 #include "../SDL2/include/SDL2/SDL_image.h"
 #include "../SDL2/include/SDL2/SDL_ttf.h"
 
+SDL_Color couleurNoire = {0, 0, 0};
+SDL_Color couleurBlanc = {255, 255, 255};
+
+void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, int r, int g, int b)
+// Displays text on the window
+{
+	SDL_Surface *text = NULL;
+	TTF_Font *police = NULL;
+	SDL_Rect txtDestRect;
+
+	if( (police = TTF_OpenFont("../inc/font/Pixels.ttf", size)) == NULL){
+		fprintf(stderr, "Erreur chargement initial font : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+
+	text = TTF_RenderUTF8_Blended(police, content, couleurBlanc);
+	if(!text){
+		fprintf(stderr, "Erreur à la création du texte : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_Texture *text_tex = SDL_CreateTextureFromSurface(renderer, text);
+	if(!text_tex){
+		fprintf(stderr, "Erreur à la création du rendu du texte : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	SDL_FreeSurface(text);
+    txtDestRect.x = txtDestRect.y = 10;
+	SDL_QueryTexture(text_tex, NULL, NULL, &(txtDestRect.w), &(txtDestRect.h));
+
+	txtDestRect.x = x;
+	txtDestRect.y = y;
+
+	/* Ajout du texte en noir */
+    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+    SDL_RenderCopy(renderer, text_tex, NULL, &txtDestRect);
+
+	TTF_CloseFont(police);
+}
+
 int createWindow(int x, int y)
 // Create a window with with x*y size (in px)
 {
@@ -15,9 +56,6 @@ int createWindow(int x, int y)
 
 	// Le pointeur vers notre police
 	TTF_Font *police = NULL;
-	// Une variable de couleur noire
-	SDL_Color couleurNoire = {0, 0, 0};
-    SDL_Color couleurBlanc = {255, 255, 255};
 
     /* Initialisation simple */
     if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
@@ -52,7 +90,7 @@ int createWindow(int x, int y)
 	}
 
 	if( (police = TTF_OpenFont("../inc/font/Pixels.ttf", 100)) == NULL){
-		fprintf(stderr, "erreur chargement font\n");
+		fprintf(stderr, "Erreur chargement initial font : %s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
 	}
 	texte = TTF_RenderUTF8_Blended(police, "Tactics Arena", couleurBlanc);
@@ -142,6 +180,8 @@ int createWindow(int x, int y)
                                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
                                 SDL_RenderCopy(renderer, texte_tex, NULL, &txtDestRect);
 
+								displayText(renderer, 300, 300, 20, "Salut les gars !", 255, 255, 255);
+
                                 /* Ajout de la seconde image à une autre position
 								imgDestRect.x = 250;
 								SDL_RenderCopy(renderer, image_tex, NULL, &imgDestRect);*/
@@ -152,6 +192,13 @@ int createWindow(int x, int y)
 							break;
 						}
 					break;
+					case SDL_MOUSEBUTTONDOWN:
+						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);
+						if (e.motion.x >= 569 && e.motion.x <= 725 && e.motion.y >= 598 && e.motion.y <= 644)
+						{
+							SDL_DestroyWindow(pWindow);
+						}
+					
 				}
 			}
 		}

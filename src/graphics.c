@@ -9,7 +9,7 @@ int createWindow(int x, int y)
     //Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	//Le pointeur vers la surface incluse dans la fenetre
-    SDL_Surface *texte=NULL, *image=NULL, *start_button=NULL;
+    SDL_Surface *texte=NULL, *image=NULL, *start_button=NULL, *icon=NULL;
 	SDL_Renderer *renderer=NULL;
 	SDL_Rect txtDestRect,imgDestRect;
 
@@ -97,7 +97,12 @@ int createWindow(int x, int y)
 	}
 	SDL_FreeSurface(start_button); /* on a la texture, plus besoin de l'image */
 
-
+    SDL_RWops *rwopIcon=SDL_RWFromFile("../inc/img/TacticsArena.png", "rb");
+    icon = IMG_LoadPNG_RW(rwopIcon);
+    if (!icon) {
+        printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+    }
+    SDL_SetWindowIcon(pWindow, icon);
 
 
 	if( pWindow )

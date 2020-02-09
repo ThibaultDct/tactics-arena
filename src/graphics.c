@@ -115,6 +115,7 @@ int createWindow(int x, int y)
 							case SDL_WINDOWEVENT_SIZE_CHANGED:
 							case SDL_WINDOWEVENT_RESIZED:
 							case SDL_WINDOWEVENT_SHOWN:
+
 								/* Le fond de la fenêtre sera blanc */
                                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 								SDL_RenderClear(renderer);

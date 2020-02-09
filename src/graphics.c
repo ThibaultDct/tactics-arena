@@ -17,6 +17,7 @@ int createWindow(int x, int y)
 	TTF_Font *police = NULL;
 	// Une variable de couleur noire
 	SDL_Color couleurNoire = {0, 0, 0};
+    SDL_Color couleurBlanc = {255, 255, 255};
 
     /* Initialisation simple */
     if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
@@ -50,11 +51,11 @@ int createWindow(int x, int y)
 		exit(EXIT_FAILURE);
 	}
 
-	if( (police = TTF_OpenFont("../inc/font/Pixels.ttf", 20)) == NULL){
+	if( (police = TTF_OpenFont("../inc/font/Pixels.ttf", 100)) == NULL){
 		fprintf(stderr, "erreur chargement font\n");
 		exit(EXIT_FAILURE);
 	}
-	texte = TTF_RenderUTF8_Blended(police, "Vive la programmation !", couleurNoire);
+	texte = TTF_RenderUTF8_Blended(police, "Tactics Arena", couleurBlanc);
 	if(!texte){
 		fprintf(stderr, "Erreur à la création du texte : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
@@ -71,7 +72,7 @@ int createWindow(int x, int y)
 	SDL_QueryTexture(texte_tex, NULL, NULL, &(txtDestRect.w), &(txtDestRect.h));
 
 	// load sample.png into image
-	SDL_RWops *rwop=SDL_RWFromFile("../inc/img/affiche2018.png", "rb");
+	SDL_RWops *rwop=SDL_RWFromFile("../inc/img/menu2_720p.png", "rb");
 	image=IMG_LoadPNG_RW(rwop);
 	if(!image) {
 	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
@@ -101,19 +102,19 @@ int createWindow(int x, int y)
 							case SDL_WINDOWEVENT_SIZE_CHANGED:
 							case SDL_WINDOWEVENT_RESIZED:
 							case SDL_WINDOWEVENT_SHOWN:
-								/* Le fond de la fenêtre sera noir */
+								/* Le fond de la fenêtre sera blanc */
                                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 								SDL_RenderClear(renderer);
+
+                                /* Ajout de la seconde image à une certaine position */
+                                imgDestRect.x = 0;
+								imgDestRect.y = 0;
+								SDL_QueryTexture(image_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+								SDL_RenderCopy(renderer, image_tex, NULL, &imgDestRect);
 
                                 /* Ajout du texte en noir */
                                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
                                 SDL_RenderCopy(renderer, texte_tex, NULL, &txtDestRect);
-
-                                /* Ajout de la seconde image à une certaine position
-                                imgDestRect.x = 10;
-								imgDestRect.y = 50;
-								SDL_QueryTexture(image_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-								SDL_RenderCopy(renderer, image_tex, NULL, &imgDestRect);
 
                                 /* Ajout de la seconde image à une autre position
 								imgDestRect.x = 250;

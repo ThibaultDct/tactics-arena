@@ -52,7 +52,7 @@ int main()
         case 1:startTCPSocketServ();break;
         case 2:startTCPSocketCli();break;
         case 3: playMenuMusic();
-                createWindow(1280, 720, "Tactics Arena - Menu");
+                displayMenu(1280, 720);
                 stopMenuMusic();
                 createGrid((Entity *)grid, X, Y);
                 debugGrid(matrix, X, Y);

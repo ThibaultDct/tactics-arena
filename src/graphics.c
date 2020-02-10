@@ -80,9 +80,7 @@ int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 int closeWindow(SDL_Window *pWindow)
 // Kill and close the window
 {
-	//Destruction de la fenetre
 	SDL_DestroyWindow(pWindow);
-
 	TTF_Quit();
 	Mix_Quit();
     SDL_Quit();
@@ -90,7 +88,7 @@ int closeWindow(SDL_Window *pWindow)
     return 0;
 }
 
-int createWindow(int x, int y, char *title)
+int createGameWindow(int x, int y)
 // Create a window with with x*y size (in px)
 {
     //Le pointeur vers la fenetre
@@ -115,11 +113,105 @@ int createWindow(int x, int y, char *title)
 	}
 
 	/* Création de la fenêtre */
-	pWindow = SDL_CreateWindow(title, 			  SDL_WINDOWPOS_UNDEFINED,
-												  SDL_WINDOWPOS_UNDEFINED,
-												  x,
-												  y,
-												  SDL_WINDOW_SHOWN);
+	pWindow = SDL_CreateWindow("Tactics Arena", 	SDL_WINDOWPOS_UNDEFINED,
+												  	SDL_WINDOWPOS_UNDEFINED,
+												  	x,
+												  	y,
+												  	SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+
+	if(!pWindow){
+		fprintf(stderr, "Erreur à la création de la fenetre : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+
+	renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
+	if(renderer == NULL){
+		fprintf(stderr, "Erreur à la création du renderer\n");
+		exit(EXIT_FAILURE);
+	}
+
+	// Launcher icon
+    SDL_RWops *rwopIcon=SDL_RWFromFile("../inc/img/TacticsArena.png", "rb");
+    icon = IMG_LoadPNG_RW(rwopIcon);
+    if (!icon) {
+        printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+    }
+    SDL_SetWindowIcon(pWindow, icon);
+
+	if( pWindow )
+	{
+		int running = 1;
+		while(running) {
+			SDL_Event e;
+			while(SDL_PollEvent(&e)) {
+				switch(e.type) {
+					case SDL_QUIT: running = 0;
+					break;
+					case SDL_WINDOWEVENT:
+						switch(e.window.event){
+							case SDL_WINDOWEVENT_EXPOSED:
+							case SDL_WINDOWEVENT_SIZE_CHANGED:
+							case SDL_WINDOWEVENT_RESIZED:
+							case SDL_WINDOWEVENT_HIDDEN:
+							case SDL_WINDOWEVENT_SHOWN:
+
+								/* Le fond de la fenêtre sera blanc */
+                                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+								SDL_RenderClear(renderer);
+
+								displayMap(renderer, 10, 10);
+
+								SDL_RenderPresent(renderer);
+
+							break;
+						}
+					break;
+					case SDL_MOUSEBUTTONDOWN:
+
+						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
+
+					break;
+				}
+			}
+		}
+		closeWindow(pWindow);
+	} else {
+		fprintf(stderr,"Erreur de création de la fenêtre: %s\n",SDL_GetError());
+	}
+
+	return 1;
+}
+
+int displayMenu(int x, int y)
+// Create a window with with x*y size (in px)
+{
+    //Le pointeur vers la fenetre
+	SDL_Window* pWindow = NULL;
+	//Le pointeur vers la surface incluse dans la fenetre
+    SDL_Surface *icon=NULL;
+	SDL_Renderer *renderer=NULL;
+
+	// La musique est activée de base
+	int music_playing = 1;
+
+    /* Initialisation simple */
+    if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
+        fprintf(stdout,"Échec de l'initialisation de la SDL (%s)\n",SDL_GetError());
+        return -1;
+    }
+
+	/* Initialisation TTF */
+	if(TTF_Init() == -1) {
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+
+	/* Création de la fenêtre */
+	pWindow = SDL_CreateWindow("Tactics Arena - Menu", 	SDL_WINDOWPOS_UNDEFINED,
+												  		SDL_WINDOWPOS_UNDEFINED,
+												  		x,
+												  		y,
+												  		SDL_WINDOW_SHOWN);
 
 	if(!pWindow){
 		fprintf(stderr, "Erreur à la création de la fenetre : %s\n", SDL_GetError());
@@ -190,8 +282,15 @@ int createWindow(int x, int y, char *title)
 
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
 
+						// Bouton "Start"
+						if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 394 && e.motion.y <= 443)
+						{
+							closeWindow(pWindow);
+							createGameWindow(1920, 1080);
+						}
+
 						// Bouton "Quit"
-						if (e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 467 && e.motion.y <= 518)
+						else if (e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 467 && e.motion.y <= 518)
 						{
 							closeWindow(pWindow);
 						}
@@ -216,6 +315,7 @@ int createWindow(int x, int y, char *title)
 				}
 			}
 		}
+		closeWindow(pWindow);
 	} else {
 		fprintf(stderr,"Erreur de création de la fenêtre: %s\n",SDL_GetError());
 	}

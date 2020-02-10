@@ -14,25 +14,29 @@ void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, 
 	TTF_Font *police = NULL;
 	SDL_Rect txtDestRect;
 
+	SDL_Color color = {r, g, b};
+
+	// Chargement de la police
 	if( (police = TTF_OpenFont("../inc/font/Pixels.ttf", size)) == NULL){
 		fprintf(stderr, "Erreur chargement initial font : %s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
 	}
 
-	text = TTF_RenderUTF8_Blended(police, content, couleurBlanc);
+	// Création de la surface à partir du texte
+	text = TTF_RenderUTF8_Blended(police, content, color);
 	if(!text){
 		fprintf(stderr, "Erreur à la création du texte : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	// Création de la texture à partir de la surface
+	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 	SDL_Texture *text_tex = SDL_CreateTextureFromSurface(renderer, text);
 	if(!text_tex){
 		fprintf(stderr, "Erreur à la création du rendu du texte : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 	SDL_FreeSurface(text);
-    txtDestRect.x = txtDestRect.y = 10;
 	SDL_QueryTexture(text_tex, NULL, NULL, &(txtDestRect.w), &(txtDestRect.h));
 
 	txtDestRect.x = x;
@@ -41,6 +45,8 @@ void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, 
 	/* Ajout du texte en noir */
     SDL_SetRenderDrawColor(renderer, r, g, b, 255);
     SDL_RenderCopy(renderer, text_tex, NULL, &txtDestRect);
+
+	SDL_RenderPresent(renderer);
 
 	TTF_CloseFont(police);
 }
@@ -67,6 +73,8 @@ int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 	imgDestRect.y = y;
 	SDL_QueryTexture(sprite_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 	SDL_RenderCopy(renderer, sprite_tex, NULL, &imgDestRect);
+
+	SDL_RenderPresent(renderer);
 
 	return 1;
 }
@@ -125,32 +133,11 @@ int createWindow(int x, int y, char *title)
 		exit(EXIT_FAILURE);
 	}
 
-
 	renderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
 	if(renderer == NULL){
 		fprintf(stderr, "Erreur à la création du renderer\n");
 		exit(EXIT_FAILURE);
 	}
-
-	if( (police = TTF_OpenFont("../inc/font/Pixels.ttf", 100)) == NULL){
-		fprintf(stderr, "Erreur chargement initial font : %s\n", TTF_GetError());
-		exit(EXIT_FAILURE);
-	}
-	texte = TTF_RenderUTF8_Blended(police, "Tactics Arena", couleurBlanc);
-	if(!texte){
-		fprintf(stderr, "Erreur à la création du texte : %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_Texture *texte_tex = SDL_CreateTextureFromSurface(renderer, texte);
-	if(!texte_tex){
-		fprintf(stderr, "Erreur à la création du rendu du texte : %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-	SDL_FreeSurface(texte);
-    txtDestRect.x = txtDestRect.y = 10;
-	SDL_QueryTexture(texte_tex, NULL, NULL, &(txtDestRect.w), &(txtDestRect.h));
 
 	// Launcher icon
     SDL_RWops *rwopIcon=SDL_RWFromFile("../inc/img/TacticsArena.png", "rb");
@@ -198,41 +185,37 @@ int createWindow(int x, int y, char *title)
 									displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
 								}
 
-                                /* Ajout du texte en noir */
-                                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                                SDL_RenderCopy(renderer, texte_tex, NULL, &txtDestRect);
-
-                                /* On fait le rendu ! */
-                                SDL_RenderPresent(renderer);
+								/* Affiche en gros Tactics Arena */
+								displayText(renderer, 0, 0, 100, "Tactics Arena", 255, 255, 255);
 
 							break;
 						}
 					break;
 					case SDL_MOUSEBUTTONDOWN:
-						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);
+
+						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
+
+						// Bouton "Quit"
 						if (e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 467 && e.motion.y <= 518)
 						{
 							closeWindow(pWindow, police);
 						}
+
+						// Switch musique ON/OFF
 						else if (e.motion.x >= 1202 && e.motion.x <= 1250 && e.motion.y >= 627 && e.motion.y <= 680)
 						{
 							if (music_playing)
 							{
 								music_playing = 0;
 								pauseMenuMusic();
+								displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
 							}
 							else
 							{
 								music_playing = 1;
 								resumeMenuMusic();
-							}
-							if (music_playing)
-							{
 								displaySprite(renderer, "../inc/img/music_on.png", x-175, y-200);
-							} else {
-								displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
 							}
-							SDL_RenderPresent(renderer);
 						}
 					break;
 				}

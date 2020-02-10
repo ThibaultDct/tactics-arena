@@ -71,6 +71,20 @@ int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 	return 1;
 }
 
+int closeWindow(SDL_Window *pWindow, TTF_Font *police)
+// Kill and close the window
+{
+	//Destruction de la fenetre
+	SDL_DestroyWindow(pWindow);
+
+	TTF_CloseFont(police); /* Doit être avant TTF_Quit() */
+	TTF_Quit();
+	Mix_Quit();
+    SDL_Quit();
+
+    return 0;
+}
+
 int createWindow(int x, int y)
 // Create a window with with x*y size (in px)
 {
@@ -255,7 +269,8 @@ int createWindow(int x, int y)
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);
 						if (e.motion.x >= 569 && e.motion.x <= 725 && e.motion.y >= 598 && e.motion.y <= 644)
 						{
-							SDL_DestroyWindow(pWindow);
+							//SDL_DestroyWindow(pWindow);
+							closeWindow(pWindow, police);
 						}
 						else if (e.motion.x >= 1202 && e.motion.x <= 1250 && e.motion.y >= 627 && e.motion.y <= 680)
 						{
@@ -287,13 +302,5 @@ int createWindow(int x, int y)
 		fprintf(stderr,"Erreur de création de la fenêtre: %s\n",SDL_GetError());
 	}
 
-	//Destruction de la fenetre
-	SDL_DestroyWindow(pWindow);
-
-	TTF_CloseFont(police); /* Doit être avant TTF_Quit() */
-	TTF_Quit();
-	Mix_Quit();
-    SDL_Quit();
-
-    return 0;
+	return 1;
 }

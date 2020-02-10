@@ -73,13 +73,12 @@ int createWindow(int x, int y)
 		exit(EXIT_FAILURE);
 	}
 
-
 	/* Création de la fenêtre */
 	pWindow = SDL_CreateWindow("Tactics Arena", SDL_WINDOWPOS_UNDEFINED,
 												  SDL_WINDOWPOS_UNDEFINED,
 												  x,
 												  y,
-												  SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
+												  SDL_WINDOW_SHOWN);
 
 	if(!pWindow){
 		fprintf(stderr, "Erreur à la création de la fenetre : %s\n", SDL_GetError());

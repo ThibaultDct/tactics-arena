@@ -45,6 +45,32 @@ void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, 
 	TTF_CloseFont(police);
 }
 
+int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
+// Display a sprite on the window
+{
+	SDL_Rect imgDestRect;
+
+	// Background image
+	SDL_RWops *rwop=SDL_RWFromFile(sprite, "rb");
+	sprite=IMG_LoadPNG_RW(rwop);
+	if(!sprite) {
+	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	SDL_Texture *sprite_tex = SDL_CreateTextureFromSurface(renderer, sprite);
+	if(!sprite_tex){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	SDL_FreeSurface(sprite); /* on a la texture, plus besoin de l'image */
+
+	imgDestRect.x = x;
+	imgDestRect.y = y;
+	SDL_QueryTexture(sprite_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+	SDL_RenderCopy(renderer, sprite_tex, NULL, &imgDestRect);
+
+	return 1;
+}
+
 int createWindow(int x, int y)
 // Create a window with with x*y size (in px)
 {
@@ -216,6 +242,8 @@ int createWindow(int x, int y)
                                 /* Ajout du texte en noir */
                                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
                                 SDL_RenderCopy(renderer, texte_tex, NULL, &txtDestRect);
+
+								displaySprite(renderer, "../Sprites/Test/Test_sheet.png", 450, 450);
 
                                 /* On fait le rendu ! */
                                 SDL_RenderPresent(renderer);

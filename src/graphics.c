@@ -5,10 +5,7 @@
 #include "../SDL2/include/SDL2/SDL_mixer.h"
 #include "audio.h"
 
-SDL_Color couleurNoire = {0, 0, 0};
-SDL_Color couleurBlanc = {255, 255, 255};
-
-void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, int r, int g, int b)
+void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b)
 // Displays text on the window
 {
 	SDL_Surface *text = NULL;
@@ -18,7 +15,7 @@ void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, 
 	SDL_Color color = {r, g, b};
 
 	// Chargement de la police
-	if( (police = TTF_OpenFont("../inc/font/Pixels.ttf", size)) == NULL){
+	if( (police = TTF_OpenFont(text_police, size)) == NULL){
 		fprintf(stderr, "Erreur chargement initial font : %s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
 	}
@@ -80,13 +77,12 @@ int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 	return 1;
 }
 
-int closeWindow(SDL_Window *pWindow, TTF_Font *police)
+int closeWindow(SDL_Window *pWindow)
 // Kill and close the window
 {
 	//Destruction de la fenetre
 	SDL_DestroyWindow(pWindow);
 
-	TTF_CloseFont(police); /* Doit être avant TTF_Quit() */
 	TTF_Quit();
 	Mix_Quit();
     SDL_Quit();
@@ -102,9 +98,6 @@ int createWindow(int x, int y, char *title)
 	//Le pointeur vers la surface incluse dans la fenetre
     SDL_Surface *icon=NULL;
 	SDL_Renderer *renderer=NULL;
-
-	// Le pointeur vers notre police
-	TTF_Font *police = NULL;
 
 	// La musique est activée de base
 	int music_playing = 1;
@@ -186,7 +179,9 @@ int createWindow(int x, int y, char *title)
 								}
 
 								/* Affiche en gros Tactics Arena */
-								displayText(renderer, 0, 0, 100, "Tactics Arena", 255, 255, 255);
+								displayText(renderer, 300, 200, 100, "Tactics Arena", "../inc/font/Blox2.ttf", 255, 255, 255);
+
+								displayText(renderer, 5, y-20, 15, "Projet L2 Informatique - BUTEL CHAUVIN DOUCET LAFAY", "../inc/font/Pixels.ttf", 255, 255, 255);
 
 							break;
 						}
@@ -198,7 +193,7 @@ int createWindow(int x, int y, char *title)
 						// Bouton "Quit"
 						if (e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 467 && e.motion.y <= 518)
 						{
-							closeWindow(pWindow, police);
+							closeWindow(pWindow);
 						}
 
 						// Switch musique ON/OFF

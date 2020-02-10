@@ -2,6 +2,7 @@
 #include "../SDL2/include/SDL2/SDL.h"
 #include "../SDL2/include/SDL2/SDL_image.h"
 #include "../SDL2/include/SDL2/SDL_ttf.h"
+#include "../SDL2/include/SDL2/SDL_mixer.h"
 #include "audio.h"
 
 SDL_Color couleurNoire = {0, 0, 0};
@@ -58,7 +59,7 @@ int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 
 	// Background image
 	SDL_RWops *rwop=SDL_RWFromFile(sprite, "rb");
-	sprite=IMG_LoadPNG_RW((SDL_RWops*) rwop);
+	sprite=IMG_LoadPNG_RW(rwop);
 	if(!sprite) {
 	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
 	}
@@ -99,9 +100,8 @@ int createWindow(int x, int y, char *title)
     //Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	//Le pointeur vers la surface incluse dans la fenetre
-    SDL_Surface *texte=NULL, *icon=NULL;
+    SDL_Surface *icon=NULL;
 	SDL_Renderer *renderer=NULL;
-	SDL_Rect txtDestRect;
 
 	// Le pointeur vers notre police
 	TTF_Font *police = NULL;

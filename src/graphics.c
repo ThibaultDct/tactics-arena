@@ -52,16 +52,16 @@ int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 
 	// Background image
 	SDL_RWops *rwop=SDL_RWFromFile(sprite, "rb");
-	sprite=IMG_LoadPNG_RW(rwop);
+	sprite=IMG_LoadPNG_RW((SDL_RWops*) rwop);
 	if(!sprite) {
 	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
 	}
-	SDL_Texture *sprite_tex = SDL_CreateTextureFromSurface(renderer, sprite);
+	SDL_Texture *sprite_tex = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) sprite);
 	if(!sprite_tex){
 		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	SDL_FreeSurface(sprite); /* on a la texture, plus besoin de l'image */
+	SDL_FreeSurface((SDL_Surface*) sprite); /* on a la texture, plus besoin de l'image */
 
 	imgDestRect.x = x;
 	imgDestRect.y = y;
@@ -85,15 +85,15 @@ int closeWindow(SDL_Window *pWindow, TTF_Font *police)
     return 0;
 }
 
-int createWindow(int x, int y)
+int createWindow(int x, int y, char *title)
 // Create a window with with x*y size (in px)
 {
     //Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	//Le pointeur vers la surface incluse dans la fenetre
-    SDL_Surface *texte=NULL, *image=NULL, *start_button=NULL, *music_button=NULL, *music2_button=NULL, *icon=NULL;
+    SDL_Surface *texte=NULL, *icon=NULL;
 	SDL_Renderer *renderer=NULL;
-	SDL_Rect txtDestRect,imgDestRect;
+	SDL_Rect txtDestRect;
 
 	// Le pointeur vers notre police
 	TTF_Font *police = NULL;
@@ -114,7 +114,7 @@ int createWindow(int x, int y)
 	}
 
 	/* Création de la fenêtre */
-	pWindow = SDL_CreateWindow("Tactics Arena", SDL_WINDOWPOS_UNDEFINED,
+	pWindow = SDL_CreateWindow(title, 			  SDL_WINDOWPOS_UNDEFINED,
 												  SDL_WINDOWPOS_UNDEFINED,
 												  x,
 												  y,
@@ -152,58 +152,6 @@ int createWindow(int x, int y)
     txtDestRect.x = txtDestRect.y = 10;
 	SDL_QueryTexture(texte_tex, NULL, NULL, &(txtDestRect.w), &(txtDestRect.h));
 
-	// Background image
-	SDL_RWops *rwop=SDL_RWFromFile("../inc/img/menu2_720p.png", "rb");
-	image=IMG_LoadPNG_RW(rwop);
-	if(!image) {
-	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
-	}
-	SDL_Texture *image_tex = SDL_CreateTextureFromSurface(renderer, image);
-	if(!image_tex){
-		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-	SDL_FreeSurface(image); /* on a la texture, plus besoin de l'image */
-
-    // Start button menu
-	SDL_RWops *rwopStart=SDL_RWFromFile("../inc/img/start_button_256.png", "rb");
-	start_button=IMG_LoadPNG_RW(rwopStart);
-	if(!start_button) {
-	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
-	}
-	SDL_Texture *start_tex = SDL_CreateTextureFromSurface(renderer, start_button);
-	if(!start_tex){
-		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-	SDL_FreeSurface(start_button); /* on a la texture, plus besoin de l'image */
-
-	// Music ON button
-	SDL_RWops *rwopMusic=SDL_RWFromFile("../inc/img/music_on.png", "rb");
-	music_button=IMG_LoadPNG_RW(rwopMusic);
-	if(!music_button) {
-	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
-	}
-	SDL_Texture *music_tex = SDL_CreateTextureFromSurface(renderer, music_button);
-	if(!music_tex){
-		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-	SDL_FreeSurface(music_button); /* on a la texture, plus besoin de l'image */
-
-	// Music OFF button
-	SDL_RWops *rwopMusic2=SDL_RWFromFile("../inc/img/music_off.png", "rb");
-	music2_button=IMG_LoadPNG_RW(rwopMusic2);
-	if(!music2_button) {
-	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
-	}
-	SDL_Texture *music2_tex = SDL_CreateTextureFromSurface(renderer, music2_button);
-	if(!music2_tex){
-		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-	}
-	SDL_FreeSurface(music2_button); /* on a la texture, plus besoin de l'image */
-
 	// Launcher icon
     SDL_RWops *rwopIcon=SDL_RWFromFile("../inc/img/TacticsArena.png", "rb");
     icon = IMG_LoadPNG_RW(rwopIcon);
@@ -234,30 +182,25 @@ int createWindow(int x, int y)
                                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 								SDL_RenderClear(renderer);
 
-                                /* Ajout du background */
-                                imgDestRect.x = 0;
-								imgDestRect.y = 0;
-								SDL_QueryTexture(image_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-								SDL_RenderCopy(renderer, image_tex, NULL, &imgDestRect);
+								/* Background image */
+								displaySprite(renderer, "../inc/img/menu2_720p.png", 0, 0);
 
-                                /* Ajout du bouton Start */
-                                imgDestRect.x = 500;
-								imgDestRect.y = 500;
-								SDL_QueryTexture(start_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-								SDL_RenderCopy(renderer, start_tex, NULL, &imgDestRect);
+								/* Start button */
+								displaySprite(renderer, "../inc/img/start_button_256.png", 500, 300);
 
-								/* Ajout du bouton Musique (ON / OFF) */
-                                imgDestRect.x = x - 175;
-								imgDestRect.y = y - 200;
-								SDL_QueryTexture(music_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-								SDL_RenderCopy(renderer, music_tex, NULL, &imgDestRect);
+								/* Quit button */
+								displaySprite(renderer, "../inc/img/quit_button_256.png", 515, 375);
 
+								/* Bouton musique ON/OFF */
+								if (music_playing){
+									displaySprite(renderer, "../inc/img/music_on.png", x-175, y-200);
+								} else {
+									displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
+								}
 
                                 /* Ajout du texte en noir */
                                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
                                 SDL_RenderCopy(renderer, texte_tex, NULL, &txtDestRect);
-
-								displaySprite(renderer, "../Sprites/Test/Test_sheet.png", 450, 450);
 
                                 /* On fait le rendu ! */
                                 SDL_RenderPresent(renderer);
@@ -267,9 +210,8 @@ int createWindow(int x, int y)
 					break;
 					case SDL_MOUSEBUTTONDOWN:
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);
-						if (e.motion.x >= 569 && e.motion.x <= 725 && e.motion.y >= 598 && e.motion.y <= 644)
+						if (e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 467 && e.motion.y <= 518)
 						{
-							//SDL_DestroyWindow(pWindow);
 							closeWindow(pWindow, police);
 						}
 						else if (e.motion.x >= 1202 && e.motion.x <= 1250 && e.motion.y >= 627 && e.motion.y <= 680)
@@ -286,11 +228,9 @@ int createWindow(int x, int y)
 							}
 							if (music_playing)
 							{
-								SDL_QueryTexture(music_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-								SDL_RenderCopy(renderer, music_tex, NULL, &imgDestRect);
+								displaySprite(renderer, "../inc/img/music_on.png", x-175, y-200);
 							} else {
-								SDL_QueryTexture(music2_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-								SDL_RenderCopy(renderer, music2_tex, NULL, &imgDestRect);
+								displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
 							}
 							SDL_RenderPresent(renderer);
 						}

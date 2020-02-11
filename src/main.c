@@ -49,15 +49,19 @@ int main()
     scanf("%d", &choix);
 
     switch (choix) {
-        case 1:startTCPSocketServ();break;
-        case 2:startTCPSocketCli();break;
-        case 3: playMenuMusic();
+        case 1:startTCPSocketServ();
+        break;
+        case 2:startTCPSocketCli();
+        break;
+        case 3:
+                playMenuMusic();
                 displayMenu(1280, 720);
                 stopMenuMusic();
                 createGrid((Entity *)grid, X, Y);
                 debugGrid(matrix, X, Y);
                 printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);
-                free(matrix);break;
+                free(matrix);
+        break;
   }
 
     

@@ -4,6 +4,8 @@
 #include "../SDL2/include/SDL2/SDL_ttf.h"
 #include "../SDL2/include/SDL2/SDL_mixer.h"
 #include "audio.h"
+#include "map.h"
+#include "struct.h"
 
 void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b)
 // Displays text on the window
@@ -52,15 +54,16 @@ void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, 
 int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 // Display a sprite on the window
 {
+	SDL_Surface *image;
 	SDL_Rect imgDestRect;
 
 	// Background image
 	SDL_RWops *rwop=SDL_RWFromFile(sprite, "rb");
-	sprite=IMG_LoadPNG_RW(rwop);
-	if(!sprite) {
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
 	     printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
 	}
-	SDL_Texture *sprite_tex = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) sprite);
+	SDL_Texture *sprite_tex = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
 	if(!sprite_tex){
 		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
@@ -169,7 +172,16 @@ int createGameWindow(int x, int y)
 					case SDL_MOUSEBUTTONDOWN:
 
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
-
+						if (e.motion.x <= 10*64+10 && e.motion.y <= 10*64+10 && e.motion.x >= 10 && e.motion.y >= 10){
+							displayMap(renderer, 10, 10);
+							setSelected(renderer, (e.motion.x-10)/64, (e.motion.y-10)/64);
+						}
+					break;
+					case SDL_MOUSEMOTION:
+						if (e.motion.x >= 10 && e.motion.y >= 10)
+						{
+							
+						}
 					break;
 				}
 			}

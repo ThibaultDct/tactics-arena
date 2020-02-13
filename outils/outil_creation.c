@@ -14,13 +14,21 @@
 err_t create_class(Class * class)
 {
     FILE *fp = NULL;
-    if(fp=fopen("tactics_arena/data/classes","a")==NULL) return POINTER_NULL;
-    
+    char * path = malloc(sizeof(char)*15);
+    char num[3];
+
+    itoa(class->cla_id, num, 10);
+    sprintf(path, "../data/%s",num);
+
+    if(fp=fopen(path,"ab")==NULL) return POINTER_NULL;
+    fwrite(class, sizeof(Class), 1, fp);
     fclose(fp);
 }
 
 int main()
 {
+  //Class class = {Ranger};
 
+    create_class(&class);
     return 0;
 }

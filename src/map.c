@@ -7,7 +7,7 @@
 #include "struct.h"
 #include "audio.h"
 
-int setSelected(SDL_Renderer *renderer, int x, int y)
+int setSelected(SDL_Renderer *renderer, int x, int y, int xpos, int ypos)
 // Set the tile selected
 {
 	SDL_Rect imgDestRect;
@@ -26,13 +26,13 @@ int setSelected(SDL_Renderer *renderer, int x, int y)
 	}
 	SDL_FreeSurface((SDL_Surface*) s_sprite); /* on a la texture, plus besoin de l'image */
 
-	imgDestRect.x = x*64+10;
-    imgDestRect.y = y*64+10;
+	imgDestRect.x = x*64+xpos;
+  imgDestRect.y = y*64+ypos;
 	SDL_QueryTexture(s_sprite_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 	SDL_RenderCopy(renderer, s_sprite_tex, NULL, &imgDestRect);
 
 	SDL_RenderPresent(renderer);
-	
+
 	return 1;
 }
 

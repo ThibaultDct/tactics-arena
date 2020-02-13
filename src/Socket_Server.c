@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "Socket_Server.h"
-#define PORT 50135
+#define PORT 4242
 /*
 * If program run on Windows
 */
@@ -64,7 +64,7 @@ int startTCPSocketServ(){
 
   #elif __UNIX__ || defined __APPLE__ || defined  __linux__
 
-    system("ifconfig | grep \"inet 192.*\" | sed \"s/netmask.*//g\" | sed \"s/inet//g\" > test.txt");
+    system("ifconfig | grep \"inet 1[97]2.*\" | sed \"s/netmask.*//g\" | sed \"s/inet//g\" > test.txt");
     int windWSAError= 0;
   #endif
 
@@ -116,6 +116,7 @@ int startTCPSocketServ(){
         * Starting to connect
         * (max number of connection 5)
         */
+        getLocalIP();
         sockError = listen(sock,5);
         if(sockError != SOCKET_ERROR){
           printf("\nEn attente de la connexion d'un client...\n");

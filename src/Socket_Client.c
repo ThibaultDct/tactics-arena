@@ -4,7 +4,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "Socket_Server.h"
-#define PORT 50135
+#define PORT 443
 #define MAX_BUFF_SIZE 80
 
 /*

@@ -61,13 +61,23 @@ void getLocalIP(){
       /*
       * Get ip from the file named fic
       */
-      fgets(s,sizeof(s),fic);   // C4996
+
+     #if defined _WIN64 || defined (WIN32) || defined _WIN32
+      fgets(s,sizeof(s),fic);
+    #elif __UNIX__ || defined __APPLE__ || defined  __linux__
+      fscanf(fic,"%s",s);   // C4996
+    #endif
       int cpt = 0;
+      dPoint = 1;
       for(int i = 0; s[i]; i++){
-        if((int)s[i - 2] == 58){
-          dPoint = 1;
-        }
-        if( (((int)s[i] >= 46) && ((int)s[i] <= 57)) && (dPoint == 1) ){
+        
+        #if defined _WIN64 || defined (WIN32) || defined _WIN32
+          dPoint = 0;
+          if((int)s[i - 2] == 58){
+            dPoint = 1;
+          }
+        #endif
+        if(((int)s[i] >= 46) && ((int)s[i] <= 57)){
           monIP[cpt] = s[i];
           cpt++;
         }
@@ -75,8 +85,9 @@ void getLocalIP(){
       printf("L'ip du serveur est : %s", monIP);
     }
 }
+
 const char * setServIP(){
-  const char * servIP = malloc(sizeof(char) * MAX_BUFF_SIZE);
+  char * servIP = malloc(sizeof(char) * MAX_BUFF_SIZE);
   printf("Saisir l'addresse IP du serveur : ");
   scanf(" %s", servIP);
 

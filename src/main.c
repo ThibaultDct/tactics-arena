@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "grid.h"
+#include "Socket_Server.h"
 #include "struct.h"
 #include "entity.h"
 #include "graphics.h"
@@ -49,9 +50,9 @@ int main()
     scanf("%d", &choix);
 
     switch (choix) {
-        case 1:startTCPSocketServ();
+        case 1: startTCPSocketServ();
         break;
-        case 2:startTCPSocketCli();
+        case 2: startTCPSocketCli();
         break;
         case 3:
                 playMenuMusic();

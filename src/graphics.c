@@ -7,6 +7,9 @@
 #include "map.h"
 #include "struct.h"
 
+#define XPOS 500
+#define YPOS 100
+
 void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b)
 // Displays text on the window
 {
@@ -162,7 +165,7 @@ int createGameWindow(int x, int y)
                                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 								SDL_RenderClear(renderer);
 
-								displayMap(renderer, 10, 10);
+								displayMap(renderer, XPOS, YPOS);
 
 								SDL_RenderPresent(renderer);
 
@@ -172,15 +175,15 @@ int createGameWindow(int x, int y)
 					case SDL_MOUSEBUTTONDOWN:
 
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
-						if (e.motion.x <= 10*64+10 && e.motion.y <= 10*64+10 && e.motion.x >= 10 && e.motion.y >= 10){
-							displayMap(renderer, 10, 10);
-							setSelected(renderer, (e.motion.x-10)/64, (e.motion.y-10)/64);
+						if (e.motion.x <= 10*64+XPOS && e.motion.y <= 10*64+YPOS && e.motion.x >= XPOS && e.motion.y >= YPOS){
+							displayMap(renderer, XPOS, YPOS);
+							setSelected(renderer, (e.motion.x-XPOS)/64, (e.motion.y-YPOS)/64, XPOS, YPOS);
 						}
 					break;
 					case SDL_MOUSEMOTION:
 						if (e.motion.x >= 10 && e.motion.y >= 10)
 						{
-							
+
 						}
 					break;
 				}

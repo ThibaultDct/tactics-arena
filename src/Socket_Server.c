@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "Socket_Server.h"
-#define PORT 4242
+#define PORT 443
 /*
 * If program run on Windows
 */
@@ -68,11 +68,12 @@ int startTCPSocketServ(){
     int windWSAError= 0;
   #endif
 
-  int choixCli = 2;
 
   t_personnage monpersoServ;
   monpersoServ.id = 1;
   sprintf(monpersoServ.nom,"Hello world");
+
+  int choixServ = 0;
 
 
 
@@ -133,20 +134,23 @@ int startTCPSocketServ(){
             printf("L'id du perso est : %d \n", monpersoServ.id);
             printf("Le nom du perso est : %s \n", monpersoServ.nom);
 
-            printf("(1) SI struct envoyée : ");
-            scanf("%d",&choixCli);
-            if(choixCli == 1 ){
-              if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){
-                printf("Votre perso a été modifié ! \n");
-                printf("l'id du perso est maintenant : %d \n", monpersoServ.id);
-                printf("Le nom du perso est maintenant : %s \n", monpersoServ.nom);
-              }
+            printf("Press (1) start chat \n");
+            printf("Pess (2) send structure : ");
+            scanf("%d",&choixServ);
+            switch(choixServ){
+              case 1: startChat(socketConnected);
+              case 2: sendStruct(sock, (t_personnage)monpersoServ);break;
             }
+
+              // if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){
+              //   printf("Votre perso a été modifié ! \n");
+              //   printf("l'id du perso est maintenant : %d \n", monpersoServ.id);
+              //   printf("Le nom du perso est maintenant : %s \n", monpersoServ.nom);
+              // }
 
             printf("Fin de la communication \n");
             /* Il ne faut pas oublier de fermer la connexion (fermée dans les deux sens) */
             // printf("Press anny key to close socket... ");
-            sleep(120);
           }
             shutdown(socketConnected, 2);
           closesocket(sock);

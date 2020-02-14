@@ -4,7 +4,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "Socket_Server.h"
-#define PORT 50135
+#define PORT 443
 #define MAX_BUFF_SIZE 128
 /*
 * If program run on Windows
@@ -122,9 +122,12 @@ return monStr;
 
 int sendMSg(int socket){
   int sockCli;
-  const char  * buffer = malloc(sizeof(char) * MAX_BUFF_SIZE);
+  char  * buffer = malloc(sizeof(char) * MAX_BUFF_SIZE);
   buffer = realStr();
+  
+  printf("Buffer size: %i (%i)", strlen(buffer), sizeof(buffer));
 
+  // buffer = realloc(buffer, strlen(buffer));
   printf(" Message sendMSg : %s \n", buffer);
   sockCli = send(socket, buffer, sizeof(buffer), 0);
   if(sockCli != SOCKET_ERROR){
@@ -137,29 +140,26 @@ int sendMSg(int socket){
 }
 
 void startChat(int sock){
-  const char * buffer = malloc(sizeof(char) * 128);
-  char bufferRecv[MAX_BUFF_SIZE];
+  char * buffer = malloc(sizeof(char) * MAX_BUFF_SIZE);
+  char * bufferRecv = malloc(sizeof(char) * MAX_BUFF_SIZE);
   time_t seconds;
   time(&seconds);
   int choix = 0;
 
   do {
-    if(recv(sock, bufferRecv, sizeof(bufferRecv),0) != SOCKET_ERROR){
-      printf(" recu : %s \n", bufferRecv);
-      time(&seconds);
-    }
     printf("Envoyer un message (1) ");
     scanf("%d", &choix);
     if(choix == 1){
-      if(recv(sock, bufferRecv, sizeof(bufferRecv),0) != SOCKET_ERROR){
-        printf(" recu : %s \n", bufferRecv);
-        time(&seconds);
-      }
       sendMSg(sock);
     }
-
     printf("Attente : ");
     printf("%ld \n", (time(NULL) - seconds));
     sleep(1);
+    if(recv(sock, bufferRecv, sizeof(bufferRecv),0) != SOCKET_ERROR){
+      // buffer = realloc(bufferRecv, strlen(bufferRecv));
+      printf(" recu : %s \n", bufferRecv);
+      printf("size of bufferRecv : %d (%d)", strlen(bufferRecv), sizeof(bufferRecv));
+      time(&seconds);
+    }
   } while((time(NULL) -seconds)  != (1 *60));
 }

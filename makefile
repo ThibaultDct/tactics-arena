@@ -47,6 +47,7 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@ $(SDL_LIBS) $(SDL_INC) $(SOCKLIBFLAGS)
 	@echo "Linking complete!"
 
+
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"

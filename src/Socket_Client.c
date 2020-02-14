@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "Socket_Server.h"
 #define PORT 443
-#define MAX_BUFF_SIZE 80
+#define MAX_BUFF_SIZE 128
 
 /*
 * If program run on Windows
@@ -79,6 +79,7 @@ int startTCPSocketCli(){
 
   SOCKADDR_IN sockIn;
   SOCKET sock;
+  
   if(!windWSAError){
     /*
     * Creating socket :
@@ -103,7 +104,7 @@ int startTCPSocketCli(){
       sockIn.sin_addr.s_addr= inet_addr((char *)servIP);
       sockIn.sin_family = AF_INET;
       sockIn.sin_port = htons(PORT);
-
+      int choixCli = 0;
       /*
       *
       *If client achieve connection
@@ -123,8 +124,16 @@ int startTCPSocketCli(){
         printf("Le nom du perso est : %s \n", monpersoCli.nom);
 
         printf("Début de la communication : \n");
-        printf("Envoie de la structure... \n");
-        sendStruct(sock, (t_personnage)monpersoCli);
+        
+        printf("Press (1) start chat \n");
+        printf("Pess (2) send structure : ");
+        scanf("%d",&choixCli);
+        switch(choixCli){
+          case 1: startChat(sock);
+          case 2: sendStruct(sock, (t_personnage)monpersoCli);break;
+        }
+
+        
         printf("Fin de la communication \n");
 
       }

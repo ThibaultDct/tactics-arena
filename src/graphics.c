@@ -16,88 +16,100 @@ SDL_Texture *background = NULL,
 						*music_on = NULL,
 						*music_off = NULL;
 
-
 void loadMenuTextures(SDL_Renderer *renderer)
 // Load all the textures needed for the menu
 {
-	SDL_Surface *image = NULL;
-	SDL_RWops *rwop = NULL;
+	SDL_Surface *image1 = NULL,
+							*image2 = NULL,
+							*image3 = NULL,
+							*image4 = NULL,
+							*image5 = NULL;
+
+	SDL_RWops *rwop1 = NULL,
+						*rwop2 = NULL,
+						*rwop3 = NULL,
+						*rwop4 = NULL,
+						*rwop5 = NULL;
 
 	// == Loading background ==
-	rwop=SDL_RWFromFile("../inc/img/menu2_720p.png", "rb");
-	image=IMG_LoadPNG_RW(rwop);
-	if(!image) {
+	rwop1=SDL_RWFromFile("../inc/img/menu2_720p.png", "rb");
+	image1=IMG_LoadPNG_RW(rwop1);
+	if(!image1) {
 			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
 	}
-	background = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	background = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image1);
 	if(!background){
 		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	//SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+	SDL_FreeSurface((SDL_Surface*) image1); /* on a la texture, plus besoin de l'image */
 
 	// == Loading start button ==
-	rwop=SDL_RWFromFile("../inc/img/start_button_256.png", "rb");
-	image=IMG_LoadPNG_RW(rwop);
-	if(!image) {
+	rwop2=SDL_RWFromFile("../inc/img/start_button_256.png", "rb");
+	image2=IMG_LoadPNG_RW(rwop2);
+	if(!image2) {
 			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
 	}
-	start_button = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	start_button = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image2);
 	if(!start_button){
 		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	//SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+	SDL_FreeSurface((SDL_Surface*) image2); /* on a la texture, plus besoin de l'image */
 
 	// == Loading quit button ==
-	rwop=SDL_RWFromFile("../inc/img/quit_button_256.png", "rb");
-	image=IMG_LoadPNG_RW(rwop);
-	if(!image) {
+	rwop3=SDL_RWFromFile("../inc/img/quit_button_256.png", "rb");
+	image3=IMG_LoadPNG_RW(rwop3);
+	if(!image3) {
 			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
 	}
-	quit_button = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	quit_button = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image3);
 	if(!quit_button){
 		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	//SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+	SDL_FreeSurface((SDL_Surface*) image3); /* on a la texture, plus besoin de l'image */
 
 	// == Loading music ON switch ==
-	rwop=SDL_RWFromFile("../inc/img/music_on.png", "rb");
-	image=IMG_LoadPNG_RW(rwop);
-	if(!image) {
+	rwop4=SDL_RWFromFile("../inc/img/music_on.png", "rb");
+	image4=IMG_LoadPNG_RW(rwop4);
+	if(!image4) {
 			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
 	}
-	music_on = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	music_on = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image4);
 	if(!music_on){
 		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	//SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+	SDL_FreeSurface((SDL_Surface*) image4); /* on a la texture, plus besoin de l'image */
 
 	// == Loading music OFF switch ==
-	rwop=SDL_RWFromFile("../inc/img/music_off.png", "rb");
-	image=IMG_LoadPNG_RW(rwop);
-	if(!image) {
+	rwop5=SDL_RWFromFile("../inc/img/music_off.png", "rb");
+	image5=IMG_LoadPNG_RW(rwop5);
+	if(!image5) {
 			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
 	}
-	music_off = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	music_off = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image5);
 	if(!music_off){
 		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
-	SDL_FreeRW(rwop);
+	SDL_FreeSurface((SDL_Surface*) image5); /* on a la texture, plus besoin de l'image */
+	SDL_FreeRW(rwop1);
+	SDL_FreeRW(rwop2);
+	SDL_FreeRW(rwop3);
+	SDL_FreeRW(rwop4);
+	SDL_FreeRW(rwop5);
 }
 
 void freeTextures()
 // Free all the textures loaded
 {
-	free(background);
-	free(start_button);
-	free(quit_button);
-	free(music_on);
-	free(music_off);
+	SDL_DestroyTexture(background);
+	SDL_DestroyTexture(start_button);
+	SDL_DestroyTexture(quit_button);
+	SDL_DestroyTexture(music_on);
+	SDL_DestroyTexture(music_off);
 }
 
 void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b)
@@ -136,8 +148,8 @@ void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, 
 	txtDestRect.y = y;
 
 	/* Ajout du texte en noir */
-    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-    SDL_RenderCopy(renderer, text_tex, NULL, &txtDestRect);
+  SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+  SDL_RenderCopy(renderer, text_tex, NULL, &txtDestRect);
 
 	SDL_RenderPresent(renderer);
 
@@ -195,7 +207,7 @@ int closeWindow(SDL_Window *pWindow)
 	SDL_DestroyWindow(pWindow);
 	TTF_Quit();
 	Mix_Quit();
-    SDL_Quit();
+  SDL_Quit();
 
     return 0;
 }
@@ -206,11 +218,8 @@ int createGameWindow(int x, int y)
     //Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	//Le pointeur vers la surface incluse dans la fenetre
-    SDL_Surface *icon=NULL;
+  SDL_Surface *icon=NULL;
 	SDL_Renderer *renderer=NULL;
-
-	// La musique est activée de base
-	int music_playing = 1;
 
     /* Initialisation simple */
     if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
@@ -353,7 +362,7 @@ int displayMenu(int x, int y)
     }
     SDL_SetWindowIcon(pWindow, icon);
 
-		loadMenuTextures(renderer);
+
 
 
 	if( pWindow )
@@ -372,6 +381,8 @@ int displayMenu(int x, int y)
 							case SDL_WINDOWEVENT_RESIZED:
 							case SDL_WINDOWEVENT_HIDDEN:
 							case SDL_WINDOWEVENT_SHOWN:
+
+								loadMenuTextures(renderer);
 
 								/* Le fond de la fenêtre sera blanc */
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

@@ -161,15 +161,15 @@ int startTCPSocketServ(){
       }
     }
     else{
-      printf("\nUn problème est survenue lors de la liaison avec le clien :( \n");
+      printf("\nUn problème est survenu lors de la liaison avec le client :( \n");
     }
   }
   else{
-    printf("\nUn problème est survenue lors de la création de la socket :( \n");
+    printf("\nUn problème est survenu lors de la création de la socket :( \n");
   }
 }
 else{
-  printf("Un problème est survenue avec Windows :( \n");
+  printf("Un problème est survenu avec Windows :( \n");
 }
 getchar();
 return 0;

@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "Socket_Server.h"
 #define PORT 443
-#define MAX_BUFF_SIZE 80
+#define MAX_BUFF_SIZE 128
 
 /*
 * If program run on Windows

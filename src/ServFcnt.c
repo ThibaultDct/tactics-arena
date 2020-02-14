@@ -125,17 +125,17 @@ int sendMSg(int socket){
   char  * buffer = malloc(sizeof(char) * MAX_BUFF_SIZE);
   buffer = realStr();
   
-  printf("Buffer size: %i (%i)", strlen(buffer), sizeof(buffer));
+  printf("Buffer size sendMSG: %i (%i)", strlen(buffer), sizeof(buffer));
 
   // buffer = realloc(buffer, strlen(buffer));
   printf(" Message sendMSg : %s \n", buffer);
-  sockCli = send(socket, buffer, sizeof(buffer), 0);
-  if(sockCli != SOCKET_ERROR){
-  printf("Message envoyé avec succes ! \n");
-  }
-  else{
-    printf("Send MSG error ... \n");
-  }
+  // sockCli = send(socket, buffer, sizeof(buffer), 0);
+  // if(sockCli != SOCKET_ERROR){
+  // printf("Message envoyé avec succes ! \n");
+  // }
+  // else{
+  //   printf("Send MSG error ... \n");
+  // }
   return 0;
 }
 
@@ -147,7 +147,7 @@ void startChat(int sock){
   int choix = 0;
 
   do {
-    printf("Envoyer un message (1) ");
+    printf("\nEnvoyer un message (1) ");
     scanf("%d", &choix);
     if(choix == 1){
       sendMSg(sock);
@@ -156,10 +156,10 @@ void startChat(int sock){
     printf("%ld \n", (time(NULL) - seconds));
     sleep(1);
     if(recv(sock, bufferRecv, sizeof(bufferRecv),0) != SOCKET_ERROR){
-      // buffer = realloc(bufferRecv, strlen(bufferRecv));
-      printf(" recu : %s \n", bufferRecv);
-      printf("size of bufferRecv : %d (%d)", strlen(bufferRecv), sizeof(bufferRecv));
+      printf("recu : %s \n", bufferRecv);
+      printf("size of bufferRecv startChat: %d (%d)", strlen(bufferRecv), sizeof(bufferRecv));
       time(&seconds);
     }
+    
   } while((time(NULL) -seconds)  != (1 *60));
 }

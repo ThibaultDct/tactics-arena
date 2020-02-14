@@ -7,8 +7,98 @@
 #include "map.h"
 #include "struct.h"
 
-#define XPOS 500
-#define YPOS 100
+#define XPOS 500			// x position of the grid
+#define YPOS 100			// y position of the grid
+
+SDL_Texture *background = NULL,
+						*start_button = NULL,
+						*quit_button = NULL,
+						*music_on = NULL,
+						*music_off = NULL;
+
+
+void loadMenuTextures(SDL_Renderer *renderer)
+// Load all the textures needed for the menu
+{
+	SDL_Surface *image = NULL;
+	SDL_RWops *rwop = NULL;
+
+	// == Loading background ==
+	rwop=SDL_RWFromFile("../inc/img/menu2_720p.png", "rb");
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
+			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	background = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	if(!background){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	//SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+
+	// == Loading start button ==
+	rwop=SDL_RWFromFile("../inc/img/start_button_256.png", "rb");
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
+			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	start_button = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	if(!start_button){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	//SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+
+	// == Loading quit button ==
+	rwop=SDL_RWFromFile("../inc/img/quit_button_256.png", "rb");
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
+			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	quit_button = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	if(!quit_button){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	//SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+
+	// == Loading music ON switch ==
+	rwop=SDL_RWFromFile("../inc/img/music_on.png", "rb");
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
+			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	music_on = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	if(!music_on){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	//SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+
+	// == Loading music OFF switch ==
+	rwop=SDL_RWFromFile("../inc/img/music_off.png", "rb");
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
+			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	music_off = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	if(!music_off){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	SDL_FreeSurface((SDL_Surface*) image); /* on a la texture, plus besoin de l'image */
+	SDL_FreeRW(rwop);
+}
+
+void freeTextures()
+// Free all the textures loaded
+{
+	free(background);
+	free(start_button);
+	free(quit_button);
+	free(music_on);
+	free(music_off);
+}
 
 void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b)
 // Displays text on the window
@@ -53,7 +143,7 @@ void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, 
 
 	TTF_CloseFont(police);
 }
-
+/*
 int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 // Display a sprite on the window
 {
@@ -71,12 +161,28 @@ int displaySprite(SDL_Renderer *renderer, char *sprite, int x, int y)
 		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	SDL_FreeSurface((SDL_Surface*) sprite); /* on a la texture, plus besoin de l'image */
+	SDL_FreeSurface((SDL_Surface*) sprite); // on a la texture, plus besoin de l'image
 
 	imgDestRect.x = x;
 	imgDestRect.y = y;
 	SDL_QueryTexture(sprite_tex, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 	SDL_RenderCopy(renderer, sprite_tex, NULL, &imgDestRect);
+
+	SDL_RenderPresent(renderer);
+
+	return 1;
+}
+*/
+
+int displaySprite(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y)
+// Display a sprite on the window
+{
+	SDL_Rect imgDestRect;
+
+	imgDestRect.x = x;
+	imgDestRect.y = y;
+	SDL_QueryTexture(texture, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+	SDL_RenderCopy(renderer, texture, NULL, &imgDestRect);
 
 	SDL_RenderPresent(renderer);
 
@@ -162,7 +268,7 @@ int createGameWindow(int x, int y)
 							case SDL_WINDOWEVENT_SHOWN:
 
 								/* Le fond de la fenêtre sera blanc */
-                                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 								SDL_RenderClear(renderer);
 
 								displayMap(renderer, XPOS, YPOS);
@@ -203,7 +309,7 @@ int displayMenu(int x, int y)
     //Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	//Le pointeur vers la surface incluse dans la fenetre
-    SDL_Surface *icon=NULL;
+  SDL_Surface *icon=NULL;
 	SDL_Renderer *renderer=NULL;
 
 	// La musique est activée de base
@@ -247,6 +353,8 @@ int displayMenu(int x, int y)
     }
     SDL_SetWindowIcon(pWindow, icon);
 
+		loadMenuTextures(renderer);
+
 
 	if( pWindow )
 	{
@@ -266,23 +374,28 @@ int displayMenu(int x, int y)
 							case SDL_WINDOWEVENT_SHOWN:
 
 								/* Le fond de la fenêtre sera blanc */
-                                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 								SDL_RenderClear(renderer);
 
 								/* Background image */
-								displaySprite(renderer, "../inc/img/menu2_720p.png", 0, 0);
+								//displaySprite(renderer, "../inc/img/menu2_720p.png", 0, 0);
+								displaySprite(renderer, background, 0, 0);
 
 								/* Start button */
-								displaySprite(renderer, "../inc/img/start_button_256.png", 500, 300);
+								//displaySprite(renderer, "../inc/img/start_button_256.png", 500, 300);
+								displaySprite(renderer, start_button, 500, 300);
 
 								/* Quit button */
-								displaySprite(renderer, "../inc/img/quit_button_256.png", 515, 375);
+								//displaySprite(renderer, "../inc/img/quit_button_256.png", 515, 375);
+								displaySprite(renderer, quit_button, 515, 375);
 
 								/* Bouton musique ON/OFF */
 								if (music_playing){
-									displaySprite(renderer, "../inc/img/music_on.png", x-175, y-200);
+									//displaySprite(renderer, "../inc/img/music_on.png", x-175, y-200);
+									displaySprite(renderer, music_on, x-175, y-200);
 								} else {
-									displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
+									//displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
+									displaySprite(renderer, music_off, x-175, y-200);
 								}
 
 								/* Affiche en gros Tactics Arena */
@@ -301,6 +414,7 @@ int displayMenu(int x, int y)
 						if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 394 && e.motion.y <= 443)
 						{
 							closeWindow(pWindow);
+							freeTextures();
 							createGameWindow(1920, 1080);
 						}
 
@@ -308,6 +422,7 @@ int displayMenu(int x, int y)
 						else if (e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 467 && e.motion.y <= 518)
 						{
 							closeWindow(pWindow);
+							freeTextures();
 						}
 
 						// Switch musique ON/OFF
@@ -317,13 +432,15 @@ int displayMenu(int x, int y)
 							{
 								music_playing = 0;
 								pauseMenuMusic();
-								displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
+								//displaySprite(renderer, "../inc/img/music_off.png", x-175, y-200);
+								displaySprite(renderer, music_off, x-175, y-200);
 							}
 							else
 							{
 								music_playing = 1;
 								resumeMenuMusic();
-								displaySprite(renderer, "../inc/img/music_on.png", x-175, y-200);
+								//displaySprite(renderer, "../inc/img/music_on.png", x-175, y-200);
+								displaySprite(renderer, music_on, x-175, y-200);
 							}
 						}
 					break;
@@ -331,6 +448,7 @@ int displayMenu(int x, int y)
 			}
 		}
 		closeWindow(pWindow);
+		freeTextures();
 	} else {
 		fprintf(stderr,"Erreur de création de la fenêtre: %s\n",SDL_GetError());
 	}

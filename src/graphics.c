@@ -7,8 +7,54 @@
 #include "map.h"
 #include "struct.h"
 
-#define XPOS 500
-#define YPOS 100
+#define XPOS 500			// x position of the grid
+#define YPOS 100			// y position of the grid
+
+SDL_Texture *background = NULL,
+						*start_button = NULL,
+						*quit_button = NULL,
+						*music_switch = NULL;
+
+
+void loadMenuTextures()
+// Load all the textures needed for the menu
+{
+	SDL_RWops *rwop=SDL_RWFromFile(sprite, "rb");
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
+			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	SDL_Texture *sprite_tex = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	if(!sprite_tex){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	SDL_FreeSurface((SDL_Surface*) sprite); /* on a la texture, plus besoin de l'image */
+
+	SDL_RWops *rwop=SDL_RWFromFile(sprite, "rb");
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
+			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	SDL_Texture *sprite_tex = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	if(!sprite_tex){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	SDL_FreeSurface((SDL_Surface*) sprite); /* on a la texture, plus besoin de l'image */
+
+	SDL_RWops *rwop=SDL_RWFromFile(sprite, "rb");
+	image=IMG_LoadPNG_RW(rwop);
+	if(!image) {
+			 printf("IMG_LoadPNG_RW: %s\n", IMG_GetError());
+	}
+	SDL_Texture *sprite_tex = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*) image);
+	if(!sprite_tex){
+		fprintf(stderr, "Erreur à la création du rendu de l'image : %s\n", SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	SDL_FreeSurface((SDL_Surface*) sprite); /* on a la texture, plus besoin de l'image */
+}
 
 void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b)
 // Displays text on the window

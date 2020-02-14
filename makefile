@@ -23,6 +23,10 @@ SDLINC_DIR		= $(SDL_DIR)/include
 SDL_LIBS		=-L${SDLLIB_DIR} -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
 SDL_INC			=-I${SDLINC_DIR}
 
+PLATFORM := $(shell uname)
+
+
+
 DIRS	 = $(OBJDIR) $(BINDIR)
 
 .PHONY: DIRS
@@ -51,6 +55,8 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 clean:
 	@$(rm) $(OBJECTS)
 	@echo "Cleanup complete!"
+	@echo $(PLATFORM)
+
 
 .PHONY: remove
 remove: clean

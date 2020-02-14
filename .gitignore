@@ -2,3 +2,5 @@ documentation/
 bin/
 GraphX/SDL2-2.0.10/
 .vscode/
+.DS_Store
+obj/

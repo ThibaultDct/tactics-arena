@@ -57,8 +57,10 @@ int main()
         break;
         case 3:
                 playMenuMusic();
-                displayMenu(1280, 720);
-                stopMenuMusic();
+                if (displayMenu(1280, 720) == 2){
+                    stopMenuMusic();
+                    createGameWindow(1920,1980);
+                }
                 createGrid((Entity *)grid, X, Y);
                 debugGrid(matrix, X, Y);
                 printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);

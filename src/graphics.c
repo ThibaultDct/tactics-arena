@@ -117,7 +117,7 @@ int closeWindow(SDL_Window *pWindow)
     return 0;
 }
 
-int createGameWindow(int x, int y)
+int createGameWindow(int x, int y, Entity * grid)
 // Create a window with with x*y size (in px)
 {
     //Le pointeur vers la fenetre
@@ -180,7 +180,7 @@ int createGameWindow(int x, int y)
                 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 								SDL_RenderClear(renderer);
 
-								displayMap(renderer, XPOS, YPOS);
+								displayMap(renderer, XPOS, YPOS, grid);
 
 								SDL_RenderPresent(renderer);
 
@@ -191,7 +191,7 @@ int createGameWindow(int x, int y)
 
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
 						if (e.motion.x <= 10*64+XPOS && e.motion.y <= 10*64+YPOS && e.motion.x >= XPOS && e.motion.y >= YPOS){
-							displayMap(renderer, XPOS, YPOS);
+							displayMap(renderer, XPOS, YPOS, grid);
 							setSelected(renderer, (e.motion.x-XPOS)/64, (e.motion.y-YPOS)/64, XPOS, YPOS);
 						}
 					break;

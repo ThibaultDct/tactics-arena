@@ -146,7 +146,7 @@ int displayMenu(int x, int y)
 						{
 							closeWindow(pWindow);
 							freeMenuTextures();
-							createGameWindow(1920, 1080);
+                            return 2;
 						}
 
 						// Bouton "Quit"

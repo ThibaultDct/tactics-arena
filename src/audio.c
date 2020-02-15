@@ -42,11 +42,15 @@ int stopMenuMusic()
 int pauseMenuMusic()
 // Pause menu music
 {
+    printf("[AUDIO] Music paused\n");
     Mix_PauseMusic();
+    return 1;
 }
 
 int resumeMenuMusic()
 // Pause menu music
 {
+    printf("[AUDIO] Music resumed\n");
     Mix_ResumeMusic();
+    return 1;
 }

@@ -5,19 +5,19 @@
 # It is necessary for linking the library.
 
 # The name that we can dlopen(3).
-dlname='libSDL2_image-2.0.0.dylib'
+dlname='libSDL2_image-2.0.so.0'
 
 # Names of this library.
-library_names='libSDL2_image-2.0.0.dylib libSDL2_image.dylib'
+library_names='libSDL2_image-2.0.so.0.2.3 libSDL2_image-2.0.so.0 libSDL2_image.so'
 
 # The name of the static archive.
 old_library='libSDL2_image.a'
 
 # Linker flags that can not go in dependency_libs.
-inherited_linker_flags=' '
+inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' -L/Users/lucienchauvin/Projet/tactics-arena/SDL2/lib /Users/lucienchauvin/Projet/tactics-arena/SDL2/lib/libSDL2.la -lm -liconv -lobjc'
+dependency_libs=' -lSDL2'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/Users/lucienchauvin/Projet/tactics-arena/SDL2/lib'
+libdir='/home/thibault/Documents/Projet/tactics-arena/SDL2/lib'

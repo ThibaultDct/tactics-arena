@@ -15,6 +15,7 @@
 #include "entity.h"
 #include "graphics.h"
 #include "audio.h"
+#include "menu.h"
 
 #define X 10
 #define Y 10

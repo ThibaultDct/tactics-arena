@@ -48,7 +48,7 @@ int pauseMenuMusic()
 }
 
 int resumeMenuMusic()
-// Pause menu music
+// Resume menu music
 {
     printf("[AUDIO] Music resumed\n");
     Mix_ResumeMusic();

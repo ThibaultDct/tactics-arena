@@ -17,6 +17,9 @@ SDL_Texture *background = NULL,
 			*music_on = NULL,
 			*music_off = NULL;
 
+// La musique est activée de base
+int music_playing = 1;
+
 void loadMenuTextures(SDL_Renderer *renderer)
 // Load all the textures needed for the menu
 {
@@ -47,15 +50,38 @@ void freeMenuTextures()
 	SDL_DestroyTexture(music_off);
 }
 
+void updateMenu(SDL_Renderer *renderer, int x, int y)
+// Update the menu display
+{
+	/* Background image */
+	displaySprite(renderer, background, 0, 0);
+
+	/* Start button */
+	displaySprite(renderer, start_button, 500, 300);
+
+	/* Quit button */
+	displaySprite(renderer, quit_button, 515, 375);
+
+	/* Bouton musique ON/OFF */
+	if (music_playing){
+	displaySprite(renderer, music_on, x-175, y-200);
+	} else {
+		displaySprite(renderer, music_off, x-175, y-200);
+	}
+
+	/* Affiche en gros Tactics Arena */
+	displayText(renderer, 300, 200, 100, "Tactics Arena", "../inc/font/Blox2.ttf", 255, 255, 255);
+
+	/* Mentions de bas de menu */
+	displayText(renderer, 5, y-20, 15, "Projet L2 Informatique - BUTEL CHAUVIN DOUCET LAFAY", "../inc/font/Pixels.ttf", 255, 255, 255);
+}
+
 int displayMenu(int x, int y)
 // Create a window with with x*y size (in px)
 {
     //Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	SDL_Renderer *renderer=NULL;
-
-	// La musique est activée de base
-	int music_playing = 1;
 
     /* Initialisation simple */
     if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
@@ -109,31 +135,8 @@ int displayMenu(int x, int y)
 
 								loadMenuTextures(renderer);
 
-								/* Le fond de la fenêtre sera blanc */
-                				//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-								//SDL_RenderClear(renderer);
-
-								/* Background image */
-								displaySprite(renderer, background, 0, 0);
-
-								/* Start button */
-								displaySprite(renderer, start_button, 500, 300);
-
-								/* Quit button */
-								displaySprite(renderer, quit_button, 515, 375);
-
-								/* Bouton musique ON/OFF */
-								if (music_playing){
-									displaySprite(renderer, music_on, x-175, y-200);
-								} else {
-									displaySprite(renderer, music_off, x-175, y-200);
-								}
-
-								/* Affiche en gros Tactics Arena */
-								displayText(renderer, 300, 200, 100, "Tactics Arena", "../inc/font/Blox2.ttf", 255, 255, 255);
-
-								/* Mentions de bas de menu */
-								displayText(renderer, 5, y-20, 15, "Projet L2 Informatique - BUTEL CHAUVIN DOUCET LAFAY", "../inc/font/Pixels.ttf", 255, 255, 255);
+								updateMenu(renderer, x, y);
+								
 							break;
 						}
 					break;
@@ -175,6 +178,7 @@ int displayMenu(int x, int y)
 					break;
 				}
 			}
+			SDL_Delay(16);
 		}
 		closeWindow(pWindow);
 		freeMenuTextures();

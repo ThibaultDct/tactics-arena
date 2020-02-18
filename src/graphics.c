@@ -20,7 +20,7 @@ SDL_Surface * loadImage(const char * img)
 	rwop=SDL_RWFromFile(img, "rb");
 	surface=IMG_LoadPNG_RW(rwop);
 	if(!surface) {
-		printf("loadImage error while loading %s : %s\n", img, IMG_GetError());
+		printf("[GRAPHICS] loadImage error while loading %s : %s\n", img, IMG_GetError());
 		exit(EXIT_FAILURE);
 	} else {
 		printf("[GRAPHICS] Loading image %s... SUCCESS\n", img);
@@ -38,7 +38,7 @@ SDL_Texture * loadTexture(SDL_Renderer * renderer, SDL_Surface * surface)
 
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	if(!texture){
-		fprintf(stderr, "loadTexture error while creating texture : %s\n", SDL_GetError());
+		fprintf(stderr, "[GRAPHICS ERROR] loadTexture error while creating texture : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	} else {
 		printf("[GRAPHICS] Creating texture from surface... SUCCESS\n");
@@ -159,6 +159,17 @@ int createGameWindow(int x, int y, Entity * grid)
 
 	if( pWindow )
 	{
+
+		loadMapTextures(renderer);
+
+		/* Le fond de la fenêtre sera blanc */
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+
+		displayMap(renderer, XPOS, YPOS, grid);
+
+		SDL_RenderPresent(renderer);
+
 		int running = 1;
 		while(running) {
 			SDL_Event e;
@@ -174,7 +185,7 @@ int createGameWindow(int x, int y, Entity * grid)
 							case SDL_WINDOWEVENT_HIDDEN:
 							case SDL_WINDOWEVENT_SHOWN:
 
-								loadMapTextures(renderer);
+								//loadMapTextures(renderer);
 
 								/* Le fond de la fenêtre sera blanc */
                 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -203,10 +214,11 @@ int createGameWindow(int x, int y, Entity * grid)
 					break;
 				}
 			}
+			SDL_Delay(16);
 		}
 		closeWindow(pWindow);
 	} else {
-		fprintf(stderr,"Erreur de création de la fenêtre: %s\n",SDL_GetError());
+		fprintf(stderr,"[GRAPHICS] Erreur de création de la fenêtre: %s\n",SDL_GetError());
 	}
 
 	return 1;

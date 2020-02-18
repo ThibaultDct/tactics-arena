@@ -56,12 +56,12 @@ int main()
         case 2: startTCPSocketCli();
         break;
         case 3:
+                createGrid((Entity *)grid, X, Y);
                 playMenuMusic();
                 if (displayMenu(1280, 720) == 2){
                     stopMenuMusic();
-                    createGameWindow(1920,1980);
+                    createGameWindow(1920,1980,matrix);
                 }
-                createGrid((Entity *)grid, X, Y);
                 debugGrid(matrix, X, Y);
                 printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);
                 free(matrix);

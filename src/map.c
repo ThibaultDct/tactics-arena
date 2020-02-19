@@ -74,16 +74,18 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Entity * grid)
 
     for (int i=0; i < 30; i++){
         for (int j=0; j < 10; j++){
-			if (i%2){
-				imgDestRect.x = x+j*pxBase;
-				imgDestRect.y = y-((pxBase/4*3)*i)+i*pxBase;
-				SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-				SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
-			} else {
-				imgDestRect.x = (x-(pxBase/2))+j*pxBase;
-				imgDestRect.y = y-((pxBase/4*3)*i)+i*pxBase;
-				SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-				SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
+			if ((*(grid+i*10+j)).cha_id != 0){
+				if (i%2){
+					imgDestRect.x = x+j*pxBase;
+					imgDestRect.y = y-((pxBase/4*3)*i)+i*pxBase;
+					SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+					SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
+				} else {
+					imgDestRect.x = (x-(pxBase/2))+j*pxBase;
+					imgDestRect.y = y-((pxBase/4*3)*i)+i*pxBase;
+					SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+					SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
+				}
 			}
         }
     }

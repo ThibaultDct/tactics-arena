@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "../SDL2/include/SDL2/SDL.h"
 #include "../SDL2/include/SDL2/SDL_image.h"
 #include "../SDL2/include/SDL2/SDL_ttf.h"
@@ -7,6 +8,33 @@
 #include "map.h"
 #include "struct.h"
 #include "menu.h"
+
+void setRendererDriver(SDL_Renderer *renderer)
+// Set the default renderer driver to OpenGL for MacOS compatibility
+{
+	SDL_RendererInfo *global_renderer_info = malloc(sizeof(SDL_RendererInfo));
+
+	if (SDL_GetRendererInfo(renderer, global_renderer_info) != 0)
+    {
+        printf("[GRAPHICS] Erreur lors de l'obtention des informations du renderer : %s\n", SDL_GetError());
+		return;
+    } else {
+		printf("Driver utilisé par le renderer : %s\n", global_renderer_info->name);
+		printf("Résolution maximale des textures : %dpx / %dpx\n", global_renderer_info->max_texture_width, global_renderer_info->max_texture_height);
+	}
+
+	if (!strcmp(global_renderer_info->name, "opengl")){
+		if (SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl"))
+		{
+			printf("[GRAPHICS] Le driver utilisé est maintenant OpenGL\n");
+		} else {
+			printf("[GRAPHICS] Erreur lors du changement de driver : %s\n", SDL_GetError());
+			return;
+		}
+	}
+	
+	free(global_renderer_info);
+}
 
 SDL_Surface * loadImage(const char * img)
 // Load a PNG image into a surface
@@ -19,8 +47,6 @@ SDL_Surface * loadImage(const char * img)
 	if(!surface) {
 		printf("[GRAPHICS] loadImage error while loading %s : %s\n", img, IMG_GetError());
 		exit(EXIT_FAILURE);
-	} else {
-		printf("[GRAPHICS] Loading image %s... SUCCESS\n", img);
 	}
 
 	SDL_FreeRW(rwop);
@@ -37,8 +63,6 @@ SDL_Texture * loadTexture(SDL_Renderer * renderer, SDL_Surface * surface)
 	if(!texture){
 		fprintf(stderr, "[GRAPHICS ERROR] loadTexture error while creating texture : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
-	} else {
-		printf("[GRAPHICS] Creating texture from surface... SUCCESS\n");
 	}
 
 	return texture;
@@ -158,6 +182,8 @@ int createGameWindow(int x, int y, Entity * grid)
 		exit(EXIT_FAILURE);
 	}
 
+	setRendererDriver(renderer);
+
 	// Launcher icon
     SDL_SetWindowIcon(pWindow, loadImage("../inc/img/TacticsArena.png"));
 
@@ -214,12 +240,12 @@ int createGameWindow(int x, int y, Entity * grid)
 
 					break;
 					case SDL_MOUSEWHEEL:
-						if (e.wheel.y > 0)
+						if (e.wheel.y > 0)		// Scroll UP
 						{
 							PX = 128;
 							printf("[GRAPHICS] Zoom In\n");
 							displayMap(renderer, XPOS, YPOS, PX, grid);
-						} else {
+						} else {				// Scroll DOWN
 							PX = 64;
 							printf("[GRAPHICS] Zoom Out\n");
 							displayMap(renderer, XPOS, YPOS, PX, grid);
@@ -228,33 +254,33 @@ int createGameWindow(int x, int y, Entity * grid)
 					case SDL_KEYDOWN:
 						switch(e.key.keysym.sym)
 						{
-							case SDLK_KP_PLUS: 
+							case SDLK_KP_PLUS: 	// "+" key
 								if (PX == 64){
 									PX = 128;
 									printf("[GRAPHICS] Zoom In\n");
 									displayMap(renderer, XPOS, YPOS, PX, grid);
 								}
 								break;
-							case SDLK_KP_MINUS: 
+							case SDLK_KP_MINUS:	// "-" key
 								if (PX == 128){
 									PX = 64;
 									printf("[GRAPHICS] Zoom Out\n");
 									displayMap(renderer, XPOS, YPOS, PX, grid);
 								}
 								break;
-							case SDLK_z:
+							case SDLK_z:		// "z" key
 								YPOS += 10;
 								displayMap(renderer, XPOS, YPOS, PX, grid);
 								break;
-							case SDLK_q:
+							case SDLK_q:		// "q" key
 								XPOS += 10;
 								displayMap(renderer, XPOS, YPOS, PX, grid);
 								break;
-							case SDLK_s:
+							case SDLK_s:		// "s" key
 								YPOS -= 10;
 								displayMap(renderer, XPOS, YPOS, PX, grid);
 								break;
-							case SDLK_d:
+							case SDLK_d:		// "d" key
 								XPOS -= 10;
 								displayMap(renderer, XPOS, YPOS, PX, grid);
 								break;

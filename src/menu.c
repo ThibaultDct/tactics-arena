@@ -23,6 +23,8 @@ int music_playing = 1;
 void loadMenuTextures(SDL_Renderer *renderer)
 // Load all the textures needed for the menu
 {
+	printf("Chargement des textures du menu...\n");
+
 	// == Loading background ==
 	background = loadTexture(renderer, loadImage("../inc/img/menu2_720p.png"));
 
@@ -112,6 +114,8 @@ int displayMenu(int x, int y)
 		fprintf(stderr, "Erreur à la création du renderer\n");
 		exit(EXIT_FAILURE);
 	}
+
+	setRendererDriver(renderer);
 
 	// Launcher icon
     SDL_SetWindowIcon(pWindow, loadImage("../inc/img/TacticsArena.png"));

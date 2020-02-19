@@ -17,7 +17,7 @@
 #include "audio.h"
 #include "menu.h"
 
-#define X 10
+#define X 30
 #define Y 10
 
 /**

@@ -7,6 +7,7 @@
 #include "audio.h"
 #include "struct.h"
 
+void setRendererDriver(SDL_Renderer *renderer);
 SDL_Surface * loadImage(const char * img);
 SDL_Texture * loadTexture(SDL_Renderer * renderer, SDL_Surface * surface);
 void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b);

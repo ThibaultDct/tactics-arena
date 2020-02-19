@@ -8,9 +8,6 @@
 #include "struct.h"
 #include "menu.h"
 
-#define XPOS 500			// x position of the grid
-#define YPOS 100			// y position of the grid
-
 SDL_Surface * loadImage(const char * img)
 // Load a PNG image into a surface
 {
@@ -120,9 +117,15 @@ int closeWindow(SDL_Window *pWindow)
 int createGameWindow(int x, int y, Entity * grid)
 // Create a window with with x*y size (in px)
 {
-    //Le pointeur vers la fenetre
+    // Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	SDL_Renderer *renderer=NULL;
+
+	// Resolution of a bloc texture
+	int PX = 64;
+
+	int XPOS = 30;
+	int YPOS = 30;
 
     /* Initialisation simple */
     if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
@@ -166,7 +169,9 @@ int createGameWindow(int x, int y, Entity * grid)
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
 
-		displayMap(renderer, XPOS, YPOS, grid);
+		SDL_Delay(1);
+
+		displayMap(renderer, XPOS, YPOS, PX, grid);
 
 		SDL_RenderPresent(renderer);
 
@@ -185,13 +190,13 @@ int createGameWindow(int x, int y, Entity * grid)
 							case SDL_WINDOWEVENT_HIDDEN:
 							case SDL_WINDOWEVENT_SHOWN:
 
-								//loadMapTextures(renderer);
-
 								/* Le fond de la fenêtre sera blanc */
                 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 								SDL_RenderClear(renderer);
 
-								displayMap(renderer, XPOS, YPOS, grid);
+								SDL_Delay(1);
+
+								displayMap(renderer, XPOS, YPOS, PX, grid);
 
 								SDL_RenderPresent(renderer);
 
@@ -202,15 +207,53 @@ int createGameWindow(int x, int y, Entity * grid)
 
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
 						if (e.motion.x <= 10*64+XPOS && e.motion.y <= 10*64+YPOS && e.motion.x >= XPOS && e.motion.y >= YPOS){
-							displayMap(renderer, XPOS, YPOS, grid);
+							displayMap(renderer, XPOS, YPOS, PX, grid);
 							setSelected(renderer, (e.motion.x-XPOS)/64, (e.motion.y-YPOS)/64, XPOS, YPOS);
+						}
+
+					break;
+					case SDL_KEYDOWN:
+						switch(e.key.keysym.sym)
+						{
+							case SDLK_KP_PLUS: 
+								if (PX == 64){
+									PX = 128;
+									printf("[GRAPHICS] Zoom In\n");
+									displayMap(renderer, XPOS, YPOS, PX, grid);
+								}
+								break;
+							case SDLK_KP_MINUS: 
+								if (PX == 128){
+									PX = 64;
+									printf("[GRAPHICS] Zoom Out\n");
+									displayMap(renderer, XPOS, YPOS, PX, grid);
+								}
+								break;
+							case SDLK_z:
+								YPOS += 10;
+								displayMap(renderer, XPOS, YPOS, PX, grid);
+								break;
+							case SDLK_q:
+								XPOS += 10;
+								displayMap(renderer, XPOS, YPOS, PX, grid);
+								break;
+							case SDLK_s:
+								YPOS -= 10;
+								displayMap(renderer, XPOS, YPOS, PX, grid);
+								break;
+							case SDLK_d:
+								XPOS -= 10;
+								displayMap(renderer, XPOS, YPOS, PX, grid);
+								break;
 						}
 					break;
 					case SDL_MOUSEMOTION:
+
 						if (e.motion.x >= 10 && e.motion.y >= 10)
 						{
 
 						}
+
 					break;
 				}
 			}

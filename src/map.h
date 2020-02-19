@@ -8,7 +8,7 @@
 #include "struct.h"
 
 void loadMapTextures(SDL_Renderer * renderer);
-int displayMap(SDL_Renderer *renderer, int x, int y, Entity * grid);
+int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Entity * grid);
 int setSelected(SDL_Renderer *renderer, int x, int y, int xpos, int ypos);
 
 #endif

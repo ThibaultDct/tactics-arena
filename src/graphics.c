@@ -121,11 +121,12 @@ int createGameWindow(int x, int y, Entity * grid)
 	SDL_Window* pWindow = NULL;
 	SDL_Renderer *renderer=NULL;
 
-	// Resolution of a bloc texture
+	// Resolution of a bloc texture (can be 64 or 128)
 	int PX = 64;
 
-	int XPOS = 30;
-	int YPOS = 30;
+	// x and y pos where map is displayed
+	int XPOS = 50;
+	int YPOS = 50;
 
     /* Initialisation simple */
     if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
@@ -211,6 +212,18 @@ int createGameWindow(int x, int y, Entity * grid)
 							setSelected(renderer, (e.motion.x-XPOS)/64, (e.motion.y-YPOS)/64, XPOS, YPOS);
 						}
 
+					break;
+					case SDL_MOUSEWHEEL:
+						if (e.wheel.y > 0)
+						{
+							PX = 128;
+							printf("[GRAPHICS] Zoom In\n");
+							displayMap(renderer, XPOS, YPOS, PX, grid);
+						} else {
+							PX = 64;
+							printf("[GRAPHICS] Zoom Out\n");
+							displayMap(renderer, XPOS, YPOS, PX, grid);
+						}
 					break;
 					case SDL_KEYDOWN:
 						switch(e.key.keysym.sym)

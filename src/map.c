@@ -69,7 +69,7 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Entity * grid)
 	else block = tile_big;
 
 	/* Le fond de la fenêtre sera blanc */
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 173, 216, 230, 255);
 	SDL_RenderClear(renderer);
 
     for (int i=0; i < 30; i++){

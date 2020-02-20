@@ -9,6 +9,6 @@
 
 void loadMapTextures(SDL_Renderer * renderer);
 int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Entity * grid);
-int setSelected(SDL_Renderer *renderer, int x, int y, int xpos, int ypos);
+int selectTile(Entity * grid, int xpos, int ypos, int mx, int my, int pxBase);
 
 #endif

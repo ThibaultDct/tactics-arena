@@ -63,6 +63,7 @@ typedef struct
     int stats[NUM_STATS];
     int stat_mods[NUM_STATS];
     char sprite_folder[STR_LONG];
+    int selected;
 } Entity;
 
 

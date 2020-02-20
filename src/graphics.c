@@ -107,7 +107,7 @@ void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, 
   SDL_SetRenderDrawColor(renderer, r, g, b, 255);
   SDL_RenderCopy(renderer, text_tex, NULL, &txtDestRect);
 
-	SDL_RenderPresent(renderer);
+	//SDL_RenderPresent(renderer);
 
 	TTF_CloseFont(police);
 }
@@ -233,10 +233,10 @@ int createGameWindow(int x, int y, Entity * grid)
 					case SDL_MOUSEBUTTONDOWN:
 
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
-						if (e.motion.x <= 10*64+XPOS && e.motion.y <= 10*64+YPOS && e.motion.x >= XPOS && e.motion.y >= YPOS){
+						//if (e.motion.x <= 10*64+XPOS && e.motion.y <= 10*64+YPOS && e.motion.x >= XPOS && e.motion.y >= YPOS){
+							selectTile(grid, XPOS, YPOS, e.motion.x, e.motion.y, PX);
 							displayMap(renderer, XPOS, YPOS, PX, grid);
-							setSelected(renderer, (e.motion.x-XPOS)/64, (e.motion.y-YPOS)/64, XPOS, YPOS);
-						}
+						//}
 
 					break;
 					case SDL_MOUSEWHEEL:

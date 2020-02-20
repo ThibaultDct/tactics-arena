@@ -138,8 +138,8 @@ int displayMenu(int x, int y)
 							case SDL_WINDOWEVENT_SHOWN:
 
 								loadMenuTextures(renderer);
-
 								updateMenu(renderer, x, y);
+								SDL_RenderPresent(renderer);
 								
 							break;
 						}

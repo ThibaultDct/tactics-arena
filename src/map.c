@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include "../SDL2/include/SDL2/SDL.h"
 #include "../SDL2/include/SDL2/SDL_image.h"
 #include "../SDL2/include/SDL2/SDL_ttf.h"
@@ -24,6 +25,8 @@ void loadMapTextures(SDL_Renderer * renderer)
 	if (sr_big_tile != NULL) 	SDL_DestroyTexture(sr_big_tile), 	sr_big_tile = NULL;
 	if (sb_big_tile != NULL) 	SDL_DestroyTexture(sb_big_tile), 	sb_big_tile = NULL;
 
+	printf("[GRAPHICS] Chargement des textures du jeu...\n");
+
 	// Loading non-selected tile texture (64px)
 	tile = loadTexture(renderer, loadImage("../inc/img/block_64.png"));
 
@@ -43,17 +46,24 @@ void loadMapTextures(SDL_Renderer * renderer)
 	sb_big_tile = loadTexture(renderer, loadImage("../inc/img/block_blue_128.png"));
 }
 
-int setSelected(SDL_Renderer *renderer, int x, int y, int xpos, int ypos)
-// Set the tile selected
+int selectTile(Entity * grid, int xpos, int ypos, int mx, int my, int pxBase)
+// Set the tile selected according to 2D iso
 {
-	SDL_Rect imgDestRect;
+	int xIndex, yIndex;
 
-	imgDestRect.x = x*64+xpos;
-  	imgDestRect.y = y*64+ypos;
-	SDL_QueryTexture(sb_tile, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-	SDL_RenderCopy(renderer, sb_tile, NULL, &imgDestRect);
-	
-	SDL_RenderPresent(renderer);
+	for (int i=0; i<30; i++){
+		for (int j=0; j<10; j++){
+			(*(grid+j*10+i)).selected = 0;
+		}
+	}
+
+	xIndex = floor((mx-xpos)/(pxBase/2))-1;
+	yIndex = floor((my-ypos)/(pxBase/4))-1;
+
+	if (xIndex > 29 || yIndex > 9 || xIndex < 0 || yIndex < 0) return 0;
+
+	printf("[GRAPHICS] Case sélectionnée : %d, %d\n", xIndex, yIndex);
+	(*(grid+yIndex*10+xIndex)).selected = 1;
 
 	return 1;
 }
@@ -63,32 +73,44 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Entity * grid)
 {
     SDL_Rect imgDestRect;
 
-	SDL_Texture *block = NULL;
+	SDL_Texture *block = NULL,
+				*s_block = NULL;
 
-	if (pxBase == 64) block = tile;
-	else block = tile_big;
+	if (pxBase == 64){
+		block = tile;
+		s_block = sb_tile;
+	} else {
+		block = tile_big;
+		s_block = sb_big_tile;
+	}
 
 	/* Le fond de la fenêtre sera blanc */
     SDL_SetRenderDrawColor(renderer, 173, 216, 230, 255);
 	SDL_RenderClear(renderer);
 
     for (int i=0; i < 30; i++){
-        for (int j=0; j < 10; j++){
+        for (int j=10; j >= 0; j--){
 			if ((*(grid+i*10+j)).cha_id != 0){
-				if (i%2){
-					imgDestRect.x = x+j*pxBase;
-					imgDestRect.y = y-((pxBase/4*3)*i)+i*pxBase;
-					SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-					SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
+
+				imgDestRect.x = x+(j+1)*(pxBase/2)+(i+1)*(pxBase/2);
+				imgDestRect.y = y+i*(pxBase/4)+(10-j)*(pxBase/4);
+
+				if ((*(grid+i*10+j)).selected){
+					SDL_QueryTexture(s_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+					SDL_RenderCopy(renderer, s_block, NULL, &imgDestRect);
 				} else {
-					imgDestRect.x = (x-(pxBase/2))+j*pxBase;
-					imgDestRect.y = y-((pxBase/4*3)*i)+i*pxBase;
 					SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 					SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
 				}
+
 			}
         }
     }
+
+	char str[12];
+	sprintf(str, "%d, %d", x, y);
+
+	displayText(renderer, 20, 20, 20, str, "../inc/font/Pixels.ttf", 255, 255, 255);
 	
 	SDL_RenderPresent(renderer);
 

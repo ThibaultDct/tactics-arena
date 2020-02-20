@@ -25,6 +25,7 @@ void createGrid(Entity * grid, int x, int y)
     srand(time(NULL));
     for (int i = 0; i < x*y; i++){
         grid[i].cha_id = rand()%3;
+        grid[i].selected = 0;
     }
 }
 

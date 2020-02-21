@@ -49,21 +49,24 @@ void loadMapTextures(SDL_Renderer * renderer)
 int selectTile(Entity * grid, int xpos, int ypos, int mx, int my, int pxBase)
 // Set the tile selected according to 2D iso
 {
-	int xIndex, yIndex;
+	int xIndex, yIndex, xIsoOrigin, yIsoOrigin;
 
 	for (int i=0; i<30; i++){
 		for (int j=0; j<10; j++){
-			(*(grid+j*10+i)).selected = 0;
+			(*(grid+i*10+j)).selected = 0;
 		}
 	}
 
-	xIndex = floor((mx-xpos)/(pxBase/2))-1;
-	yIndex = floor((my-ypos)/(pxBase/4))-1;
+	xIsoOrigin = xpos;
+	yIsoOrigin = ypos+10*(pxBase/4);
+
+	xIndex = floor(((my-yIsoOrigin)/(pxBase/2) + ((mx-xIsoOrigin)/pxBase)))-1;
+	yIndex = ceil((((mx-xIsoOrigin)/pxBase) - (my-yIsoOrigin)/(pxBase/2)))-1;
 
 	if (xIndex > 29 || yIndex > 9 || xIndex < 0 || yIndex < 0) return 0;
 
 	printf("[GRAPHICS] Case sélectionnée : %d, %d\n", xIndex, yIndex);
-	(*(grid+yIndex*10+xIndex)).selected = 1;
+	(*(grid+xIndex*10+yIndex)).selected = 1;
 
 	return 1;
 }
@@ -89,7 +92,7 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Entity * grid)
 	SDL_RenderClear(renderer);
 
     for (int i=0; i < 30; i++){
-        for (int j=10; j >= 0; j--){
+        for (int j=9; j >= 0; j--){
 			if ((*(grid+i*10+j)).cha_id != 0){
 
 				imgDestRect.x = x+(j+1)*(pxBase/2)+(i+1)*(pxBase/2);
@@ -102,6 +105,10 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Entity * grid)
 					SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 					SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
 				}
+
+				char pos[6];
+				sprintf(pos, "%d,%d", i, j);
+				displayText(renderer, x+(j+1)*(pxBase/2)+(i+1)*(pxBase/2)+(pxBase/2)-10, y+i*(pxBase/4)+(10-j)*(pxBase/4)+(pxBase/4), (pxBase/64)*10, pos, "../inc/font/Pixels.ttf", 255, 50, 50);
 
 			}
         }

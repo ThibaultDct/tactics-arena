@@ -68,7 +68,7 @@ SDL_Texture * loadTexture(SDL_Renderer * renderer, SDL_Surface * surface)
 	return texture;
 }
 
-void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b)
+void displayText(SDL_Renderer *renderer, int x, int y, int size, const char *content, const char *text_police, int r, int g, int b)
 // Displays text on the window
 {
 	SDL_Surface *text = NULL;
@@ -138,7 +138,7 @@ int closeWindow(SDL_Window *pWindow)
     return 0;
 }
 
-int createGameWindow(int x, int y, Entity * grid)
+int createGameWindow(int x, int y, Entity * grid, int xSize, int ySize)
 // Create a window with with x*y size (in px)
 {
     // Le pointeur vers la fenetre
@@ -198,7 +198,7 @@ int createGameWindow(int x, int y, Entity * grid)
 
 		SDL_Delay(1);
 
-		displayMap(renderer, XPOS, YPOS, PX, grid);
+		displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 
 		SDL_RenderPresent(renderer);
 
@@ -223,7 +223,7 @@ int createGameWindow(int x, int y, Entity * grid)
 
 								SDL_Delay(1);
 
-								displayMap(renderer, XPOS, YPOS, PX, grid);
+								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 
 								SDL_RenderPresent(renderer);
 
@@ -234,8 +234,8 @@ int createGameWindow(int x, int y, Entity * grid)
 
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
 						//if (e.motion.x <= 10*64+XPOS && e.motion.y <= 10*64+YPOS && e.motion.x >= XPOS && e.motion.y >= YPOS){
-							selectTile(grid, XPOS, YPOS, e.motion.x, e.motion.y, PX);
-							displayMap(renderer, XPOS, YPOS, PX, grid);
+							selectTile(grid, XPOS, YPOS, e.motion.x, e.motion.y, PX, xSize, ySize);
+							displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 						//}
 
 					break;
@@ -244,11 +244,11 @@ int createGameWindow(int x, int y, Entity * grid)
 						{
 							PX = 128;
 							printf("[GRAPHICS] Zoom In\n");
-							displayMap(renderer, XPOS, YPOS, PX, grid);
+							displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 						} else {				// Scroll DOWN
 							PX = 64;
 							printf("[GRAPHICS] Zoom Out\n");
-							displayMap(renderer, XPOS, YPOS, PX, grid);
+							displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 						}
 					break;
 					case SDL_KEYDOWN:
@@ -258,31 +258,31 @@ int createGameWindow(int x, int y, Entity * grid)
 								if (PX == 64){
 									PX = 128;
 									printf("[GRAPHICS] Zoom In\n");
-									displayMap(renderer, XPOS, YPOS, PX, grid);
+									displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								}
 								break;
 							case SDLK_KP_MINUS:	// "-" key
 								if (PX == 128){
 									PX = 64;
 									printf("[GRAPHICS] Zoom Out\n");
-									displayMap(renderer, XPOS, YPOS, PX, grid);
+									displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								}
 								break;
 							case SDLK_z:		// "z" key
 								YPOS += 10;
-								displayMap(renderer, XPOS, YPOS, PX, grid);
+								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								break;
 							case SDLK_q:		// "q" key
 								XPOS += 10;
-								displayMap(renderer, XPOS, YPOS, PX, grid);
+								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								break;
 							case SDLK_s:		// "s" key
 								YPOS -= 10;
-								displayMap(renderer, XPOS, YPOS, PX, grid);
+								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								break;
 							case SDLK_d:		// "d" key
 								XPOS -= 10;
-								displayMap(renderer, XPOS, YPOS, PX, grid);
+								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								break;
 						}
 					break;

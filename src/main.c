@@ -17,8 +17,8 @@
 #include "audio.h"
 #include "menu.h"
 
-#define X 30
-#define Y 10
+#define X 20
+#define Y 20
 
 /**
  * \fn int main(void)
@@ -60,7 +60,7 @@ int main()
                 playMenuMusic();
                 if (displayMenu(1280, 720) == 2){
                     stopMenuMusic();
-                    createGameWindow(1920,1980,matrix);
+                    createGameWindow(1920,1980,matrix, X, Y);
                 }
                 debugGrid(matrix, X, Y);
                 printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);

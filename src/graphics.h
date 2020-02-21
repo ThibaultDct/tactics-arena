@@ -10,10 +10,10 @@
 void setRendererDriver(SDL_Renderer *renderer);
 SDL_Surface * loadImage(const char * img);
 SDL_Texture * loadTexture(SDL_Renderer * renderer, SDL_Surface * surface);
-void displayText(SDL_Renderer *renderer, int x, int y, int size, char *content, char *text_police, int r, int g, int b);
+void displayText(SDL_Renderer *renderer, int x, int y, int size, const char *content, const char *text_police, int r, int g, int b);
 int displaySprite(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y);
 int closeWindow(SDL_Window *pWindow);
-int createGameWindow(int x, int y, Entity * grid);
+int createGameWindow(int x, int y, Entity * grid, int xSize, int ySize);
 int displayMenu(int x, int y);
 
 #endif

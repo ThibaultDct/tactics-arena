@@ -57,7 +57,7 @@ void loadMapTextures(SDL_Renderer * renderer)
 }
 
 int selectTile(Entity * grid, int xpos, int ypos, int mx, int my, int pxBase, int xSize, int ySize)
-// Set the tile selected according to 2D iso
+// Set the tile selected according to 2D iso from 2D coordinates
 {
 	int xIndex, yIndex, xIsoOrigin, yIsoOrigin;
 
@@ -68,12 +68,17 @@ int selectTile(Entity * grid, int xpos, int ypos, int mx, int my, int pxBase, in
 	}
 
 	xIsoOrigin = xpos;
-	yIsoOrigin = ypos+xSize*(pxBase/4);
+	yIsoOrigin = ypos+ySize*(pxBase/4);
 
 	xIndex = floor(((my-yIsoOrigin)/(pxBase/2) + ((mx-xIsoOrigin)/pxBase)))-1;
 	yIndex = ceil((((mx-xIsoOrigin)/pxBase) - (my-yIsoOrigin)/(pxBase/2)))-1;
 
-	if (xIndex > 29 || yIndex > 9 || xIndex < 0 || yIndex < 0) return 0;
+	if (my < yIsoOrigin){
+		xIndex--;
+		yIndex++;
+	}
+
+	if (xIndex > xSize-1 || yIndex > ySize-1 || xIndex < 0 || yIndex < 0) return 0;
 
 	printf("[GRAPHICS] Case sélectionnée : %d, %d\n", xIndex, yIndex);
 	(*(grid+xIndex*xSize+yIndex)).selected = 1;

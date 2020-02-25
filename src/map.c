@@ -56,14 +56,24 @@ void loadMapTextures(SDL_Renderer * renderer)
 	water_big_tile = loadTexture(renderer, loadImage("../inc/img/water_128.png"));
 }
 
+float crossProduct(float xa, float xb, float ya, float yb)
+// Renvoie le produit vectoriel
+{
+	return ((ya*xb)-(xa*yb));
+}
+
 int selectTile(Entity * grid, int xpos, int ypos, int mx, int my, int pxBase, int xSize, int ySize)
 // Set the tile selected according to 2D iso from 2D coordinates
 {
-	int xIndex, yIndex, xIsoOrigin, yIsoOrigin;
+	int xIndex, yIndex, xIsoOrigin, yIsoOrigin, xTile, yTile, mxRelative, myRelative, coeffDir;
+	float xa, ya, xb, yb, xc, yc, xd, yd;
+	float cdAB, cdBC, cdAD, cdDC;
+	float xAB, yAB, xAM, yAM, xBC, yBC, xBM, yBM, xDC, yDC, xDM, yDM, xAD, yAD, xA2M, yA2M;
+	float cpAB, cpBC, cpDC, cpAD;
 
 	for (int i=0; i<xSize; i++){
 		for (int j=0; j<ySize; j++){
-			(*(grid+i*20+j)).selected = 0;
+			(*(grid+i*xSize+j)).selected = 0;
 		}
 	}
 
@@ -77,6 +87,54 @@ int selectTile(Entity * grid, int xpos, int ypos, int mx, int my, int pxBase, in
 		xIndex--;
 		yIndex++;
 	}
+
+	xTile = xpos+((((xIndex+yIndex)/2)+1)*pxBase);
+	yTile = ypos+((ySize-(yIndex-xIndex))*(pxBase/4)+(pxBase/4));
+	printf("xTile : %d yTile : %d\n", xTile, yTile);
+
+	// Calcul des coordonnées des 4 coins de la tile
+	xa = xTile;
+	ya = yTile;
+	xb = xTile+(pxBase/2);
+	yb = yTile-(pxBase/4);
+	xc = xTile+pxBase;
+	yc = yTile;
+	xd = xTile+(pxBase/2);
+	yd = yTile+(pxBase/4);
+
+	// Calcul de la position relative du point par rapport au vecteur de la droite
+
+		xAB = xb-xa;
+		yAB = yb-ya;
+		xAM = mx-xa;
+		yAM = my-ya;
+		xBC = xc-xb;
+		yBC = yc-yb;
+		xBM = mx-xb;
+		yBM = my-yb;
+		xDC = xc-xd;
+		yDC = yc-yd;
+		xDM = mx-xd;
+		yDM = my-yd;
+		xAD = xd-xa;
+		yAD = yd-ya;
+		xA2M = mx-xa;
+		yA2M = my-ya;
+		cpAB = crossProduct(xAB, xAM, yAB, yAM);
+		cpBC = crossProduct(xBC, xBM, yBC, yBM);
+		cpDC = crossProduct(xDC, xDM, yDC, yDM);
+		cpAD = crossProduct(xAD, xA2M, yAD, yA2M);
+		printf("AB %f BC %f DC %f AD %f\n", cpAB, cpBC, cpDC, cpAD);
+
+		if (cpAB > 0){
+			xIndex--;
+		} else if (cpBC > 0){
+			yIndex++;
+		} else if (cpDC < 0){
+			xIndex++;
+		} else if (cpAD < 0){
+			yIndex--;
+		}
 
 	if (xIndex > xSize-1 || yIndex > ySize-1 || xIndex < 0 || yIndex < 0) return 0;
 
@@ -119,7 +177,7 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Entity * grid, 
 				SDL_QueryTexture(water_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 				SDL_RenderCopy(renderer, water_block, NULL, &imgDestRect);
 			} else if ((*(grid+i*xSize+j)).cha_id != 0){
-				if ((*(grid+i*20+j)).selected){
+				if ((*(grid+i*xSize+j)).selected){
 					SDL_QueryTexture(s_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 					SDL_RenderCopy(renderer, s_block, NULL, &imgDestRect);
 				} else {

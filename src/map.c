@@ -56,18 +56,16 @@ void loadMapTextures(SDL_Renderer * renderer)
 	water_big_tile = loadTexture(renderer, loadImage("../inc/img/water_128.png"));
 }
 
-float crossProduct(float xa, float xb, float ya, float yb)
+float crossProduct(Vector AB, Vector AC)
 // Renvoie le produit vectoriel
 {
-	return ((ya*xb)-(xa*yb));
+	return (( AB.y * AC.x ) - ( AB.x * AC.y ));
 }
 
 int selectTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int xSize, int ySize)
 // Set the tile selected according to 2D iso from 2D coordinates
 {
 	int xIndex, yIndex, xIsoOrigin, yIsoOrigin, xTile, yTile;
-	float xa, ya, xb, yb, xc, yc, xd, yd;
-	float xAB, yAB, xAM, yAM, xBC, yBC, xBM, yBM, xDC, yDC, xDM, yDM, xAD, yAD, xA2M, yA2M;
 	float cpAB, cpBC, cpDC, cpAD;
 
 	// On déselectionne toutes les cases
@@ -95,36 +93,24 @@ int selectTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int 
 	printf("xTile : %d yTile : %d\n", xTile, yTile);
 
 	// Calcul des coordonnées des 4 coins de la tile
-	xa = xTile;
-	ya = yTile;
-	xb = xTile+(pxBase/2);
-	yb = yTile-(pxBase/4);
-	xc = xTile+pxBase;
-	yc = yTile;
-	xd = xTile+(pxBase/2);
-	yd = yTile+(pxBase/4);
+	Coord A = { xTile, yTile };
+	Coord B = { xTile + (pxBase / 2), yTile - (pxBase / 2) };
+	Coord C = { xTile + pxBase, yTile };
+	Coord D = { xTile + (pxBase / 2), yTile + (pxBase / 4) };
 
 	// Calcul des coordonnées des vecteurs de la tile
-	xAB = xb-xa;
-	yAB = yb-ya;
-	xAM = mx-xa;
-	yAM = my-ya;
-	xBC = xc-xb;
-	yBC = yc-yb;
-	xBM = mx-xb;
-	yBM = my-yb;
-	xDC = xc-xd;
-	yDC = yc-yd;
-	xDM = mx-xd;
-	yDM = my-yd;
-	xAD = xd-xa;
-	yAD = yd-ya;
-	xA2M = mx-xa;
-	yA2M = my-ya;
-	cpAB = crossProduct(xAB, xAM, yAB, yAM);
-	cpBC = crossProduct(xBC, xBM, yBC, yBM);
-	cpDC = crossProduct(xDC, xDM, yDC, yDM);
-	cpAD = crossProduct(xAD, xA2M, yAD, yA2M);
+	Vector AB = { B.x - A.x, B.y - A.y };
+	Vector AM = { mx - A.x, my - A.y };
+	Vector BC = { C.x - B.x, C.y - B.y };
+	Vector BM = { mx - B.x, my - B.y };
+	Vector DC = { C.x - D.x, C.y - D.y };
+	Vector DM = { mx - D.x, my - D.y };
+	Vector AD = { D.x - A.x, D.y - A.y };
+	Vector A2M = { mx - A.x, my - A.y };
+	cpAB = crossProduct(AB, AM);
+	cpBC = crossProduct(BC, BM);
+	cpDC = crossProduct(DC, DM);
+	cpAD = crossProduct(AD, A2M);
 
 	// Sélection de la case sélectionnée en fonction de la position relative du clic et des vecteurs
 	if (cpAB > 0){

@@ -90,6 +90,11 @@ typedef struct
     Entity * entity;
 } Tile;
 
+typedef struct
+{
+    float x;
+    float y;
+} Vector;
 
 /* COMMUNICATION STRUCTURES */
 

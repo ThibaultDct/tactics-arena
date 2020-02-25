@@ -242,17 +242,21 @@ int createGameWindow(int x, int y, Tile * grid, int xSize, int ySize)
 					case SDL_MOUSEWHEEL:
 						if (e.wheel.y > 0)		// Scroll UP
 						{
-							PX = 128;
-							printf("[GRAPHICS] Zoom In\n");
-							XPOS = XPOS * 2 + e.motion.x;
-							YPOS = YPOS * 2 + e.motion.y;
-							displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
+							if (PX == 64){
+								PX = 128;
+								printf("[GRAPHICS] Zoom In\n");
+								XPOS *= 2;
+								YPOS *= 2;
+								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
+							}
 						} else {				// Scroll DOWN
-							PX = 64;
-							printf("[GRAPHICS] Zoom Out\n");
-							XPOS = XPOS / 2 + e.motion.x;
-							YPOS = YPOS / 2 + e.motion.y;
-							displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
+							if (PX == 128){
+								PX = 64;
+								printf("[GRAPHICS] Zoom Out\n");
+								XPOS /= 2;
+								YPOS /= 2;
+								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
+							}
 						}
 					break;
 					case SDL_KEYDOWN:
@@ -262,6 +266,8 @@ int createGameWindow(int x, int y, Tile * grid, int xSize, int ySize)
 								if (PX == 64){
 									PX = 128;
 									printf("[GRAPHICS] Zoom In\n");
+									XPOS *= 2;
+									YPOS *= 2;
 									displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								}
 								break;
@@ -269,23 +275,25 @@ int createGameWindow(int x, int y, Tile * grid, int xSize, int ySize)
 								if (PX == 128){
 									PX = 64;
 									printf("[GRAPHICS] Zoom Out\n");
+									XPOS /= 2;
+									YPOS /= 2;
 									displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								}
 								break;
 							case SDLK_z:		// "z" key
-								YPOS += 10;
+								YPOS += (10*(PX/64));
 								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								break;
 							case SDLK_q:		// "q" key
-								XPOS += 10;
+								XPOS += (10*(PX/64));
 								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								break;
 							case SDLK_s:		// "s" key
-								YPOS -= 10;
+								YPOS -= (10*(PX/64));
 								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								break;
 							case SDLK_d:		// "d" key
-								XPOS -= 10;
+								XPOS -= (10*(PX/64));
 								displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 								break;
 						}

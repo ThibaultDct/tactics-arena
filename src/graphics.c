@@ -138,7 +138,7 @@ int closeWindow(SDL_Window *pWindow)
     return 0;
 }
 
-int createGameWindow(int x, int y, Entity * grid, int xSize, int ySize)
+int createGameWindow(int x, int y, Tile * grid, int xSize, int ySize)
 // Create a window with with x*y size (in px)
 {
     // Le pointeur vers la fenetre

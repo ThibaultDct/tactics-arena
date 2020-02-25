@@ -83,6 +83,13 @@ typedef struct
     int stat_mods[NUM_STATS];
 } Entity;
 
+typedef struct
+{
+    int tile_id;
+    int selected;
+    Entity * entity;
+} Tile;
+
 
 /* COMMUNICATION STRUCTURES */
 

@@ -3,7 +3,7 @@
 
 #include "struct.h"
 
-Entity getEntity(Entity * grid, int size, int x, int y);
-int getId(Entity entity);
+Tile getTile(Tile * grid, int size, int x, int y);
+int getTileId(Tile entity);
 
 #endif

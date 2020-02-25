@@ -37,8 +37,8 @@ int main()
     system("clear");
     #endif
     
-    Entity grid[X][Y];                                  /**< Contains the pointer to the start of the matrix */
-    Entity *matrix = &grid[0][0];
+    Tile grid[X][Y];                                  /**< Contains the pointer to the start of the matrix */
+    Tile *matrix = &grid[0][0];
 
     int choix = 0;
     printf("Bienvenue dans le serveur :) \n");
@@ -56,14 +56,14 @@ int main()
         case 2: startTCPSocketCli();
         break;
         case 3:
-                createGrid((Entity *)grid, X, Y);
+                createGrid((Tile *)grid, X, Y);
                 playMenuMusic();
                 if (displayMenu(1280, 720) == 2){
                     stopMenuMusic();
                     createGameWindow(1920,1980,matrix, X, Y);
                 }
                 debugGrid(matrix, X, Y);
-                printf("Entity at pos %d:%d : %d\n", 5, 7, getEntity(matrix, X, 5, 7).cha_id);
+                printf("Entity at pos %d:%d : %d\n", 5, 7, getTileId(getTile(matrix, X, 5, 7)));
                 free(matrix);
         break;
   }

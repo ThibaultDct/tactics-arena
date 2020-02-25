@@ -19,12 +19,12 @@
  * \param y Column's number
  * \brief Initialize the grid with x*y size in parameter with default entities
  */
-void createGrid(Entity * grid, int x, int y)
+void createGrid(Tile * grid, int x, int y)
 // create the grid with x*y size
 {
     srand(time(NULL));
     for (int i = 0; i < x*y; i++){
-        grid[i].cha_id = rand()%10;
+        grid[i].tile_id = rand()%10;
         grid[i].selected = 0;
     }
 }
@@ -36,12 +36,12 @@ void createGrid(Entity * grid, int x, int y)
  * \param y Column's number
  * \brief Display the entity ids of the matrix
  */
-void debugGrid(Entity * grid, int x, int y)
+void debugGrid(Tile * grid, int x, int y)
 // Debug by displaying the grid on the cmd
 {
     for (int i = 0; i < x; i++){
         for (int j = 0; j < y; j++){
-            printf("%d ", (*(grid+i*x+j)).cha_id);
+            printf("%d ", (*(grid+i*x+j)).tile_id);
         }
         printf("\n");
     }

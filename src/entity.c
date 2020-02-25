@@ -10,7 +10,7 @@
  * \return The entity at x:y coordinates
  * \brief Return the entity at position x:y of the matrix "grid"
  */
-Entity getEntity(Entity * grid, int size, int x, int y)
+Tile getTile(Tile * grid, int size, int x, int y)
 // Return the entity at the x:y position in the grid 
 {
     return grid[x*size+y];
@@ -22,8 +22,8 @@ Entity getEntity(Entity * grid, int size, int x, int y)
  * \return The id of the entity
  * \brief Return the id of the entity
  */
-int getId(Entity entity)
+int getTileId(Tile tile)
 // Return the id of the entity 
 {
-    return entity.cha_id;
+    return tile.tile_id;
 }

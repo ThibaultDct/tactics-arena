@@ -12,13 +12,13 @@
 #include "grid.h"
 #include "Socket_Server.h"
 #include "struct.h"
-#include "entity.h"
+#include "terrain.h"
 #include "graphics.h"
 #include "audio.h"
 #include "menu.h"
 
-#define X 10
-#define Y 10
+#define X 100
+#define Y 100
 
 /**
  * \fn int main(void)

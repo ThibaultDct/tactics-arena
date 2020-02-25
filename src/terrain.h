@@ -1,5 +1,5 @@
-#ifndef entity_h
-#define entity_h
+#ifndef terrain_h
+#define terrain_h
 
 #include "struct.h"
 

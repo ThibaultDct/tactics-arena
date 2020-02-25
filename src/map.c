@@ -186,11 +186,11 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, in
 					SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
 				}
 
-				// -- DEBUG Affichage des indices des tuiles --
+				/*/ -- DEBUG Affichage des indices des tuiles --
 				char pos[6];
 				sprintf(pos, "%d,%d", i, j);
 				displayText(renderer, imgDestRect.x+(pxBase/2)-10, imgDestRect.y+(pxBase/4), (pxBase/64)*10, pos, "../inc/font/Pixels.ttf", 255, 50, 50);
-				// -- DEBUG --
+				// -- DEBUG --*/
 			}
         }
     }

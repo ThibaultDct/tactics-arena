@@ -244,10 +244,14 @@ int createGameWindow(int x, int y, Tile * grid, int xSize, int ySize)
 						{
 							PX = 128;
 							printf("[GRAPHICS] Zoom In\n");
+							XPOS = XPOS * 2 + e.motion.x;
+							YPOS = YPOS * 2 + e.motion.y;
 							displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 						} else {				// Scroll DOWN
 							PX = 64;
 							printf("[GRAPHICS] Zoom Out\n");
+							XPOS = XPOS / 2 + e.motion.x;
+							YPOS = YPOS / 2 + e.motion.y;
 							displayMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize);
 						}
 					break;

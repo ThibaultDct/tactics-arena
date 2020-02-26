@@ -3,17 +3,18 @@
 #define STR_SHORT 25
 #define STR_LONG 50
 #define NUM_STATS 6
-#define NUM_CLASS 5
+#define NUM_CLASS 6
 #define NUM_AB 4
 
 /* ENUMERATIONS */
-typedef enum {pv, mv, atk, magic, res_physic, res_magic, act} statId;
+typedef enum {pv, mv, vis, atk, magic, res_physic, res_magic} statId;
 
 typedef enum {Berserker, Ranger, Goliath, Mage, Valkyrie, Angel} classId;
 
-typedef enum {Slash, Bolt, Bash, Fireball} abilityId;
+typedef enum {Slash, Bolt, Bash} abilityId;
 
-typedef enum {Physical_Damage, Magic_Damage, Piercing_Damage, Paralysed, Bleeding, Burning, Slowed} effectId;
+typedef enum {Piercing_Damage, Slowed, Blind, Weakened, Benighted, p_res_red, m_res_red} n_effectId;
+typedef enum {Healing, Swifted, Perceptive, Strenghtened, Enlightened, p_res_inc, m_res_inc} p_effectId;
 
 /* BASIC STRUCTURES*/
 typedef struct
@@ -24,27 +25,19 @@ typedef struct
 
 typedef struct
 {
-    effectId effect_id;
-    int nb_targeted;
-    statId * targeted_stat;
-} Type_effects;
+    float x;
+    float y;
+} Vector;
+
+typedef struct
+{
+    int tile_id;
+    int selected;
+    Entity * entity;
+} Tile;
 
 /* ENTITY STRUCTURES */
-typedef struct
-{
-    Type_effects * eff_type;
-    int value;
-    int duration;
-} Effect;
 
-typedef struct
-{
-    int range;
-    int nb_coords;
-    Coord * zone;
-    int nb_effects;
-    Effect * Effects;
-} Cast;
 
 typedef struct
 {
@@ -52,8 +45,6 @@ typedef struct
     char ab_name[STR_SHORT];
     int ab_cost;
     int ab_cooldown;
-    int nb_casts;
-    Cast * ab_casts;
     int (*function)(int, Coord *); //Takes caster ID, Coordinates, and pointer to state chain
     char sprite_folder[STR_LONG];
 } Ability;
@@ -83,18 +74,6 @@ typedef struct
     int stat_mods[NUM_STATS];
 } Entity;
 
-typedef struct
-{
-    int tile_id;
-    int selected;
-    Entity * entity;
-} Tile;
-
-typedef struct
-{
-    float x;
-    float y;
-} Vector;
 
 /* COMMUNICATION STRUCTURES */
 

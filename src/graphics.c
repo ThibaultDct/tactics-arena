@@ -122,8 +122,6 @@ int displaySprite(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y)
 	SDL_QueryTexture(texture, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 	SDL_RenderCopy(renderer, texture, NULL, &imgDestRect);
 
-	SDL_RenderPresent(renderer);
-
 	return 1;
 }
 

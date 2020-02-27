@@ -163,6 +163,14 @@ int displayMenu(int x, int y)
 							freeMenuTextures();
 						}
 
+						// Bouton "Map editor"
+						else if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 540 && e.motion.y <= 600)
+						{
+							closeWindow(pWindow);
+							freeMenuTextures();
+							return 3;
+						}
+
 						// Switch musique ON/OFF
 						else if (e.motion.x >= 1202 && e.motion.x <= 1250 && e.motion.y >= 627 && e.motion.y <= 680)
 						{

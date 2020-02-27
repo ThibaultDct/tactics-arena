@@ -19,12 +19,12 @@
  * \param y Column's number
  * \brief Initialize the grid with x*y size in parameter with default entities
  */
-void createGrid(Tile * grid, int x, int y)
+void createGrid(Tile * grid, int seed, int x, int y)
 // create the grid with x*y size
 {
     srand(time(NULL));
     for (int i = 0; i < x*y; i++){
-        grid[i].tile_id = rand()%10;
+        grid[i].tile_id = rand()%seed;
         grid[i].selected = 0;
     }
 }

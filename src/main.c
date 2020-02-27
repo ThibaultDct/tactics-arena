@@ -16,6 +16,7 @@
 #include "graphics.h"
 #include "audio.h"
 #include "menu.h"
+#include "map_editor.h"
 
 #define X 10
 #define Y 10
@@ -40,7 +41,11 @@ int main()
     Tile grid[X][Y];                                  /**< Contains the pointer to the start of the matrix */
     Tile *matrix = &grid[0][0];
 
+    Tile blankGrid[X][Y];                             /**< Contains the pointer to the start of the blank matrix */
+    Tile *blankMatrix = &blankGrid[0][0];
+
     int choix = 0;
+    int selection = 0;
     printf("Bienvenue dans le serveur :) \n");
 
 
@@ -56,12 +61,25 @@ int main()
         case 2: startTCPSocketCli();
         break;
         case 3:
-                createGrid((Tile *)grid, X, Y);
+                createGrid((Tile *)grid, 10, X, Y);
+                createGrid((Tile *)blankGrid, 1, X, Y);
                 playMenuMusic();
-                if (displayMenu(1280, 720) == 2){
+                selection = displayMenu(1280, 720);
+
+                // Lancement du jeu
+                if (selection == 2)
+                {
                     stopMenuMusic();
-                    createGameWindow(1920,1980,matrix, X, Y);
+                    createGameWindow(1920,1080, matrix, X, Y);
                 }
+
+                // Editeur de map
+                else if (selection == 3)
+                {
+                    stopMenuMusic();
+                    createMapEditorWindow(1920, 1080, blankMatrix, X, Y);
+                }
+
                 debugGrid(matrix, X, Y);
                 printf("Entity at pos %d:%d : %d\n", 5, 7, getTileId(getTile(matrix, X, 5, 7)));
                 free(matrix);

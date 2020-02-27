@@ -29,13 +29,6 @@ typedef struct
     float y;
 } Vector;
 
-typedef struct
-{
-    int tile_id;
-    int selected;
-    Entity * entity;
-} Tile;
-
 /* ENTITY STRUCTURES */
 
 
@@ -74,6 +67,14 @@ typedef struct
     int stat_mods[NUM_STATS];
 } Entity;
 
+/* TERRAIN STRUCTURES */
+
+typedef struct
+{
+    int tile_id;
+    int selected;
+    Entity * entity;
+} Tile;
 
 /* COMMUNICATION STRUCTURES */
 

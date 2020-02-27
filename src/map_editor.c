@@ -21,7 +21,10 @@ SDL_Texture *eraser = NULL,
 			*sb_big_pattern = NULL,
 			*water_big_pattern = NULL,
 			*interface = NULL,
-			*selection = NULL;
+			*selection = NULL,
+			*ok_button = NULL,
+			*load_button = NULL,
+			*cancel_button = NULL;
 
 void loadEditorTextures(SDL_Renderer * renderer)
 // Load all the map related textures
@@ -39,6 +42,9 @@ void loadEditorTextures(SDL_Renderer * renderer)
 	if (interface != NULL)			SDL_DestroyTexture(interface),			interface = NULL;
 	if (eraser != NULL) 			SDL_DestroyTexture(eraser), 			eraser = NULL;
 	if (selection != NULL) 			SDL_DestroyTexture(selection), 			selection = NULL;
+	if (ok_button != NULL) 			SDL_DestroyTexture(ok_button), 			ok_button = NULL;
+	if (load_button != NULL) 		SDL_DestroyTexture(load_button), 		load_button = NULL;
+	if (cancel_button != NULL) 		SDL_DestroyTexture(cancel_button), 		cancel_button = NULL;
 
 	printf("[GRAPHICS] Chargement des textures du jeu...\n");
 
@@ -80,6 +86,15 @@ void loadEditorTextures(SDL_Renderer * renderer)
 
 	// Loading selection hover texture
 	selection = loadTexture(renderer, loadImage("../inc/img/editor_selection.png"));
+
+	// Loading green button texture
+	ok_button = loadTexture(renderer, loadImage("../inc/img/ok_button.png"));
+
+	// Loading orange button texture
+	load_button = loadTexture(renderer, loadImage("../inc/img/load_button.png"));
+
+	// Loading red button texture
+	cancel_button = loadTexture(renderer, loadImage("../inc/img/cancel_button.png"));
 }
 
 int changeTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int xSize, int ySize, int toTile)
@@ -151,7 +166,7 @@ int changeTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int 
 	return 1;
 }
 
-int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, int xSize, int ySize, int select)
+int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, int xSize, int ySize, int select, int xWinSize, int yWinSize)
 // Display the map
 {
 	Coord selectionPos;
@@ -234,10 +249,20 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 	selectionPos.y = ceil(select/2)*74+50;
 	displaySprite(renderer, selection, selectionPos.x, selectionPos.y);
 
+	// Boutons
+	displaySprite(renderer, cancel_button, 0, yWinSize-120);
+	displayText(renderer, 10, yWinSize-110, 20, "ANNULER", "../inc/font/Pixels.ttf", 255, 255, 255);
+	displaySprite(renderer, load_button, 0, yWinSize-80);
+	displayText(renderer, 10, yWinSize-70, 20, "OUVRIR UNE MAP", "../inc/font/Pixels.ttf", 255, 255, 255);
+	displaySprite(renderer, ok_button, 0, yWinSize-40);
+	displayText(renderer, 10, yWinSize-30, 20, "ENREGISTRER", "../inc/font/Pixels.ttf", 255, 255, 255);
+
+	displayText(renderer, 20, 20, 20, "----- BLOCS -----", "../inc/font/Pixels.ttf", 255, 255, 255);
+
 	// -- DEBUG Affichage des coordonnées d'affichage de la map
 	char str[12];
 	sprintf(str, "%d, %d", x, y);
-	displayText(renderer, 20, 20, 20, str, "../inc/font/Pixels.ttf", 255, 255, 255);
+	displayText(renderer, 220, 20, 20, str, "../inc/font/Pixels.ttf", 255, 255, 255);
 	// -- DEBUG --
 
 	SDL_RenderPresent(renderer);
@@ -256,8 +281,12 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 	int PX = 64;
 
 	// x and y pos where map is displayed
-	int XPOS = 300;
-	int YPOS = 70;
+	int XPOS = 400;
+	int YPOS = 170;
+
+	// x and y sizes of the window
+	int xWinSize;
+	int yWinSize;
 
 	// Block selected
 	int SELECT = 1;
@@ -302,13 +331,15 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 
 		loadEditorTextures(renderer);
 
+		SDL_GetWindowSize(pWindow, &xWinSize, &yWinSize);
+
 		/* Le fond de la fenêtre sera blanc */
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
 
 		SDL_Delay(1);
 
-		displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+		displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 
 		SDL_RenderPresent(renderer);
 
@@ -327,13 +358,15 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 							case SDL_WINDOWEVENT_HIDDEN:
 							case SDL_WINDOWEVENT_SHOWN:
 
+								SDL_GetWindowSize(pWindow, &xWinSize, &yWinSize);
+
 								/* Le fond de la fenêtre sera blanc */
                 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 								SDL_RenderClear(renderer);
 
 								SDL_Delay(1);
 
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 
 								SDL_RenderPresent(renderer);
 
@@ -354,7 +387,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 						{
 							changeTile(grid, XPOS, YPOS, e.motion.x, e.motion.y, PX, xSize, ySize, SELECT);
 						}
-						displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+						displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 
 					break;
 					case SDL_MOUSEWHEEL:
@@ -365,7 +398,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 								printf("[GRAPHICS] Zoom In\n");
 								XPOS *= 2;
 								YPOS *= 2;
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 							}
 						} else {				// Scroll DOWN
 							if (PX == 128){
@@ -373,7 +406,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 								printf("[GRAPHICS] Zoom Out\n");
 								XPOS /= 2;
 								YPOS /= 2;
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 							}
 						}
 					break;
@@ -386,7 +419,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 									printf("[GRAPHICS] Zoom In\n");
 									XPOS *= 2;
 									YPOS *= 2;
-									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 								}
 								break;
 							case SDLK_KP_MINUS:	// "-" key
@@ -395,24 +428,24 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 									printf("[GRAPHICS] Zoom Out\n");
 									XPOS /= 2;
 									YPOS /= 2;
-									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 								}
 								break;
 							case SDLK_z:		// "z" key
 								YPOS += (10*(PX/64));
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 								break;
 							case SDLK_q:		// "q" key
 								XPOS += (10*(PX/64));
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 								break;
 							case SDLK_s:		// "s" key
 								YPOS -= (10*(PX/64));
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 								break;
 							case SDLK_d:		// "d" key
 								XPOS -= (10*(PX/64));
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT);
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 								break;
 						}
 					break;

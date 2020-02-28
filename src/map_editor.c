@@ -23,11 +23,13 @@ SDL_Texture *eraser = NULL,
 			*sr_pattern = NULL,
 			*sb_pattern = NULL,
 			*water_pattern = NULL,
+			*sand_pattern = NULL,
             *blank_big_pattern = NULL,
 			*pattern_big = NULL,
 			*sr_big_pattern = NULL,
 			*sb_big_pattern = NULL,
 			*water_big_pattern = NULL,
+			*sand_big_pattern = NULL,
 			*interface = NULL,
 			*selection = NULL,
 			*ok_button = NULL,
@@ -44,11 +46,13 @@ void loadEditorTextures(SDL_Renderer * renderer)
 	if (sr_pattern != NULL) 		SDL_DestroyTexture(sr_pattern), 		sr_pattern = NULL;
 	if (sb_pattern != NULL) 		SDL_DestroyTexture(sb_pattern), 		sb_pattern = NULL;
 	if (water_pattern != NULL) 		SDL_DestroyTexture(water_pattern), 		water_pattern = NULL;
+	if (sand_pattern != NULL)		SDL_DestroyTexture(sand_pattern),		sand_pattern = NULL;
     if (blank_big_pattern != NULL) 	SDL_DestroyTexture(blank_big_pattern), 	blank_big_pattern = NULL;
 	if (pattern_big != NULL) 		SDL_DestroyTexture(pattern_big), 		pattern_big = NULL;
 	if (sr_big_pattern != NULL) 	SDL_DestroyTexture(sr_big_pattern), 	sr_big_pattern = NULL;
 	if (sb_big_pattern != NULL) 	SDL_DestroyTexture(sb_big_pattern), 	sb_big_pattern = NULL;
 	if (water_big_pattern != NULL) 	SDL_DestroyTexture(water_big_pattern), 	water_big_pattern = NULL;
+	if (sand_big_pattern != NULL)	SDL_DestroyTexture(sand_big_pattern),	sand_big_pattern = NULL;
 	if (interface != NULL)			SDL_DestroyTexture(interface),			interface = NULL;
 	if (eraser != NULL) 			SDL_DestroyTexture(eraser), 			eraser = NULL;
 	if (selection != NULL) 			SDL_DestroyTexture(selection), 			selection = NULL;
@@ -75,6 +79,9 @@ void loadEditorTextures(SDL_Renderer * renderer)
 	// Loading water block texture (64px)
 	water_pattern = loadTexture(renderer, loadImage("../inc/img/water_64.png"));
 
+	// Loading sand block texture (64px)
+	sand_pattern = loadTexture(renderer, loadImage("../inc/img/sand_64.png"));
+
     // Loading blank pattern texture (128px)
     blank_big_pattern = loadTexture(renderer, loadImage("../inc/img/blank_128.png"));
 
@@ -89,6 +96,9 @@ void loadEditorTextures(SDL_Renderer * renderer)
 
 	// Loadding water block texture (128px)
 	water_big_pattern = loadTexture(renderer, loadImage("../inc/img/water_128.png"));
+
+	// Loading sand block texture (128px)
+	sand_big_pattern = loadTexture(renderer, loadImage("../inc/img/sand_128.png"));
 
 	// Loading block selection interface texture
 	interface = loadTexture(renderer, loadImage("../inc/img/block_interface.png"));
@@ -211,7 +221,8 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
                 *b_block = NULL,
 				*s_block = NULL,
 				*sr_block = NULL,
-				*water_block = NULL;
+				*water_block = NULL,
+				*sand_block = NULL;
 
 	if (pxBase == 64){
         b_block = blank_pattern;
@@ -219,12 +230,14 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 		s_block = sb_pattern;
 		sr_block = sr_pattern;
 		water_block = water_pattern;
+		sand_block = sand_pattern;
 	} else {
         b_block = blank_big_pattern;
 		block = pattern_big;
 		s_block = sb_big_pattern;
 		sr_block = sr_big_pattern;
 		water_block = water_big_pattern;
+		sand_block = sand_big_pattern;
 	}
 
 	/* Le fond de la fenêtre sera blanc */
@@ -270,7 +283,12 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 			{
 				SDL_QueryTexture(water_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 				SDL_RenderCopy(renderer, water_block, NULL, &imgDestRect);
-			} 
+			}
+			else if ((*(grid+i*xSize+j)).tile_id == 4)
+			{
+				SDL_QueryTexture(sand_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+				SDL_RenderCopy(renderer, sand_block, NULL, &imgDestRect);
+			}
         }
     }
 
@@ -279,6 +297,7 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 	displaySprite(renderer, pattern, 126, 50);
 	displaySprite(renderer, sr_pattern, 10, 124);
 	displaySprite(renderer, water_pattern, 126, 124);
+	displaySprite(renderer, sand_pattern, 10, 198);
 
 	if (select%2 == 0)		selectionPos.x = 10;
 	else					selectionPos.x = 126;
@@ -421,6 +440,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 50 && e.motion.y <= 114)	SELECT = 1;
 							else if (e.motion.x >= 10 && e.motion.x <= 74 && e.motion.y >= 124 && e.motion.y <= 188)	SELECT = 2;
 							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 124 && e.motion.y <= 188)	SELECT = 3;
+							else if (e.motion.y >= 10 && e.motion.x <= 74 && e.motion.y >= 198 && e.motion.y <= 262)	SELECT = 4;
 							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= 800 && e.motion.y <= 900)
 							{
 								isInSaveMenu = 1;

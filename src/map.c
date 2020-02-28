@@ -14,10 +14,12 @@ SDL_Texture *tile = NULL,
 			*sr_tile = NULL,
 			*sb_tile = NULL,
 			*water_tile = NULL,
+			*sand_tile = NULL,
 			*tile_big = NULL,
 			*sr_big_tile = NULL,
 			*sb_big_tile = NULL,
-			*water_big_tile = NULL;
+			*water_big_tile = NULL,
+			*sand_big_tile = NULL;
 
 void loadMapTextures(SDL_Renderer * renderer)
 // Load all the map related textures
@@ -42,8 +44,14 @@ void loadMapTextures(SDL_Renderer * renderer)
 	// Loading blue selected tile texture (64px)
 	sb_tile = loadTexture(renderer, loadImage("../inc/img/block_blue_64.png"));
 
+	// Loading red tile texture (64px)
+	sr_tile = loadTexture(renderer, loadImage("../inc/img/block_red_64.png"));
+
 	// Loading water block texture (64px)
 	water_tile = loadTexture(renderer, loadImage("../inc/img/water_64.png"));
+
+	// Loading sand block texture (64px)
+	sand_tile = loadTexture(renderer, loadImage("../inc/img/sand_64.png"));
 
 	// Loading non-selected tile texture (128px)
 	tile_big = loadTexture(renderer, loadImage("../inc/img/block_128.png"));
@@ -54,8 +62,14 @@ void loadMapTextures(SDL_Renderer * renderer)
 	// Loading blue selected tile texture (128px)
 	sb_big_tile = loadTexture(renderer, loadImage("../inc/img/block_blue_128.png"));
 
+	// Loading red tile texture (128px)
+	sr_big_tile = loadTexture(renderer, loadImage("../inc/img/block_red_128.png"));
+
 	// Loadding water block texture (128px)
 	water_big_tile = loadTexture(renderer, loadImage("../inc/img/water_128.png"));
+
+	// Loading sand block texture (128px)
+	sand_big_tile = loadTexture(renderer, loadImage("../inc/img/sand_128.png"));
 }
 
 float crossProduct(Vector AB, Vector AC)
@@ -140,16 +154,22 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, in
 
 	SDL_Texture *block = NULL,
 				*s_block = NULL,
-				*water_block = NULL;
+				*sr_block = NULL,
+				*water_block = NULL,
+				*sand_block = NULL;
 
 	if (pxBase == 64){
 		block = tile;
 		s_block = sb_tile;
+		sr_block = sr_tile;
 		water_block = water_tile;
+		sand_block = sand_tile;
 	} else {
 		block = tile_big;
 		s_block = sb_big_tile;
+		sr_block = sr_big_tile;
 		water_block = water_big_tile;
+		sand_block = sand_big_tile;
 	}
 
 	/* Le fond de la fenêtre sera blanc */
@@ -162,14 +182,15 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, in
 			imgDestRect.x = x+(j+1)*(pxBase/2)+(i+1)*(pxBase/2);
 			imgDestRect.y = y+i*(pxBase/4)+(ySize-j)*(pxBase/4);
 
-			if ((*(grid+i*xSize+j)).tile_id == 1){
-				SDL_QueryTexture(water_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-				SDL_RenderCopy(renderer, water_block, NULL, &imgDestRect);
-			} else if ((*(grid+i*xSize+j)).tile_id != 0){
-				if ((*(grid+i*xSize+j)).selected){
+			if ((*(grid+i*xSize+j)).tile_id == 1)
+			{
+				if ((*(grid+i*xSize+j)).selected)
+				{
 					SDL_QueryTexture(s_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 					SDL_RenderCopy(renderer, s_block, NULL, &imgDestRect);
-				} else {
+				} 
+				else
+				{
 					SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
 					SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
 				}
@@ -180,6 +201,21 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, in
 				displayText(renderer, imgDestRect.x+(pxBase/2)-10, imgDestRect.y+(pxBase/4), (pxBase/64)*10, pos, "../inc/font/Pixels.ttf", 255, 50, 50);
 				// -- DEBUG --*/
 			}
+			else if ((*(grid+i*xSize+j)).tile_id == 2)
+			{
+				SDL_QueryTexture(sr_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+				SDL_RenderCopy(renderer, sr_block, NULL, &imgDestRect);
+			}
+			else if ((*(grid+i*xSize+j)).tile_id == 3)
+			{
+				SDL_QueryTexture(water_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+				SDL_RenderCopy(renderer, water_block, NULL, &imgDestRect);
+			}
+			else if ((*(grid+i*xSize+j)).tile_id == 4)
+			{
+				SDL_QueryTexture(sand_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
+				SDL_RenderCopy(renderer, sand_block, NULL, &imgDestRect);
+			}
         }
     }
 
@@ -188,11 +224,6 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, in
 	sprintf(str, "%d, %d", x, y);
 	displayText(renderer, 20, 20, 20, str, "../inc/font/Pixels.ttf", 255, 255, 255);
 	// -- DEBUG --
-
-	frames++;
-	char fps[12];
-	sprintf(fps, "%d FPS", frames);
-	displayText(renderer, 20, 100, 20, fps, "../inc/font/Pixels.ttf", 255, 255, 255);
 
 	SDL_RenderPresent(renderer);
 

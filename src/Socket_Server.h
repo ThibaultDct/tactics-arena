@@ -1,7 +1,7 @@
 #ifndef socket_server_h
 #define socket_server_h
 #define MAX_BUFF_SIZE 1024
-#define PORT 443
+#define PORT 80
 
 typedef struct Personnage{
   int id;

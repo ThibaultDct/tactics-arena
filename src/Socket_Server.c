@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "Socket_Server.h"
-#define PORT 443
+
 /*
 * If program run on Windows
 */
@@ -14,30 +14,26 @@
   */
   typedef int socklen_t;
 /*
-* Else if program run on Linux
+* Else if program run on Unix
 */
 #elif __UNIX__ || defined __APPLE__ || defined  __linux__
-  
+  /*
+  * Avoid differences to close a socket
+  * between socket.h and winsock2.h
+  * Adding missing definitions with socket.h
+  * Adding missing types with socket.h
+  */
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <netinet/in.h>
   #include <arpa/inet.h>
   #include <unistd.h>
-  /*
-  * Avoid differences to close a socket
-  * between socket.h and winsock2.h
-  * Adding missing definitions with socket.h
-  */
   #define closesocket(param) close(param)
   #define INVALID_SOCKET -1
   #define SOCKET_ERROR -1
-  /*
-  * Adding missing types with socket.h
-  */
   typedef int SOCKET;
   typedef struct sockaddr_in SOCKADDR_IN;
   typedef struct sockaddr SOCKADDR;
-
 #endif
 
 
@@ -45,11 +41,12 @@ int startTCPSocketServ(){
   #if defined _WIN64 || defined (WIN32) || defined _WIN32
     /*
     * Change the cmd codepage
+    * Create firewall rules
     */
     system("chcp 65001");
     system("netsh advfirewall firewall add rule name=\"Tactics\" protocol=TCP dir=in localport=50135 action=allow");
     system("netsh advfirewall firewall add rule name=\"Tactics\" protocol=TCP dir=out localport=50135 action=allow");
-    system("ipconfig | findstr /r \"IPv4.*192\" > test.txt");
+    system("ipconfig | findstr /r \"IPv4.*192\" > .test.txt");
     system("cls");
     WSADATA WSAData;
     /*
@@ -63,17 +60,12 @@ int startTCPSocketServ(){
     windWSAError = WSAStartup(MAKEWORD(2,2), &WSAData);
 
   #elif __UNIX__ || defined __APPLE__ || defined  __linux__
-
-    system("ifconfig | grep \"inet 1[97]2.*\" | sed \"s/netmask.*//g\" | sed \"s/inet//g\" > test.txt");
+    system("ifconfig | grep \"inet 1[97]2.*\" | sed \"s/netmask.*//g\" | sed \"s/inet//g\" > .test.txt");
     int windWSAError= 0;
   #endif
 
 
-  t_personnage monpersoServ;
-  monpersoServ.id = 1;
-  sprintf(monpersoServ.nom,"Hello world");
-
-  int choixServ = 0;
+  
 
 
 
@@ -125,21 +117,24 @@ int startTCPSocketServ(){
           sizeofSocketConnected = sizeof(sockConnectedAddr);
           socketConnected = accept(sock, (struct  sockaddr  *)&sockConnectedAddr, &sizeofSocketConnected);
           if(socketConnected != SOCKET_ERROR){
+            
+            t_personnage monpersoServ;
+            monpersoServ.id = 1;
+            sprintf(monpersoServ.nom,"Hello world");
+            int choixServ = 0;
+            
             printf("\nConnexion établie avec le client !\n");
             printf("\nChargement de la partie... \n");
-            printf("Début de la communication : \n");
-
-
-
-            printf("L'id du perso est : %d \n", monpersoServ.id);
-            printf("Le nom du perso est : %s \n", monpersoServ.nom);
+            
+            // printf("L'id du perso est : %d \n", monpersoServ.id);
+            // printf("Le nom du perso est : %s \n", monpersoServ.nom);
 
             printf("\nPress (1) start chat :");
             printf("\nPress (2) send structure : ");
             printf("\nPress (3) start silent chat: ");
             scanf("%d",&choixServ);
             switch(choixServ){
-              case 1: startChat(socketConnected);break;
+              // case 1: startChat(socketConnected);break;
               case 2: sendStruct(socketConnected, (t_personnage)monpersoServ);break;
               case 3: silentChat(socketConnected);break;
             }
@@ -150,9 +145,8 @@ int startTCPSocketServ(){
               //   printf("Le nom du perso est maintenant : %s \n", monpersoServ.nom);
               // }
 
-            printf("Fin de la communication \n");
+            printf("Fin de la partie :( \n");
             /* Il ne faut pas oublier de fermer la connexion (fermée dans les deux sens) */
-            // printf("Press anny key to close socket... ");
           }
           shutdown(socketConnected, 2);
           closesocket(sock);

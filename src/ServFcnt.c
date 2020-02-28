@@ -4,8 +4,8 @@
 #include <time.h>
 #include <unistd.h>
 #include "Socket_Server.h"
-#define PORT 443
-#define MAX_BUFF_SIZE 128
+
+
 /*
 * If program run on Windows
 */
@@ -52,7 +52,7 @@ void getLocalIP(){
   char s[81];
   int dPoint = 0;
   FILE *fic;
-  fic=fopen("test.txt", "r" );
+  fic=fopen(".test.txt", "r" );
    if( fic == NULL ){
       printf( "The file was not opened\n" );
     }
@@ -89,9 +89,17 @@ const char * setServIP(){
   char * servIP = malloc(sizeof(char) * MAX_BUFF_SIZE);
   printf("Saisir l'addresse IP du serveur : ");
   scanf(" %s", servIP);
-
-  printf("\n%s\n", servIP);
+  // printf("\n%s\n", servIP);
   return servIP;
+}
+
+char * flushMsg(char monMsg[MAX_BUFF_SIZE]){
+  // printf("\nMon MSG before flush : %s", monMsg);
+    for(int i = 0; monMsg[i]; i++){
+     monMsg[i] = "";
+    }
+  // printf("\nMon MSG after flush : %s", monMsg);
+  return monMsg;
 }
 
 int sendStruct(int socket, t_personnage monperso){
@@ -119,33 +127,31 @@ const char * realStr(){
 return monStr;
 }
 
-void sendMsg(int socket){
+void sendMsg(int socket, char pseudo[128], t_msgChat monMsg){
   int sockCli;
-  char  * buffer;
-  buffer = malloc(sizeof(char) * MAX_BUFF_SIZE);
+  char buffer[MAX_BUFF_SIZE];
+  flushMsg(buffer);
   
   printf("Saisir votre message : ");
   scanf(" %[^\n]", buffer);
 
   printf("\n votre message : %s \n", buffer);
-  
-  
   printf("Buffer size sendMSG: %lu (%lu)", strlen(buffer), sizeof(buffer));
+  sprintf(monMsg.msg,"%s",buffer);
 
-  printf(" Message sendMSg : %s \n", buffer);
-  sockCli = send(socket, buffer, sizeof(buffer), 0);
+  printf("\nDEBUG SENDMSG : monMsg.msg:  %s", monMsg.msg);
+  sockCli = send(socket,(void *)&monMsg, sizeof(monMsg), 0);
   if(sockCli != SOCKET_ERROR){
     printf("Message envoyé avec succes ! \n");
-    free(buffer);
   }
   else{
     printf("Send MSG error ... \n");
-    
   }
-  free(buffer);
 }
 
-void startChat(int sock){
+
+void startChat(int sock, char pseudo[128], t_msgChat monMsg){
+  
   int choix = 0;
   time_t seconds;
   time(&seconds);
@@ -153,7 +159,7 @@ void startChat(int sock){
     printf("\nEnvoyer un message (1) ");
     scanf("%d", &choix);
     if(choix == 1){
-      sendMsg(sock);
+      sendMsg(sock,pseudo,monMsg);
     }
     printf("Attente : ");
     printf("%ld \n", (time(NULL) - seconds));
@@ -162,24 +168,25 @@ void startChat(int sock){
 }
 
 void silentChat(int sock){
-  
+
   t_msgChat msgSilentChat;
   msgSilentChat.ident=0;
   sprintf(msgSilentChat.pseudo,"Null");
-  msgSilentChat.msg = NULL;
-  msgSilentChat.msg = malloc(10);
   sprintf(msgSilentChat.msg,"Bonjour");
   
   printf("\nsize of msgSlilentCHat.msg : %lu (%lu) \n", strlen(msgSilentChat.msg), sizeof(msgSilentChat.msg));
+  
+  flushMsg(msgSilentChat.msg);
 
   time_t seconds;
   time(&seconds);
   
   
-  // if(recv(socketConnected,(void *)&msgSilentChat, sizeof(msgSilentChat), 0) != SOCKET_ERROR){
-  //   printf("Vous avez un nouveau message ! \n");
-  //   printf("[%s] : %s",msgSilentChat.pseudo, msgSilentChat.msg);
-  //   }
+  if(recv(sock,(void *)&msgSilentChat, sizeof(msgSilentChat), 0) != SOCKET_ERROR){
+    printf("Vous avez un nouveau message ! \n");
+    printf("[%s] : %s\n",msgSilentChat.pseudo, msgSilentChat.msg);
+    printf("\nsize of msgSlilentCHat.msg : %lu (%lu) \n", strlen(msgSilentChat.msg), sizeof(msgSilentChat.msg));
+    }
   
   
   // while(1 && ((time(NULL) - seconds)  != (1 *60))){
@@ -195,3 +202,4 @@ void silentChat(int sock){
     
   // }
 }
+

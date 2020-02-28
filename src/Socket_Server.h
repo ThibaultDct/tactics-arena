@@ -1,5 +1,7 @@
 #ifndef socket_server_h
 #define socket_server_h
+#define MAX_BUFF_SIZE 1024
+#define PORT 443
 
 typedef struct Personnage{
   int id;
@@ -9,18 +11,19 @@ typedef struct Personnage{
 typedef struct msgChat{
   int ident;
   char pseudo[128];
-  char * msg;
+  char msg[MAX_BUFF_SIZE];
 }t_msgChat;
 
 
 int startTCPSocketServ();
 int startTCPSocketCli();
 int sendStruct(int socket, t_personnage monperso);
-void sendMsg(int socket);
+void sendMsg(int socket, char pseudo[128], t_msgChat monMsg);
 const char * realStr();
 void getLocalIP();
-void startChat(int sock);
+void startChat(int sock, char pseudo[128], t_msgChat monMsg);
 const char * setServIP();
 void silentChat(int sock);
+char * flushMsg(char * monMsg);
 
 #endif

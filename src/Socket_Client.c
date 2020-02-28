@@ -4,13 +4,10 @@
 #include <time.h>
 #include <unistd.h>
 #include "Socket_Server.h"
-#define PORT 443
-#define MAX_BUFF_SIZE 128
 
 /*
 * If program run on Windows
 */
-
 #if defined _WIN64 || defined (WIN32) || defined _WIN32
   #include <winsock2.h>
   /*
@@ -18,9 +15,8 @@
   */
   typedef int socklen_t;
 /*
-* Else if program run on Linux
+* Else if program run on Unix
 */
-
 #elif __UNIX__ || defined __APPLE__ || defined  __linux__
 
   #include <sys/types.h>
@@ -44,12 +40,6 @@
   typedef struct sockaddr SOCKADDR;
 #endif
 
-
-
-
-
-
-
 int startTCPSocketCli(){
 
   #if defined _WIN64 || defined (WIN32) || defined _WIN32
@@ -72,14 +62,11 @@ int startTCPSocketCli(){
     int windWSAError= 0;
   #endif
   printf("\nLancement de la créatoin du client...\n");
-
   /*
   * Setting up the socket for all systems
   */
-
   SOCKADDR_IN sockIn;
   SOCKET sock;
-  
   if(!windWSAError){
     /*
     * Creating socket :
@@ -93,14 +80,13 @@ int startTCPSocketCli(){
     */
     if(sock != INVALID_SOCKET){
       const char * servIP = malloc(sizeof(char) * MAX_BUFF_SIZE);
-
       printf("\nLa socket numéro %d en mode TCP/IP est valide  !\n", (int)&sock);
       /*
       * Initialising struct
       * Can change s_addr with given ip inet_addr("192.168.0.0")
       */
-     servIP = setServIP();
-     printf("\n%s\n", servIP);
+      servIP = setServIP();
+      // printf("\n%s\n", servIP);
       sockIn.sin_addr.s_addr= inet_addr((char *)servIP);
       sockIn.sin_family = AF_INET;
       sockIn.sin_port = htons(PORT);
@@ -109,33 +95,40 @@ int startTCPSocketCli(){
       *
       *If client achieve connection
       */
-
-
-
-      t_personnage monpersoCli;
-
-      monpersoCli.id = 1;
-      sprintf(monpersoCli.nom,"Lucien Chauvin");
-
       if(connect(sock, (SOCKADDR*)&sockIn, sizeof(sockIn)) != SOCKET_ERROR){
-        printf("Connexion reussie à : %s sur le port : %d \n", inet_ntoa(sockIn.sin_addr), htons(sockIn.sin_port));
+        printf("Connexion réussie à : %s sur le port : %d \n", inet_ntoa(sockIn.sin_addr), htons(sockIn.sin_port));
 
-        printf("L'id du perso est : %d \n", monpersoCli.id);
-        printf("Le nom du perso est : %s \n", monpersoCli.nom);
-
-        printf("Début de la communication : \n");
+        t_personnage monpersoCli;
+        monpersoCli.id = 1;
+        sprintf(monpersoCli.nom, "Lucien");
         
-        printf("Press (1) start chat \n");
-        printf("Pess (2) send structure : ");
+        t_msgChat monMsg;
+        monMsg.ident = 2;
+        sprintf(monMsg.msg,"Client");
+      
+        char pseudoCli[128];
+        flushMsg(pseudoCli);
+        printf("Saisir votre pseudo : ");
+        scanf("%s",pseudoCli);
+        printf("\nVous vous appelez : %s", pseudoCli);
+        sprintf(monMsg.pseudo,"%s",pseudoCli);
+        
+        
+        // printf("L'id du perso est : %d \n", monpersoCli.id);
+        // printf("Le nom du perso est : %s \n", monpersoCli.nom);
+
+        printf("\nDébut de la communication : \n");
+        
+        printf("Press (1) start chat :\n");
+        printf("Pess (2) send structure : \n");
         scanf("%d",&choixCli);
         switch(choixCli){
-          case 1: startChat(sock);
+          case 1: startChat(sock,pseudoCli,(t_msgChat)monMsg);break;
           case 2: sendStruct(sock, (t_personnage)monpersoCli);break;
         }
 
         
         printf("Fin de la communication \n");
-
       }
       else{
         printf("Impossble de se connecter au serveur... :( \n");

@@ -134,15 +134,17 @@ int startTCPSocketServ(){
             printf("L'id du perso est : %d \n", monpersoServ.id);
             printf("Le nom du perso est : %s \n", monpersoServ.nom);
 
-            printf("Press (1) start chat \n");
-            printf("Pess (2) send structure : ");
+            printf("\nPress (1) start chat :");
+            printf("\nPress (2) send structure : ");
+            printf("\nPress (3) start silent chat: ");
             scanf("%d",&choixServ);
             switch(choixServ){
-              case 1: startChat(socketConnected);
-              case 2: sendStruct(sock, (t_personnage)monpersoServ);break;
+              case 1: startChat(socketConnected);break;
+              case 2: sendStruct(socketConnected, (t_personnage)monpersoServ);break;
+              case 3: silentChat(socketConnected);break;
             }
 
-              // if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){
+            // if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){
               //   printf("Votre perso a été modifié ! \n");
               //   printf("l'id du perso est maintenant : %d \n", monpersoServ.id);
               //   printf("Le nom du perso est maintenant : %s \n", monpersoServ.nom);
@@ -152,9 +154,9 @@ int startTCPSocketServ(){
             /* Il ne faut pas oublier de fermer la connexion (fermée dans les deux sens) */
             // printf("Press anny key to close socket... ");
           }
-            shutdown(socketConnected, 2);
+          shutdown(socketConnected, 2);
           closesocket(sock);
-          system("netsh advfirewall firewall delete rule name=\"Tactics\"");
+         // system("netsh advfirewall firewall delete rule name=\"Tactics\"");
       }
       else{
         printf("\nUn problème est survenu lors de la connexion du client :( \n");

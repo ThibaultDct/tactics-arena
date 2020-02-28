@@ -1,4 +1,4 @@
-prefix=/home/thibault/Documents/Projet/tactics-arena/SDL2
+prefix=/Users/lucienchauvin/Projet/tactics-arena/SDL2
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

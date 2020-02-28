@@ -6,15 +6,21 @@ typedef struct Personnage{
   char nom[128];
 } t_personnage;
 
+typedef struct msgChat{
+  int ident;
+  char pseudo[128];
+  char * msg;
+}t_msgChat;
+
 
 int startTCPSocketServ();
 int startTCPSocketCli();
 int sendStruct(int socket, t_personnage monperso);
-int sendMSg(int socket);
+void sendMsg(int socket);
 const char * realStr();
 void getLocalIP();
 void startChat(int sock);
 const char * setServIP();
-// Personnage getStruct(int socket, Personnage monperso);
+void silentChat(int sock);
 
 #endif

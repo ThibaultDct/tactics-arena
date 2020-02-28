@@ -139,6 +139,8 @@ int closeWindow(SDL_Window *pWindow)
 int createGameWindow(int x, int y, Tile * grid, int xSize, int ySize)
 // Create a window with with x*y size (in px)
 {
+	int frames = 0;
+
     // Le pointeur vers la fenetre
 	SDL_Window* pWindow = NULL;
 	SDL_Renderer *renderer=NULL;
@@ -151,7 +153,7 @@ int createGameWindow(int x, int y, Tile * grid, int xSize, int ySize)
 	int YPOS = 50;
 
     /* Initialisation simple */
-    if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0 ) {
         fprintf(stdout,"Échec de l'initialisation de la SDL (%s)\n",SDL_GetError());
         return -1;
     }

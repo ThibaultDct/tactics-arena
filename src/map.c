@@ -8,6 +8,8 @@
 #include "struct.h"
 #include "audio.h"
 
+int frames = 0;
+
 SDL_Texture *tile = NULL,
 			*sr_tile = NULL,
 			*sb_tile = NULL,
@@ -186,6 +188,11 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, in
 	sprintf(str, "%d, %d", x, y);
 	displayText(renderer, 20, 20, 20, str, "../inc/font/Pixels.ttf", 255, 255, 255);
 	// -- DEBUG --
+
+	frames++;
+	char fps[12];
+	sprintf(fps, "%d FPS", frames);
+	displayText(renderer, 20, 100, 20, fps, "../inc/font/Pixels.ttf", 255, 255, 255);
 
 	SDL_RenderPresent(renderer);
 

@@ -9,6 +9,14 @@
 #include "audio.h"
 #include "map.h"
 
+int isInSaveMenu = 0;
+// Contains the name of the map the user wants to save
+	char mapName[50] = "map_";
+	char *composition;
+	int mapNameIndex;
+	Sint32 cursor;
+	Sint32 selection_len;
+
 SDL_Texture *eraser = NULL,
 			*blank_pattern = NULL,
             *pattern = NULL,
@@ -24,7 +32,9 @@ SDL_Texture *eraser = NULL,
 			*selection = NULL,
 			*ok_button = NULL,
 			*load_button = NULL,
-			*cancel_button = NULL;
+			*cancel_button = NULL,
+			*blur = NULL,
+			*save_menu = NULL;
 
 void loadEditorTextures(SDL_Renderer * renderer)
 // Load all the map related textures
@@ -45,6 +55,8 @@ void loadEditorTextures(SDL_Renderer * renderer)
 	if (ok_button != NULL) 			SDL_DestroyTexture(ok_button), 			ok_button = NULL;
 	if (load_button != NULL) 		SDL_DestroyTexture(load_button), 		load_button = NULL;
 	if (cancel_button != NULL) 		SDL_DestroyTexture(cancel_button), 		cancel_button = NULL;
+	if (blur != NULL)				SDL_DestroyTexture(blur),				blur = NULL;
+	if (save_menu != NULL)			SDL_DestroyTexture(save_menu),			save_menu = NULL;
 
 	printf("[GRAPHICS] Chargement des textures du jeu...\n");
 
@@ -95,6 +107,30 @@ void loadEditorTextures(SDL_Renderer * renderer)
 
 	// Loading red button texture
 	cancel_button = loadTexture(renderer, loadImage("../inc/img/cancel_button.png"));
+
+	// Loading blur effect texture
+	blur = loadTexture(renderer, loadImage("../inc/img/blur.png"));
+
+	// Loading save menu texture
+	save_menu = loadTexture(renderer, loadImage("../inc/img/saveMenu.png"));
+}
+
+int saveMap(SDL_Renderer * renderer, Tile * grid, int xWinSize, int yWinSize, char * mapName)
+// Display a save map menu and save the map
+{
+	int xPos = (xWinSize/2)-300;
+	int yPos = (yWinSize/2)-60;
+	int xOpPos = xPos + 600;
+	int yOpPos = yPos + 120;
+
+	displaySprite(renderer, blur, 0, 0);
+	displaySprite(renderer, save_menu, xPos, yPos);
+	displayText(renderer, xPos+10, yPos+5, 20, "Enregistrer la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
+	displayText(renderer, xOpPos-65, yOpPos-25, 15, "OK", "../inc/font/Pixels.ttf", 255, 255, 255);
+	displayText(renderer, xOpPos-215, yOpPos-25, 15, "ANNULER", "../inc/font/Pixels.ttf", 255, 255, 255);
+	if (mapName != NULL) displayText(renderer, xPos+40, yPos+55, 20, mapName, "../inc/font/Pixels.ttf", 0, 0, 0);
+
+	return 1;
 }
 
 int changeTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int xSize, int ySize, int toTile)
@@ -251,7 +287,7 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 
 	// Boutons
 	displaySprite(renderer, cancel_button, 0, yWinSize-120);
-	displayText(renderer, 10, yWinSize-110, 20, "ANNULER", "../inc/font/Pixels.ttf", 255, 255, 255);
+	displayText(renderer, 10, yWinSize-110, 20, "QUITTER", "../inc/font/Pixels.ttf", 255, 255, 255);
 	displaySprite(renderer, load_button, 0, yWinSize-80);
 	displayText(renderer, 10, yWinSize-70, 20, "OUVRIR UNE MAP", "../inc/font/Pixels.ttf", 255, 255, 255);
 	displaySprite(renderer, ok_button, 0, yWinSize-40);
@@ -264,6 +300,8 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 	sprintf(str, "%d, %d", x, y);
 	displayText(renderer, 220, 20, 20, str, "../inc/font/Pixels.ttf", 255, 255, 255);
 	// -- DEBUG --
+
+	if (isInSaveMenu == 1) saveMap(renderer, grid, xWinSize, yWinSize, mapName);
 
 	SDL_RenderPresent(renderer);
 
@@ -292,7 +330,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 	int SELECT = 1;
 
     /* Initialisation simple */
-    if (SDL_Init(SDL_INIT_VIDEO) != 0 ) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0 ) {
         fprintf(stdout,"Échec de l'initialisation de la SDL (%s)\n",SDL_GetError());
         return -1;
     }
@@ -344,6 +382,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 		SDL_RenderPresent(renderer);
 
 		int running = 1;
+		SDL_StartTextInput();
 		while(running) {
 			SDL_Event e;
 			while(SDL_PollEvent(&e)) {
@@ -382,10 +421,14 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 50 && e.motion.y <= 114)	SELECT = 1;
 							else if (e.motion.x >= 10 && e.motion.x <= 74 && e.motion.y >= 124 && e.motion.y <= 188)	SELECT = 2;
 							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 124 && e.motion.y <= 188)	SELECT = 3;
+							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= 800 && e.motion.y <= 900)
+							{
+								isInSaveMenu = 1;
+							}
 						}
 						else
 						{
-							changeTile(grid, XPOS, YPOS, e.motion.x, e.motion.y, PX, xSize, ySize, SELECT);
+							if (!isInSaveMenu) changeTile(grid, XPOS, YPOS, e.motion.x, e.motion.y, PX, xSize, ySize, SELECT);
 						}
 						displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 
@@ -411,44 +454,72 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 						}
 					break;
 					case SDL_KEYDOWN:
-						switch(e.key.keysym.sym)
+						if (isInSaveMenu == 0){
+							switch(e.key.keysym.sym)
+							{
+								case SDLK_KP_PLUS: 	// "+" key
+									if (PX == 64){
+										PX = 128;
+										printf("[GRAPHICS] Zoom In\n");
+										XPOS *= 2;
+										YPOS *= 2;
+										displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+									}
+									break;
+								case SDLK_KP_MINUS:	// "-" key
+									if (PX == 128){
+										PX = 64;
+										printf("[GRAPHICS] Zoom Out\n");
+										XPOS /= 2;
+										YPOS /= 2;
+										displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+									}
+									break;
+								case SDLK_z:		// "z" key
+									YPOS += (10*(PX/64));
+									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+									break;
+								case SDLK_q:		// "q" key
+									XPOS += (10*(PX/64));
+									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+									break;
+								case SDLK_s:		// "s" key
+									YPOS -= (10*(PX/64));
+									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+									break;
+								case SDLK_d:		// "d" key
+									XPOS -= (10*(PX/64));
+									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+									break;
+							}
+						}
+						else
 						{
-							case SDLK_KP_PLUS: 	// "+" key
-								if (PX == 64){
-									PX = 128;
-									printf("[GRAPHICS] Zoom In\n");
-									XPOS *= 2;
-									YPOS *= 2;
+							if (e.key.keysym.sym == SDLK_BACKSPACE)
+							{
+								if (strlen(mapName) > 4){
+									mapName[strlen(mapName)-1] = '\0';
 									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 								}
-								break;
-							case SDLK_KP_MINUS:	// "-" key
-								if (PX == 128){
-									PX = 64;
-									printf("[GRAPHICS] Zoom Out\n");
-									XPOS /= 2;
-									YPOS /= 2;
-									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
-								}
-								break;
-							case SDLK_z:		// "z" key
-								YPOS += (10*(PX/64));
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
-								break;
-							case SDLK_q:		// "q" key
-								XPOS += (10*(PX/64));
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
-								break;
-							case SDLK_s:		// "s" key
-								YPOS -= (10*(PX/64));
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
-								break;
-							case SDLK_d:		// "d" key
-								XPOS -= (10*(PX/64));
-								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
-								break;
+							}
+						}
+						
+					break;
+					case SDL_TEXTINPUT:
+						if (isInSaveMenu == 1)
+						{
+							strcat(mapName, e.text.text);
+							displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 						}
 					break;
+					case SDL_TEXTEDITING:
+						if (isInSaveMenu == 1)
+						{
+							composition = e.edit.text;
+							cursor = e.edit.start;
+							selection_len = e.edit.length;
+							displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+						}
 					case SDL_MOUSEMOTION:
 
 						if (e.motion.x >= 10 && e.motion.y >= 10)

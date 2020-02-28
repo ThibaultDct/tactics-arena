@@ -23,7 +23,7 @@ const char * realStr();
 void getLocalIP();
 void startChat(int sock, char pseudo[128], t_msgChat monMsg);
 const char * setServIP();
-void silentChat(int sock);
+void silentChat(int sock, char pseudo[128], t_msgChat monMsg);
 char * flushMsg(char * monMsg);
 
 #endif

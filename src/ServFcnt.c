@@ -135,11 +135,12 @@ void sendMsg(int socket, char pseudo[128], t_msgChat monMsg){
   printf("Saisir votre message : ");
   scanf(" %[^\n]", buffer);
 
-  printf("\n votre message : %s \n", buffer);
-  printf("Buffer size sendMSG: %lu (%lu)", strlen(buffer), sizeof(buffer));
+  printf("\nVotre message : %s \n", buffer);
+  //printf("Buffer size sendMSG: %lu (%lu)", strlen(buffer), sizeof(buffer));
   sprintf(monMsg.msg,"%s",buffer);
+  sprintf(monMsg.pseudo,"%s",pseudo);
 
-  printf("\nDEBUG SENDMSG : monMsg.msg:  %s", monMsg.msg);
+  //printf("\nDEBUG SENDMSG : monMsg.msg:  %s", monMsg.msg);
   sockCli = send(socket,(void *)&monMsg, sizeof(monMsg), 0);
   if(sockCli != SOCKET_ERROR){
     printf("Message envoyé avec succes ! \n");
@@ -151,55 +152,41 @@ void sendMsg(int socket, char pseudo[128], t_msgChat monMsg){
 
 
 void startChat(int sock, char pseudo[128], t_msgChat monMsg){
-  
-  int choix = 0;
-  time_t seconds;
-  time(&seconds);
-  do {
-    printf("\nEnvoyer un message (1) ");
-    scanf("%d", &choix);
-    if(choix == 1){
-      sendMsg(sock,pseudo,monMsg);
-    }
-    printf("Attente : ");
-    printf("%ld \n", (time(NULL) - seconds));
-    sleep(1);
-  } while((time(NULL) -seconds)  != (1 *60));
+
+    sendMsg(sock,pseudo,monMsg);
+    silentChat(sock,pseudo,(t_msgChat)monMsg);
 }
 
-void silentChat(int sock){
-
-  t_msgChat msgSilentChat;
-  msgSilentChat.ident=0;
-  sprintf(msgSilentChat.pseudo,"Null");
-  sprintf(msgSilentChat.msg,"Bonjour");
-  
-  printf("\nsize of msgSlilentCHat.msg : %lu (%lu) \n", strlen(msgSilentChat.msg), sizeof(msgSilentChat.msg));
-  
-  flushMsg(msgSilentChat.msg);
+void silentChat(int sock, char pseudo[128], t_msgChat monMsg){
 
   time_t seconds;
   time(&seconds);
   
-  
-  if(recv(sock,(void *)&msgSilentChat, sizeof(msgSilentChat), 0) != SOCKET_ERROR){
-    printf("Vous avez un nouveau message ! \n");
-    printf("[%s] : %s\n",msgSilentChat.pseudo, msgSilentChat.msg);
-    printf("\nsize of msgSlilentCHat.msg : %lu (%lu) \n", strlen(msgSilentChat.msg), sizeof(msgSilentChat.msg));
-    }
-  
-  
-  // while(1 && ((time(NULL) - seconds)  != (1 *60))){
-  //   if(recv(sock, bufferRecv, sizeof(bufferRecv),0) != SOCKET_ERROR){
-  //     printf("recu : %s \n", bufferRecv);
-  //     printf("size of bufferRecv startChat: %lu (%lu)", strlen(bufferRecv), sizeof(bufferRecv));
-  //     time(&seconds);
-  //     sleep(1);
-  //   }
-    // printf("Attente : ");
-    // printf("%ld \n", (time(NULL) - seconds));
-    // sleep(1);
+  // printf("\nsize of msgSlilentCHat.msg : %lu (%lu) \n", strlen(msgSilentChat.msg), sizeof(msgSilentChat.msg));
+
+
+  while(1 && ((time(NULL) - seconds)  != (1 *60))){
     
-  // }
+    int msgRcv;
+    msgRcv = recv(sock,(void *)&monMsg, sizeof(monMsg), 0);
+    
+    if(msgRcv != SOCKET_ERROR){
+      printf("\nVous avez un nouveau message ! \n");
+      printf("\nTest pseudo : %s\n", pseudo);
+      printf("%s : %s\n",monMsg.pseudo, monMsg.msg);
+      // printf("\nSize of msgSlilentCHat.msg : %lu (%lu) \n", strlen(msgSilentChat.msg), sizeof(msgSilentChat.msg));
+      time(&seconds);
+      sleep(1);
+      flushMsg(monMsg.msg);
+
+    }
+      startChat(sock,pseudo,(t_msgChat)monMsg);
+      // printf("Attente : ");
+      // printf("%ld \n", (time(NULL) - seconds));
+      sleep(1);
+      flushMsg(monMsg.msg);
+
+
+  }
 }
 

@@ -10,5 +10,7 @@
 void loadEditorTextures(SDL_Renderer * renderer);
 int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, int xSize, int ySize, int select, int xWinSize, int yWinSize);
 int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize);
+int saveMap(Tile * grid, const char * name);
+int loadMap(Tile * grid, const char * name);
 
 #endif

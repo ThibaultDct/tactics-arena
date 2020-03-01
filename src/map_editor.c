@@ -10,6 +10,7 @@
 #include "map.h"
 
 int isInSaveMenu = 0;
+int isInLoadMenu = 0;
 // Contains the name of the map the user wants to save
 	char mapName[50] = "map_";
 	char *composition;
@@ -125,20 +126,49 @@ void loadEditorTextures(SDL_Renderer * renderer)
 	save_menu = loadTexture(renderer, loadImage("../inc/img/saveMenu.png"));
 }
 
-int saveMap(SDL_Renderer * renderer, Tile * grid, int xWinSize, int yWinSize, char * mapName)
+int displaySaveMenu(SDL_Renderer * renderer, Tile * grid, int xWinSize, int yWinSize, char * mapName, int save)
 // Display a save map menu and save the map
 {
 	int xPos = (xWinSize/2)-300;
 	int yPos = (yWinSize/2)-60;
-	int xOpPos = xPos + 600;
 	int yOpPos = yPos + 120;
 
 	displaySprite(renderer, blur, 0, 0);
 	displaySprite(renderer, save_menu, xPos, yPos);
-	displayText(renderer, xPos+10, yPos+5, 20, "Enregistrer la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
-	displayText(renderer, xOpPos-65, yOpPos-25, 15, "OK", "../inc/font/Pixels.ttf", 255, 255, 255);
-	displayText(renderer, xOpPos-215, yOpPos-25, 15, "ANNULER", "../inc/font/Pixels.ttf", 255, 255, 255);
+	if (save == 1)	displayText(renderer, xPos+10, yPos+5, 20, "Enregistrer la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
+	else			displayText(renderer, xPos+10, yPos+5, 20, "Charger la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
+	displayText(renderer, xPos+10, yOpPos-25, 20, "[ENTER] pour valider, [ESC] pour annuler", "../inc/font/Pixels.ttf", 255, 255, 255);
 	if (mapName != NULL) displayText(renderer, xPos+40, yPos+55, 20, mapName, "../inc/font/Pixels.ttf", 0, 0, 0);
+
+	return 1;
+}
+
+int saveMap(Tile * grid, const char * name)
+{
+	char mapName[20];
+
+	sprintf(mapName, "../maps/%s", name);
+
+	FILE * map;
+	map = fopen(mapName, "wb");
+	fwrite(grid, sizeof(Tile)*10*10, 1, map);
+
+	fclose(map);
+
+	return 1;
+}
+
+int loadMap(Tile * grid, const char * name)
+{
+	char mapName[20];
+
+	sprintf(mapName, "../maps/%s", name);
+
+	FILE * map;
+	map = fopen(mapName, "rb");
+	fread(grid, sizeof(Tile)*10*10, 1, map);
+
+	fclose(map);
 
 	return 1;
 }
@@ -320,7 +350,8 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 	displayText(renderer, 220, 20, 20, str, "../inc/font/Pixels.ttf", 255, 255, 255);
 	// -- DEBUG --
 
-	if (isInSaveMenu == 1) saveMap(renderer, grid, xWinSize, yWinSize, mapName);
+	if (isInSaveMenu == 1) displaySaveMenu(renderer, grid, xWinSize, yWinSize, mapName, 1);
+	if (isInLoadMenu == 1) displaySaveMenu(renderer, grid, xWinSize, yWinSize, mapName, 0);
 
 	SDL_RenderPresent(renderer);
 
@@ -436,14 +467,16 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
 						if (e.motion.x <= 200)
 						{
-							if (e.motion.x >= 10 && e.motion.x <= 74 && e.motion.y >= 50 && e.motion.y <= 114)	SELECT = 0;
-							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 50 && e.motion.y <= 114)	SELECT = 1;
-							else if (e.motion.x >= 10 && e.motion.x <= 74 && e.motion.y >= 124 && e.motion.y <= 188)	SELECT = 2;
-							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 124 && e.motion.y <= 188)	SELECT = 3;
-							else if (e.motion.y >= 10 && e.motion.x <= 74 && e.motion.y >= 198 && e.motion.y <= 262)	SELECT = 4;
-							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= 800 && e.motion.y <= 900)
+							if (e.motion.x >= 10 && e.motion.x <= 74 && e.motion.y >= 50 && e.motion.y <= 114)							SELECT = 0;
+							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 50 && e.motion.y <= 114)					SELECT = 1;
+							else if (e.motion.x >= 10 && e.motion.x <= 74 && e.motion.y >= 124 && e.motion.y <= 188)					SELECT = 2;
+							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 124 && e.motion.y <= 188)					SELECT = 3;
+							else if (e.motion.y >= 10 && e.motion.x <= 74 && e.motion.y >= 198 && e.motion.y <= 262)					SELECT = 4;
+							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= yWinSize-40 && e.motion.y <= yWinSize)		isInSaveMenu = 1;
+							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= yWinSize-80 && e.motion.y <= yWinSize-40) 	loadMap(grid, "map_plains");
+							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= yWinSize-120 && e.motion.y <= yWinSize-80)
 							{
-								isInSaveMenu = 1;
+								closeWindow(pWindow);
 							}
 						}
 						else
@@ -521,6 +554,17 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 									mapName[strlen(mapName)-1] = '\0';
 									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 								}
+							}
+							else if (e.key.keysym.sym == SDLK_RETURN)
+							{
+								saveMap(grid, mapName);
+								isInSaveMenu = 0;
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+							}
+							else if (e.key.keysym.sym == SDLK_ESCAPE)
+							{
+								isInSaveMenu = 0;
+								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 							}
 						}
 						

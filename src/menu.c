@@ -87,7 +87,7 @@ int displayMenu(int x, int y)
 
     /* Initialisation simple */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0 ) {
-        fprintf(stdout,"Échec de l'initialisation de la SDL (%s)\n",SDL_GetError());
+        fprintf(stdout,"[MENU] Échec de l'initialisation de la SDL (%s)\n",SDL_GetError());
         return -1;
     }
 

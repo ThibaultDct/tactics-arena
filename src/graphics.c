@@ -36,6 +36,26 @@ void setRendererDriver(SDL_Renderer *renderer)
 	free(global_renderer_info);
 }
 
+SDL_Texture * getTexture(TabTexture * textures, const char * texture_name)
+// Return the texture associated with its name
+{
+	int index = 0;
+	while (textures[index].texture != NULL)
+	{
+		index++;
+	}
+
+	for (int i=0; i < index; i++)
+	{
+		if (strcmp(textures[i].texture_name, texture_name) == 0)
+		{
+			return textures[i].texture;
+		}
+	}
+
+	exit(EXIT_FAILURE);
+}
+
 SDL_Surface * loadImage(const char * img)
 // Load a PNG image into a surface
 {

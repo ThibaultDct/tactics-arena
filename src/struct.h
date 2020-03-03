@@ -1,5 +1,11 @@
 #ifndef struct_h
 #define struct_h
+
+#include "../SDL2/include/SDL2/SDL.h"
+#include "../SDL2/include/SDL2/SDL_image.h"
+#include "../SDL2/include/SDL2/SDL_ttf.h"
+#include "../SDL2/include/SDL2/SDL_mixer.h"
+
 #define STR_SHORT 25
 #define STR_LONG 50
 #define NUM_STATS 6
@@ -75,6 +81,15 @@ typedef struct
     int selected;
     Entity * entity;
 } Tile;
+
+/* TEXTURE STRUCTURES */
+
+typedef struct
+{
+    char * texture_name;
+    SDL_Texture *texture;
+} TabTexture;
+
 
 /* COMMUNICATION STRUCTURES */
 

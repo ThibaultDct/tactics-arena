@@ -9,121 +9,131 @@
 #include "audio.h"
 #include "map.h"
 
+
+#define _NB_TEXTURES_ 50
+
 int isInSaveMenu = 0;
 int isInLoadMenu = 0;
+
+// Textures table
+TabTexture textures[50];
+
 // Contains the name of the map the user wants to save
-	char mapName[50] = "map_";
-	char *composition;
-	int mapNameIndex;
-	Sint32 cursor;
-	Sint32 selection_len;
+char mapName[50] = "map_";
+char *composition;
+int mapNameIndex;
+Sint32 cursor;
+Sint32 selection_len;
 
-SDL_Texture *eraser = NULL,
-			*blank_pattern = NULL,
-            *pattern = NULL,
-			*sr_pattern = NULL,
-			*sb_pattern = NULL,
-			*water_pattern = NULL,
-			*sand_pattern = NULL,
-            *blank_big_pattern = NULL,
-			*pattern_big = NULL,
-			*sr_big_pattern = NULL,
-			*sb_big_pattern = NULL,
-			*water_big_pattern = NULL,
-			*sand_big_pattern = NULL,
-			*interface = NULL,
-			*selection = NULL,
-			*ok_button = NULL,
-			*load_button = NULL,
-			*cancel_button = NULL,
-			*blur = NULL,
-			*save_menu = NULL;
+void freeTextures(TabTexture * textures)
+// Free all the textures in the given textures table
+{
+	int nbTextures = sizeof(textures) / sizeof(SDL_Texture*);
 
-void loadEditorTextures(SDL_Renderer * renderer)
+	for (int i=0; i < nbTextures; i++)
+	{
+		if (textures[i].texture != NULL)
+		{
+			SDL_DestroyTexture(textures[i].texture);
+			textures[i].texture = NULL;
+		}
+	}
+}
+
+int loadEditorTextures(SDL_Renderer * renderer, TabTexture * textures)
 // Load all the map related textures
 {
-    if (blank_pattern != NULL) 		SDL_DestroyTexture(blank_pattern), 		blank_pattern = NULL;
-	if (pattern != NULL) 			SDL_DestroyTexture(pattern), 			pattern = NULL;
-	if (sr_pattern != NULL) 		SDL_DestroyTexture(sr_pattern), 		sr_pattern = NULL;
-	if (sb_pattern != NULL) 		SDL_DestroyTexture(sb_pattern), 		sb_pattern = NULL;
-	if (water_pattern != NULL) 		SDL_DestroyTexture(water_pattern), 		water_pattern = NULL;
-	if (sand_pattern != NULL)		SDL_DestroyTexture(sand_pattern),		sand_pattern = NULL;
-    if (blank_big_pattern != NULL) 	SDL_DestroyTexture(blank_big_pattern), 	blank_big_pattern = NULL;
-	if (pattern_big != NULL) 		SDL_DestroyTexture(pattern_big), 		pattern_big = NULL;
-	if (sr_big_pattern != NULL) 	SDL_DestroyTexture(sr_big_pattern), 	sr_big_pattern = NULL;
-	if (sb_big_pattern != NULL) 	SDL_DestroyTexture(sb_big_pattern), 	sb_big_pattern = NULL;
-	if (water_big_pattern != NULL) 	SDL_DestroyTexture(water_big_pattern), 	water_big_pattern = NULL;
-	if (sand_big_pattern != NULL)	SDL_DestroyTexture(sand_big_pattern),	sand_big_pattern = NULL;
-	if (interface != NULL)			SDL_DestroyTexture(interface),			interface = NULL;
-	if (eraser != NULL) 			SDL_DestroyTexture(eraser), 			eraser = NULL;
-	if (selection != NULL) 			SDL_DestroyTexture(selection), 			selection = NULL;
-	if (ok_button != NULL) 			SDL_DestroyTexture(ok_button), 			ok_button = NULL;
-	if (load_button != NULL) 		SDL_DestroyTexture(load_button), 		load_button = NULL;
-	if (cancel_button != NULL) 		SDL_DestroyTexture(cancel_button), 		cancel_button = NULL;
-	if (blur != NULL)				SDL_DestroyTexture(blur),				blur = NULL;
-	if (save_menu != NULL)			SDL_DestroyTexture(save_menu),			save_menu = NULL;
+	int index = 0;
+
+	printf("[GRAPHICS] Effacement des textures pré-existantes...\n");
+
+	freeTextures(textures);
 
 	printf("[GRAPHICS] Chargement des textures du jeu...\n");
 
     // Loading blank pattern texture (64px)
-    blank_pattern = loadTexture(renderer, loadImage("../inc/img/blank_64.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/blank_64.png"));
+	textures[index++].texture_name = "blank_pattern";
 
 	// Loading non-selected pattern texture (64px)
-	pattern = loadTexture(renderer, loadImage("../inc/img/block_64.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/block_64.png"));
+	textures[index++].texture_name = "pattern";
 
 	// Loading red selected pattern texture (64px)
-	sr_pattern = loadTexture(renderer, loadImage("../inc/img/block_red_64.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/block_red_64.png"));
+	textures[index++].texture_name = "sr_pattern";
 
 	// Loading blue selected pattern texture (64px)
-	sb_pattern = loadTexture(renderer, loadImage("../inc/img/block_blue_64.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/block_blue_64.png"));
+	textures[index++].texture_name = "sb_pattern";
 
 	// Loading water block texture (64px)
-	water_pattern = loadTexture(renderer, loadImage("../inc/img/water_64.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/water_64.png"));
+	textures[index++].texture_name = "water_pattern";
 
 	// Loading sand block texture (64px)
-	sand_pattern = loadTexture(renderer, loadImage("../inc/img/sand_64.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/sand_64.png"));
+	textures[index++].texture_name = "sand_pattern";
 
     // Loading blank pattern texture (128px)
-    blank_big_pattern = loadTexture(renderer, loadImage("../inc/img/blank_128.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/blank_128.png"));
+	textures[index++].texture_name = "blank_big_pattern";
 
 	// Loading non-selected pattern texture (128px)
-	pattern_big = loadTexture(renderer, loadImage("../inc/img/block_128.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/block_128.png"));
+	textures[index++].texture_name = "pattern_big";
 
 	// Loading red selected pattern texture (128px)
-	sr_big_pattern = loadTexture(renderer, loadImage("../inc/img/block_red_128.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/block_red_128.png"));
+	textures[index++].texture_name = "sr_big_pattern";
 
 	// Loading blue selected pattern texture (128px)
-	sb_big_pattern = loadTexture(renderer, loadImage("../inc/img/block_blue_128.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/block_blue_128.png"));
+	textures[index++].texture_name = "sb_big_pattern";
 
 	// Loadding water block texture (128px)
-	water_big_pattern = loadTexture(renderer, loadImage("../inc/img/water_128.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/water_128.png"));
+	textures[index++].texture_name = "water_big_pattern";
 
 	// Loading sand block texture (128px)
-	sand_big_pattern = loadTexture(renderer, loadImage("../inc/img/sand_128.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/sand_128.png"));
+	textures[index++].texture_name = "sand_big_pattern";
 
 	// Loading block selection interface texture
-	interface = loadTexture(renderer, loadImage("../inc/img/block_interface.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/block_interface.png"));
+	textures[index++].texture_name = "interface";
 
 	// Loading eraser texture
-	eraser = loadTexture(renderer, loadImage("../inc/img/eraser_64.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/eraser_64.png"));
+	textures[index++].texture_name = "eraser";
 
 	// Loading selection hover texture
-	selection = loadTexture(renderer, loadImage("../inc/img/editor_selection.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/editor_selection.png"));
+	textures[index++].texture_name = "selection";
 
 	// Loading green button texture
-	ok_button = loadTexture(renderer, loadImage("../inc/img/ok_button.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/ok_button.png"));
+	textures[index++].texture_name = "ok_button";
 
 	// Loading orange button texture
-	load_button = loadTexture(renderer, loadImage("../inc/img/load_button.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/load_button.png"));
+	textures[index++].texture_name = "load_button";
 
 	// Loading red button texture
-	cancel_button = loadTexture(renderer, loadImage("../inc/img/cancel_button.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/cancel_button.png"));
+	textures[index++].texture_name = "cancel_button";
 
 	// Loading blur effect texture
-	blur = loadTexture(renderer, loadImage("../inc/img/blur.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/blur.png"));
+	textures[index++].texture_name = "blur";
 
 	// Loading save menu texture
-	save_menu = loadTexture(renderer, loadImage("../inc/img/saveMenu.png"));
+	textures[index].texture = loadTexture(renderer, loadImage("../inc/img/saveMenu.png"));
+	textures[index++].texture_name = "save_menu";
+
+	printf("[GRAPHICS] %d texture(s) chargée(s) !\n", index+1);
+
+	return index+1;
 }
 
 int displaySaveMenu(SDL_Renderer * renderer, Tile * grid, int xWinSize, int yWinSize, char * mapName, int save)
@@ -133,8 +143,8 @@ int displaySaveMenu(SDL_Renderer * renderer, Tile * grid, int xWinSize, int yWin
 	int yPos = (yWinSize/2)-60;
 	int yOpPos = yPos + 120;
 
-	displaySprite(renderer, blur, 0, 0);
-	displaySprite(renderer, save_menu, xPos, yPos);
+	displaySprite(renderer, getTexture(textures, "blur"), 0, 0);
+	displaySprite(renderer, getTexture(textures, "save_menu"), xPos, yPos);
 	if (save == 1)	displayText(renderer, xPos+10, yPos+5, 20, "Enregistrer la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
 	else			displayText(renderer, xPos+10, yPos+5, 20, "Charger la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
 	displayText(renderer, xPos+10, yOpPos-25, 20, "[ENTER] pour valider, [ESC] pour annuler", "../inc/font/Pixels.ttf", 255, 255, 255);
@@ -159,6 +169,7 @@ int saveMap(Tile * grid, const char * name)
 }
 
 int loadMap(Tile * grid, const char * name)
+// Load a map
 {
 	char mapName[20];
 
@@ -255,19 +266,19 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 				*sand_block = NULL;
 
 	if (pxBase == 64){
-        b_block = blank_pattern;
-		block = pattern;
-		s_block = sb_pattern;
-		sr_block = sr_pattern;
-		water_block = water_pattern;
-		sand_block = sand_pattern;
+        b_block = getTexture(textures, "blank_pattern");
+		block = getTexture(textures, "pattern");
+		s_block = getTexture(textures, "sb_pattern");
+		sr_block = getTexture(textures, "sr_pattern");
+		water_block = getTexture(textures, "water_pattern");
+		sand_block = getTexture(textures, "sand_pattern");
 	} else {
-        b_block = blank_big_pattern;
-		block = pattern_big;
-		s_block = sb_big_pattern;
-		sr_block = sr_big_pattern;
-		water_block = water_big_pattern;
-		sand_block = sand_big_pattern;
+        b_block = getTexture(textures, "blank_big_pattern");
+		block = getTexture(textures, "pattern_big");
+		s_block = getTexture(textures, "sb_big_pattern");
+		sr_block = getTexture(textures, "sr_big_pattern");
+		water_block = getTexture(textures, "water_big_pattern");
+		sand_block = getTexture(textures, "sand_big_pattern");
 	}
 
 	/* Le fond de la fenêtre sera blanc */
@@ -322,24 +333,24 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
         }
     }
 
-	displaySprite(renderer, interface, 0, 0);
-	displaySprite(renderer, eraser, 10, 50);
-	displaySprite(renderer, pattern, 126, 50);
-	displaySprite(renderer, sr_pattern, 10, 124);
-	displaySprite(renderer, water_pattern, 126, 124);
-	displaySprite(renderer, sand_pattern, 10, 198);
+	displaySprite(renderer, getTexture(textures, "interface"), 0, 0);
+	displaySprite(renderer, getTexture(textures, "eraser"), 10, 50);
+	displaySprite(renderer, getTexture(textures, "pattern"), 126, 50);
+	displaySprite(renderer, getTexture(textures, "sr_pattern"), 10, 124);
+	displaySprite(renderer, getTexture(textures, "water_pattern"), 126, 124);
+	displaySprite(renderer, getTexture(textures, "sand_pattern"), 10, 198);
 
 	if (select%2 == 0)		selectionPos.x = 10;
 	else					selectionPos.x = 126;
 	selectionPos.y = ceil(select/2)*74+50;
-	displaySprite(renderer, selection, selectionPos.x, selectionPos.y);
+	displaySprite(renderer, getTexture(textures, "selection"), selectionPos.x, selectionPos.y);
 
 	// Boutons
-	displaySprite(renderer, cancel_button, 0, yWinSize-120);
+	displaySprite(renderer, getTexture(textures, "cancel_button"), 0, yWinSize-120);
 	displayText(renderer, 10, yWinSize-110, 20, "QUITTER", "../inc/font/Pixels.ttf", 255, 255, 255);
-	displaySprite(renderer, load_button, 0, yWinSize-80);
+	displaySprite(renderer, getTexture(textures, "load_button"), 0, yWinSize-80);
 	displayText(renderer, 10, yWinSize-70, 20, "OUVRIR UNE MAP", "../inc/font/Pixels.ttf", 255, 255, 255);
-	displaySprite(renderer, ok_button, 0, yWinSize-40);
+	displaySprite(renderer, getTexture(textures, "ok_button"), 0, yWinSize-40);
 	displayText(renderer, 10, yWinSize-30, 20, "ENREGISTRER", "../inc/font/Pixels.ttf", 255, 255, 255);
 
 	displayText(renderer, 20, 20, 20, "----- BLOCS -----", "../inc/font/Pixels.ttf", 255, 255, 255);
@@ -417,7 +428,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 	if( pWindow )
 	{
 
-		loadEditorTextures(renderer);
+		loadEditorTextures(renderer, textures);
 
 		SDL_GetWindowSize(pWindow, &xWinSize, &yWinSize);
 
@@ -477,6 +488,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= yWinSize-120 && e.motion.y <= yWinSize-80)
 							{
 								closeWindow(pWindow);
+								freeTextures(textures);
 							}
 						}
 						else
@@ -597,6 +609,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 			SDL_Delay(16);
 		}
 		closeWindow(pWindow);
+		freeTextures(textures);
 	} else {
 		fprintf(stderr,"[GRAPHICS] Erreur de création de la fenêtre: %s\n",SDL_GetError());
 	}

@@ -142,6 +142,7 @@ int displaySaveMenu(SDL_Renderer * renderer, Tile * grid, int xWinSize, int yWin
 }
 
 int saveMap(Tile * grid, const char * name)
+// Save a map
 {
 	char mapName[20];
 

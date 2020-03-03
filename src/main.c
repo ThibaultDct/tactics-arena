@@ -61,8 +61,7 @@ int main()
         case 2: startTCPSocketCli();
         break;
         case 3:
-                loadMap(matrix, "map_plains");
-                //createGrid((Tile *)matrix, 10, X, Y);
+                createGrid((Tile *)matrix, 10, X, Y);
                 createGrid((Tile *)blankGrid, 1, X, Y);
                 playMenuMusic();
                 selection = displayMenu(1280, 720);

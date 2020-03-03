@@ -8,68 +8,61 @@
 #include "struct.h"
 #include "audio.h"
 
-int frames = 0;
+#define _NB_MAX_TEXTURES_ 50
 
-SDL_Texture *tile = NULL,
-			*sr_tile = NULL,
-			*sb_tile = NULL,
-			*water_tile = NULL,
-			*sand_tile = NULL,
-			*tile_big = NULL,
-			*sr_big_tile = NULL,
-			*sb_big_tile = NULL,
-			*water_big_tile = NULL,
-			*sand_big_tile = NULL;
+// Textures table
+TabTexture textures[_NB_MAX_TEXTURES_];
 
-void loadMapTextures(SDL_Renderer * renderer)
+int loadMapTextures(SDL_Renderer * renderer)
 // Load all the map related textures
 {
-	if (tile != NULL) 			SDL_DestroyTexture(tile), 			tile = NULL;
-	if (sr_tile != NULL) 		SDL_DestroyTexture(sr_tile), 		sr_tile = NULL;
-	if (sb_tile != NULL) 		SDL_DestroyTexture(sb_tile), 		sb_tile = NULL;
-	if (water_tile != NULL) 	SDL_DestroyTexture(water_tile), 	water_tile = NULL;
-	if (tile_big != NULL) 		SDL_DestroyTexture(tile_big), 		tile_big = NULL;
-	if (sr_big_tile != NULL) 	SDL_DestroyTexture(sr_big_tile), 	sr_big_tile = NULL;
-	if (sb_big_tile != NULL) 	SDL_DestroyTexture(sb_big_tile), 	sb_big_tile = NULL;
-	if (water_big_tile != NULL) SDL_DestroyTexture(water_big_tile), water_big_tile = NULL;
+	int index;
+
+	printf("[GRAPHICS] Effacement des textures pré-existantes...\n");
+
+	freeTextures(textures);
 
 	printf("[GRAPHICS] Chargement des textures du jeu...\n");
 
-	// Loading non-selected tile texture (64px)
-	tile = loadTexture(renderer, loadImage("../inc/img/block_64.png"));
+    // Loading blank pattern textures
+	addTextureToTable(	textures,
+						loadTexture(renderer, loadImage("../inc/img/blank_64.png")),
+						loadTexture(renderer, loadImage("../inc/img/blank_128.png")),
+						"blank");
 
-	// Loading red selected tile texture (64px)
-	sr_tile = loadTexture(renderer, loadImage("../inc/img/block_red_64.png"));
+	// Loading non-selected pattern textures
+	addTextureToTable(	textures,
+						loadTexture(renderer, loadImage("../inc/img/block_64.png")),
+						loadTexture(renderer, loadImage("../inc/img/block_128.png")),
+						"block");
 
-	// Loading blue selected tile texture (64px)
-	sb_tile = loadTexture(renderer, loadImage("../inc/img/block_blue_64.png"));
+	// Loading blue selected pattern textures
+	addTextureToTable(	textures,
+						loadTexture(renderer, loadImage("../inc/img/block_blue_64.png")),
+						loadTexture(renderer, loadImage("../inc/img/block_blue_128.png")),
+						"blue_selected");
 
-	// Loading red tile texture (64px)
-	sr_tile = loadTexture(renderer, loadImage("../inc/img/block_red_64.png"));
+	// Loading red selected pattern textures
+	addTextureToTable(	textures,
+						loadTexture(renderer, loadImage("../inc/img/block_red_64.png")),
+						loadTexture(renderer, loadImage("../inc/img/block_red_128.png")),
+						"red_selected");
 
-	// Loading water block texture (64px)
-	water_tile = loadTexture(renderer, loadImage("../inc/img/water_64.png"));
+	// Loading water block textures
+	addTextureToTable(	textures,
+						loadTexture(renderer, loadImage("../inc/img/water_64.png")),
+						loadTexture(renderer, loadImage("../inc/img/water_128.png")),
+						"water");
 
-	// Loading sand block texture (64px)
-	sand_tile = loadTexture(renderer, loadImage("../inc/img/sand_64.png"));
+	// Loading sand block textures
+	index = addTextureToTable(	textures,
+								loadTexture(renderer, loadImage("../inc/img/sand_64.png")),
+								loadTexture(renderer, loadImage("../inc/img/sand_128.png")),
+								"sand");
 
-	// Loading non-selected tile texture (128px)
-	tile_big = loadTexture(renderer, loadImage("../inc/img/block_128.png"));
+	printf("[GRAPHICS] %d texture(s) chargée(s) !\n", index+1);
 
-	// Loading red selected tile texture (128px)
-	sr_big_tile = loadTexture(renderer, loadImage("../inc/img/block_red_128.png"));
-
-	// Loading blue selected tile texture (128px)
-	sb_big_tile = loadTexture(renderer, loadImage("../inc/img/block_blue_128.png"));
-
-	// Loading red tile texture (128px)
-	sr_big_tile = loadTexture(renderer, loadImage("../inc/img/block_red_128.png"));
-
-	// Loadding water block texture (128px)
-	water_big_tile = loadTexture(renderer, loadImage("../inc/img/water_128.png"));
-
-	// Loading sand block texture (128px)
-	sand_big_tile = loadTexture(renderer, loadImage("../inc/img/sand_128.png"));
+	return index+1;
 }
 
 float crossProduct(Vector AB, Vector AC)
@@ -150,27 +143,11 @@ int selectTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int 
 int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, int xSize, int ySize)
 // Display the map
 {
-    SDL_Rect imgDestRect;
+	/* Le fond de la fenêtre sera blanc */
+    SDL_SetRenderDrawColor(renderer, 173, 216, 230, 255);
+	SDL_RenderClear(renderer);
 
-	SDL_Texture *block = NULL,
-				*s_block = NULL,
-				*sr_block = NULL,
-				*water_block = NULL,
-				*sand_block = NULL;
-
-	if (pxBase == 64){
-		block = tile;
-		s_block = sb_tile;
-		sr_block = sr_tile;
-		water_block = water_tile;
-		sand_block = sand_tile;
-	} else {
-		block = tile_big;
-		s_block = sb_big_tile;
-		sr_block = sr_big_tile;
-		water_block = water_big_tile;
-		sand_block = sand_big_tile;
-	}
+    Coord blockPos;
 
 	/* Le fond de la fenêtre sera blanc */
     SDL_SetRenderDrawColor(renderer, 173, 216, 230, 255);
@@ -179,43 +156,33 @@ int displayMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, in
     for (int i=0; i < xSize; i++){
         for (int j=(ySize-1); j >= 0; j--){
 
-			imgDestRect.x = x+(j+1)*(pxBase/2)+(i+1)*(pxBase/2);
-			imgDestRect.y = y+i*(pxBase/4)+(ySize-j)*(pxBase/4);
+			blockPos.x = x+(j+1)*(pxBase/2)+(i+1)*(pxBase/2);
+			blockPos.y = y+i*(pxBase/4)+(ySize-j)*(pxBase/4);
 
 			if ((*(grid+i*xSize+j)).tile_id == 1)
 			{
 				if ((*(grid+i*xSize+j)).selected)
 				{
-					SDL_QueryTexture(s_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-					SDL_RenderCopy(renderer, s_block, NULL, &imgDestRect);
+					if (pxBase == 64)	displaySprite(renderer, getTexture(textures, "blue_selected"), blockPos.x, blockPos.y);
+					else				displaySprite(renderer, getBigTexture(textures, "blue_selected"), blockPos.x, blockPos.y);
 				} 
 				else
 				{
-					SDL_QueryTexture(block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-					SDL_RenderCopy(renderer, block, NULL, &imgDestRect);
+					if (pxBase == 64)	displaySprite(renderer, getTexture(textures, "block"), blockPos.x, blockPos.y);
+					else				displaySprite(renderer, getBigTexture(textures, "block"), blockPos.x, blockPos.y);
 				}
+			}
+			else if ((*(grid+i*xSize+j)).tile_id <= 5)
+			{
+				if (pxBase == 64)	displaySprite(renderer, textures[(*(grid+i*xSize+j)).tile_id].texture, blockPos.x, blockPos.y);
+				else 				displaySprite(renderer, textures[(*(grid+i*xSize+j)).tile_id].big_texture, blockPos.x, blockPos.y);
+			}
 
-				/*/ -- DEBUG Affichage des indices des tuiles --
-				char pos[6];
-				sprintf(pos, "%d,%d", i, j);
-				displayText(renderer, imgDestRect.x+(pxBase/2)-10, imgDestRect.y+(pxBase/4), (pxBase/64)*10, pos, "../inc/font/Pixels.ttf", 255, 50, 50);
-				// -- DEBUG --*/
-			}
-			else if ((*(grid+i*xSize+j)).tile_id == 2)
-			{
-				SDL_QueryTexture(sr_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-				SDL_RenderCopy(renderer, sr_block, NULL, &imgDestRect);
-			}
-			else if ((*(grid+i*xSize+j)).tile_id == 3)
-			{
-				SDL_QueryTexture(water_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-				SDL_RenderCopy(renderer, water_block, NULL, &imgDestRect);
-			}
-			else if ((*(grid+i*xSize+j)).tile_id == 4)
-			{
-				SDL_QueryTexture(sand_block, NULL, NULL, &(imgDestRect.w), &(imgDestRect.h));
-				SDL_RenderCopy(renderer, sand_block, NULL, &imgDestRect);
-			}
+			/*/ -- DEBUG Affichage des indices des tuiles --
+			char pos[6];
+			sprintf(pos, "%d,%d", i, j);
+			displayText(renderer, imgDestRect.x+(pxBase/2)-10, imgDestRect.y+(pxBase/4), (pxBase/64)*10, pos, "../inc/font/Pixels.ttf", 255, 50, 50);
+			// -- DEBUG --*/
         }
     }
 

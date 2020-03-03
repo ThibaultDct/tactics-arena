@@ -179,12 +179,14 @@ int displayMenu(int x, int y)
 								music_playing = 0;
 								pauseMenuMusic();
 								displaySprite(renderer, music_off, x-175, y-200);
+								SDL_RenderPresent(renderer);
 							}
 							else
 							{
 								music_playing = 1;
 								resumeMenuMusic();
 								displaySprite(renderer, music_on, x-175, y-200);
+								SDL_RenderPresent(renderer);
 							}
 						}
 					break;

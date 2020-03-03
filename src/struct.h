@@ -88,6 +88,7 @@ typedef struct
 {
     char * texture_name;
     SDL_Texture *texture;
+    SDL_Texture *big_texture;
 } TabTexture;
 
 

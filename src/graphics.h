@@ -8,7 +8,10 @@
 #include "struct.h"
 
 void setRendererDriver(SDL_Renderer *renderer);
+void freeTextures(TabTexture * textures);
+int addTextureToTable(TabTexture * texturesTable, SDL_Texture * texture, SDL_Texture * big_texture, const char * texture_name);
 SDL_Texture * getTexture(TabTexture textures[], const char * texture_name);
+SDL_Texture * getBigTexture(TabTexture * textures, const char * texture_name);
 SDL_Surface * loadImage(const char * img);
 SDL_Texture * loadTexture(SDL_Renderer * renderer, SDL_Surface * surface);
 void displayText(SDL_Renderer *renderer, int x, int y, int size, const char *content, const char *text_police, int r, int g, int b);

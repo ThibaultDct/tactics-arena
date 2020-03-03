@@ -36,6 +36,46 @@ void setRendererDriver(SDL_Renderer *renderer)
 	free(global_renderer_info);
 }
 
+void freeTextures(TabTexture * textures)
+// Free all the textures in the given textures table
+{
+	int nbTextures = sizeof(textures) / sizeof(SDL_Texture*);
+
+	for (int i=0; i < nbTextures; i++)
+	{
+		if (textures[i].texture != NULL)
+		{
+			SDL_DestroyTexture(textures[i].texture);
+			textures[i].texture = NULL;
+		}
+
+		if (textures[i].big_texture != NULL)
+		{
+			SDL_DestroyTexture(textures[i].big_texture);
+			textures[i].big_texture = NULL;
+		}
+	}
+}
+
+int addTextureToTable(TabTexture * texturesTable, SDL_Texture * texture, SDL_Texture * big_texture, char * texture_name)
+// Add to the TabTexture table the given texture and its big one
+{
+	int index = 0;
+
+	while (texturesTable[index].texture != NULL)
+	{
+		index++;
+	}
+
+	texturesTable[index].texture = texture;
+	texturesTable[index].big_texture = big_texture;
+	texturesTable[index].texture_name = texture_name;
+
+	printf("[GRAPHICS] Ajout de la texture [%s] à l'id %d\n", texture_name, index);
+
+	return index;
+}
+
 SDL_Texture * getTexture(TabTexture * textures, const char * texture_name)
 // Return the texture associated with its name
 {
@@ -50,6 +90,26 @@ SDL_Texture * getTexture(TabTexture * textures, const char * texture_name)
 		if (strcmp(textures[i].texture_name, texture_name) == 0)
 		{
 			return textures[i].texture;
+		}
+	}
+
+	exit(EXIT_FAILURE);
+}
+
+SDL_Texture * getBigTexture(TabTexture * textures, const char * texture_name)
+// Return the texture associated with its name
+{
+	int index = 0;
+	while (textures[index].texture != NULL)
+	{
+		index++;
+	}
+
+	for (int i=0; i < index; i++)
+	{
+		if (strcmp(textures[i].texture_name, texture_name) == 0)
+		{
+			return textures[i].big_texture;
 		}
 	}
 
@@ -81,7 +141,7 @@ SDL_Texture * loadTexture(SDL_Renderer * renderer, SDL_Surface * surface)
 
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
 	if(!texture){
-		fprintf(stderr, "[GRAPHICS ERROR] loadTexture error while creating texture : %s\n", SDL_GetError());
+		fprintf(stderr, "[GRAPHICS] loadTexture error while creating texture : %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 

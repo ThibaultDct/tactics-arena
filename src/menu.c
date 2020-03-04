@@ -15,7 +15,8 @@ SDL_Texture *background = NULL,
 			*start_button = NULL,
 			*quit_button = NULL,
 			*music_on = NULL,
-			*music_off = NULL;
+			*music_off = NULL,
+			*map_editor_button = NULL;
 
 // La musique est activée de base
 int music_playing = 1;
@@ -40,6 +41,9 @@ void loadMenuTextures(SDL_Renderer *renderer)
 	// == Loading music OFF switch ==
 	music_off = loadTexture(renderer, loadImage("../inc/img/music_off.png"));
 
+	// == Loading map editor button ==
+	map_editor_button = loadTexture(renderer, loadImage("../inc/img/map_editor_button_256.png"));
+
 }
 
 void freeMenuTextures()
@@ -50,6 +54,7 @@ void freeMenuTextures()
 	SDL_DestroyTexture(quit_button);
 	SDL_DestroyTexture(music_on);
 	SDL_DestroyTexture(music_off);
+	SDL_DestroyTexture(map_editor_button);
 }
 
 void updateMenu(SDL_Renderer *renderer, int x, int y)
@@ -62,7 +67,10 @@ void updateMenu(SDL_Renderer *renderer, int x, int y)
 	displaySprite(renderer, start_button, 500, 300);
 
 	/* Quit button */
-	displaySprite(renderer, quit_button, 515, 375);
+	displaySprite(renderer, map_editor_button, 515, 375);
+
+	/* Quit button */
+	displaySprite(renderer, quit_button, 515, 450);
 
 	/* Bouton musique ON/OFF */
 	if (music_playing){
@@ -156,19 +164,19 @@ int displayMenu(int x, int y)
                             return 2;
 						}
 
-						// Bouton "Quit"
-						else if (e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 467 && e.motion.y <= 518)
-						{
-							closeWindow(pWindow);
-							freeMenuTextures();
-						}
-
 						// Bouton "Map editor"
-						else if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 540 && e.motion.y <= 600)
+						else if (e.motion.x >= 530 && e.motion.x <= 757 && e.motion.y >= 470 && e.motion.y <= 519)
 						{
 							closeWindow(pWindow);
 							freeMenuTextures();
 							return 3;
+						}
+
+						// Bouton "Quit"
+						else if (e.motion.x >= 585 && e.motion.x <= 725 && e.motion.y >= 545 && e.motion.y <= 658)
+						{
+							closeWindow(pWindow);
+							freeMenuTextures();
 						}
 
 						// Switch musique ON/OFF

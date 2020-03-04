@@ -96,7 +96,7 @@ const char * setServIP(){
 char * flushMsg(char monMsg[MAX_BUFF_SIZE]){
   // printf("\nMon MSG before flush : %s", monMsg);
     for(int i = 0; monMsg[i]; i++){
-     monMsg[i] = "";
+      monMsg[i] = ' ';
     }
   // printf("\nMon MSG after flush : %s", monMsg);
   return monMsg;

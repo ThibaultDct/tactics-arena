@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
 #include "../SDL2/include/SDL2/SDL.h"
 #include "../SDL2/include/SDL2/SDL_image.h"
 #include "../SDL2/include/SDL2/SDL_ttf.h"
@@ -7,6 +9,15 @@
 #include "map.h"
 #include "struct.h"
 #include "graphics.h"
+#include "Socket_Server.h"
+
+#if defined (Win32)
+#  include <windows.h>
+#  define psleep(sec) Sleep ((sec) * 1000)
+#else
+#  include <unistd.h>
+#  define psleep(sec) sleep ((sec))
+#endif
 
 #define XPOS 500			// x position of the grid
 #define YPOS 100			// y position of the grid
@@ -16,10 +27,38 @@ SDL_Texture *background = NULL,
 			*quit_button = NULL,
 			*music_on = NULL,
 			*music_off = NULL,
-			*map_editor_button = NULL;
+			*map_editor_button = NULL,
+			*multi_button = NULL,
+			*join_button = NULL,
+			*host_button = NULL;
 
 // La musique est activée de base
 int music_playing = 1;
+int isMultiMenu = 0;
+int isHostbutton = 0;
+int isJoinButton = 0;
+
+// Initialisation du thread 
+typedef struct
+{
+   int stock;
+ 
+   pthread_t thread_server;
+   pthread_t thread_client;
+}
+multiThread_t;
+
+static multiThread_t server =
+{
+   .stock = 0,
+};
+ 
+/* Fonction pour le thread du magasin. */
+static void * fn_server (void * p_data)
+{
+    startTCPSocketServ();
+    return NULL;
+}
 
 void loadMenuTextures(SDL_Renderer *renderer)
 // Load all the textures needed for the menu
@@ -43,6 +82,15 @@ void loadMenuTextures(SDL_Renderer *renderer)
 
 	// == Loading map editor button ==
 	map_editor_button = loadTexture(renderer, loadImage("../inc/img/map_editor_button_256.png"));
+	
+	// == Loading Multi switch ==
+	multi_button = loadTexture(renderer, loadImage("../inc/img/start_button_256.png"));
+
+	// == Loading Host switch ==
+	host_button = loadTexture(renderer, loadImage("../inc/img/start_button_256.png"));
+
+	// == Loading Join switch ==
+	join_button = loadTexture(renderer, loadImage("../inc/img/start_button_256.png"));
 
 }
 
@@ -63,14 +111,46 @@ void updateMenu(SDL_Renderer *renderer, int x, int y)
 	/* Background image */
 	displaySprite(renderer, background, 0, 0);
 
-	/* Start button */
-	displaySprite(renderer, start_button, 500, 300);
+	if(!isMultiMenu){
+		/* Start button */
+		displaySprite(renderer, start_button, 500, 300);
+
+		/* Editor button */
+		displaySprite(renderer, map_editor_button, 515, 375);
+
+		/* Multi button */
+		displaySprite(renderer, multi_button, 500, 450);
+	}	
+	else if(isHostbutton){
+		/* Petit text de confirmation */
+		displayText(renderer, 80, 450, 15, "Host est séléctioné", "../inc/font/PixelOperator.ttf", 255, 255, 255);
+		
+		/* Quit button */
+		displaySprite(renderer, quit_button, 515, 525);
+
+	}
+	else if(isJoinButton){
+		/* Petit text de confirmation */
+		displayText(renderer, 80, 450, 15, "Join est séléctioné", "../inc/font/PixelOperator.ttf", 255, 255, 255);
+		
+		/* Quit button */
+		displaySprite(renderer, quit_button, 515, 525);
+	}
+	else{
+		
+		/* Host button */
+		displaySprite(renderer, host_button, 75, 300);
+
+		/* Join bouton */
+		displaySprite(renderer, join_button, 75, 375);
+
+		/* Quit button */
+		displaySprite(renderer, quit_button, 515, 525);
+	}
+	
 
 	/* Quit button */
-	displaySprite(renderer, map_editor_button, 515, 375);
-
-	/* Quit button */
-	displaySprite(renderer, quit_button, 515, 450);
+	displaySprite(renderer, quit_button, 515, 525);
 
 	/* Bouton musique ON/OFF */
 	if (music_playing){
@@ -157,7 +237,7 @@ int displayMenu(int x, int y)
 						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
 
 						// Bouton "Start"
-						if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 394 && e.motion.y <= 443)
+						if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 394 && e.motion.y <= 443 && isMultiMenu == 0)
 						{
 							closeWindow(pWindow);
 							freeMenuTextures();
@@ -165,18 +245,36 @@ int displayMenu(int x, int y)
 						}
 
 						// Bouton "Map editor"
-						else if (e.motion.x >= 530 && e.motion.x <= 757 && e.motion.y >= 470 && e.motion.y <= 519)
+						else if ((e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 467 && e.motion.y <= 518) && isMultiMenu == 0)
 						{
 							closeWindow(pWindow);
 							freeMenuTextures();
 							return 3;
 						}
 
-						// Bouton "Quit"
-						else if (e.motion.x >= 585 && e.motion.x <= 725 && e.motion.y >= 545 && e.motion.y <= 658)
+						// Bouton "Multiplayer"
+						else if ((e.motion.x >= 585 && e.motion.x <= 710 && e.motion.y >= 540 && e.motion.y <= 600) && (isHostbutton == 0 || isJoinButton == 0))
 						{
-							closeWindow(pWindow);
-							freeMenuTextures();
+							isMultiMenu = 1;
+							updateMenu(renderer, x, y);
+							SDL_RenderPresent(renderer);
+						}
+
+						// Bouton "Host"
+						else if ((e.motion.x >= 160 && e.motion.x <= 305 && e.motion.y >= 390 && e.motion.y <= 450) && isMultiMenu == 1)
+						{
+							isHostbutton = 1;
+							updateMenu(renderer, x, y);
+							SDL_RenderPresent(renderer);
+							pthread_create (& server.thread_server, NULL, fn_server, NULL);
+						}
+
+						// Bouton "Join"
+						else if ((e.motion.x >= 160 && e.motion.x <= 305 && e.motion.y >= 465 && e.motion.y <= 525) && isMultiMenu == 1) 
+						{
+							isJoinButton = 1;
+							updateMenu(renderer, x, y);
+							SDL_RenderPresent(renderer);
 						}
 
 						// Switch musique ON/OFF
@@ -196,6 +294,13 @@ int displayMenu(int x, int y)
 								displaySprite(renderer, music_on, x-175, y-200);
 								SDL_RenderPresent(renderer);
 							}
+						}
+						
+						// Bouton "Quit"
+						else if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 613 && e.motion.y <= 673)
+						{
+							closeWindow(pWindow);
+							freeMenuTextures();
 						}
 					break;
 				}

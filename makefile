@@ -5,6 +5,7 @@ CC       = gcc
 # compiling flags here
 CFLAGS   = -std=c99 -Wall -I.
 SOCKLIBFLAGS = lib/libws2_32.a
+THREADFLAGS = -lpthread -D_REENTRANT
 
 LINKER   = gcc
 # linking flags here
@@ -44,7 +45,7 @@ rm       = rm -f
 
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
-	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@ $(SDL_LIBS) $(SDL_INC) $(SOCKLIBFLAGS)
+	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@ $(SDL_LIBS) $(SDL_INC) $(SOCKLIBFLAGS) $(THREADFLAGS)
 	@echo "Linking complete!"
 
 

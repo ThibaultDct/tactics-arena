@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <dirent.h>
 #include "../SDL2/include/SDL2/SDL.h"
 #include "../SDL2/include/SDL2/SDL_image.h"
 #include "../SDL2/include/SDL2/SDL_ttf.h"
@@ -10,12 +11,17 @@
 #include "map.h"
 
 #define _NB_MAX_TEXTURES_ 50
+#define _NB_MAX_MAPS_ 20
 
 int isInSaveMenu = 0;
 int isInLoadMenu = 0;
 
 // Textures table
 TabTexture textures[_NB_MAX_TEXTURES_];
+
+// Map list
+char *mapList[_NB_MAX_MAPS_];
+int mapListIndex = 0;
 
 // Contains the name of the map the user wants to save
 char mapName[50] = "map_";
@@ -130,6 +136,60 @@ int loadEditorTextures(SDL_Renderer * renderer, TabTexture * textures)
 	return index+1;
 }
 
+int listMaps(char *mapList[])
+// List all the maps and save them in mapList
+{
+	int index = 0;
+	DIR * d;
+	struct dirent *dir;
+
+	d = opendir("../maps");
+	if (!d){
+		printf("Aucune map sauvegardée\n");
+		return -1;
+	}
+	else
+	{
+		while ((dir = readdir(d)) != NULL)
+		{
+			if (strcmp(dir->d_name, ".") && strcmp(dir->d_name, ".."))
+			{
+				mapList[index] = dir->d_name;
+				index++;
+			}
+		}
+		closedir(d);
+	}
+
+	return index;
+}
+
+int displayLoadMenu(SDL_Renderer * renderer, char *mapList[], int xWinSize, int yWinSize, int index)
+// Display a load map menu and load the selected one
+{
+	int xPos = (xWinSize/2)-300;
+	int yPos = (yWinSize/2)-60;
+	int xOpPos = xPos + 600;
+	int yOpPos = yPos + 120;
+	int nbMaps = listMaps(mapList);
+
+	if (index <= 0) 		index = 0, 			mapListIndex = 0;
+	if (index > nbMaps-1)	index = nbMaps-1,	mapListIndex = nbMaps-1;
+
+	char mapName[50];
+	sprintf(mapName, "%s", mapList[index]);
+
+	displaySprite(renderer, getTexture(textures, "blur"), 0, 0);
+	displaySprite(renderer, getTexture(textures, "save_menu"), xPos, yPos);
+	displayText(renderer, xPos+10, yPos+5, 20, "Charger la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
+	displayText(renderer, xPos+10, yOpPos-25, 15, "[ENTER] pour valider, [ESC] pour annuler, [ARROWS] pour naviguer", "../inc/font/Pixels.ttf", 255, 255, 255);
+	if (mapList[index] != NULL) displayText(renderer, xPos+40, yPos+55, 20, mapName, "../inc/font/Pixels.ttf", 0, 0, 0);
+	if (index > 0) 		displayText(renderer, xPos+10, yPos+50, 30, "<", "../inc/font/Pixels.ttf", 255, 255, 255);
+	if (index < nbMaps-1) 	displayText(renderer, xOpPos-20, yPos+50, 30, ">", "../inc/font/Pixels.ttf", 255, 255, 255);
+
+	return 1;
+}
+
 int displaySaveMenu(SDL_Renderer * renderer, Tile * grid, int xWinSize, int yWinSize, char * mapName, int save)
 // Display a save map menu and save the map
 {
@@ -139,8 +199,7 @@ int displaySaveMenu(SDL_Renderer * renderer, Tile * grid, int xWinSize, int yWin
 
 	displaySprite(renderer, getTexture(textures, "blur"), 0, 0);
 	displaySprite(renderer, getTexture(textures, "save_menu"), xPos, yPos);
-	if (save == 1)	displayText(renderer, xPos+10, yPos+5, 20, "Enregistrer la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
-	else			displayText(renderer, xPos+10, yPos+5, 20, "Charger la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
+	displayText(renderer, xPos+10, yPos+5, 20, "Enregistrer la map...", "../inc/font/Pixels.ttf", 255, 255, 255);
 	displayText(renderer, xPos+10, yOpPos-25, 20, "[ENTER] pour valider, [ESC] pour annuler", "../inc/font/Pixels.ttf", 255, 255, 255);
 	if (mapName != NULL) displayText(renderer, xPos+40, yPos+55, 20, mapName, "../inc/font/Pixels.ttf", 0, 0, 0);
 
@@ -169,6 +228,7 @@ int loadMap(Tile * grid, const char * name)
 	char mapName[20];
 
 	sprintf(mapName, "../maps/%s", name);
+	printf("[EDITOR] Chargement de la map %s...\n", mapName);
 
 	FILE * map;
 	map = fopen(mapName, "rb");
@@ -337,7 +397,7 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 	// -- DEBUG --
 
 	if (isInSaveMenu == 1) displaySaveMenu(renderer, grid, xWinSize, yWinSize, mapName, 1);
-	if (isInLoadMenu == 1) displaySaveMenu(renderer, grid, xWinSize, yWinSize, mapName, 0);
+	if (isInLoadMenu == 1) displayLoadMenu(renderer, mapList, xWinSize, yWinSize, mapListIndex);
 
 	SDL_RenderPresent(renderer);
 
@@ -454,7 +514,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 					case SDL_MOUSEBUTTONDOWN:
 
 						//printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
-						if (e.motion.x <= 200)
+						if (e.motion.x <= 200 && isInSaveMenu == 0 && isInLoadMenu == 0)
 						{
 							if (e.motion.x >= 10 && e.motion.x <= 74 && e.motion.y >= 50 && e.motion.y <= 114)							SELECT = 0;
 							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 50 && e.motion.y <= 114)					SELECT = 1;
@@ -462,13 +522,17 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 124 && e.motion.y <= 188)					SELECT = 3;
 							else if (e.motion.y >= 10 && e.motion.x <= 74 && e.motion.y >= 198 && e.motion.y <= 262)					SELECT = 4;
 							else if (e.motion.y >= 126 && e.motion.x <= 190 && e.motion.y >= 198 && e.motion.y <= 262)					SELECT = 5;
+							// Sauvegarder
 							else if (e.motion.y >= yWinSize-40 && e.motion.y <= yWinSize) isInSaveMenu = 1;
-							else if (e.motion.y >= yWinSize-80 && e.motion.y <= yWinSize-40) loadMap(grid, "map_plains");
+							// Charger une map
+							else if (e.motion.y >= yWinSize-80 && e.motion.y <= yWinSize-40) isInLoadMenu = 1;
+							// Quitter
 							else if (e.motion.y >= yWinSize-120 && e.motion.y <= yWinSize-80)
 							{
 								closeWindow(pWindow);
 								freeTextures(textures);
 							}
+							// Remplir
 							else if (e.motion.y >= yWinSize-160 && e.motion.y <= yWinSize-120)
 							{
 								fillMap(grid, SELECT, xSize, ySize);
@@ -503,7 +567,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 						}
 					break;
 					case SDL_KEYDOWN:
-						if (isInSaveMenu == 0){
+						if (isInSaveMenu == 0 && isInLoadMenu == 0){
 							switch(e.key.keysym.sym)
 							{
 								case SDLK_KP_PLUS: 	// "+" key
@@ -553,14 +617,39 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 							}
 							else if (e.key.keysym.sym == SDLK_RETURN)
 							{
-								saveMap(grid, mapName);
+								if (isInSaveMenu == 1) saveMap(grid, mapName);
+								if (isInLoadMenu == 1)
+								{
+									listMaps(mapList);
+									char mapSelected[50];
+									sprintf(mapSelected, "%s", mapList[mapListIndex]);
+									loadMap(grid, mapSelected);
+								}
 								isInSaveMenu = 0;
+								isInLoadMenu = 0;
 								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 							}
 							else if (e.key.keysym.sym == SDLK_ESCAPE)
 							{
 								isInSaveMenu = 0;
+								isInLoadMenu = 0;
 								displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+							}
+							else if (e.key.keysym.sym == SDLK_LEFT)
+							{
+								if (isInLoadMenu == 1)
+								{
+									mapListIndex--;
+									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+								}
+							}
+							else if (e.key.keysym.sym == SDLK_RIGHT)
+							{
+								if (isInLoadMenu == 1)
+								{
+									mapListIndex++;
+									displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
+								}
 							}
 						}
 						

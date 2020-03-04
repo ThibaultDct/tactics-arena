@@ -126,13 +126,28 @@ void updateMenu(SDL_Renderer *renderer, int x, int y)
 
 		/* Multi button */
 		displaySprite(renderer, multi_button, 500, 450);
-	}	
-	else if(isHostbutton){
-		/* Petit text de confirmation */
-		displayText(renderer, 80, 450, 15, "Host est séléctioné", "../inc/font/PixelOperator.ttf", 255, 255, 255);
-		
+
 		/* Quit button */
 		displaySprite(renderer, quit_button, 515, 525);
+	}	
+	else if(isHostbutton){
+
+		SDL_Rect console;
+			console.x = 40;
+			console.y = 350;
+			console.w = 600;
+			console.h = 300;
+		/* initialise la couleur sur noir */
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255 );
+		
+		/*remplis le rectange*/
+		SDL_RenderFillRect(renderer, &console);
+		
+		/* Petit text de confirmation */
+		displayText(renderer, 50, 400, 15, "Host est séléctioné", "../inc/font/PixelOperator.ttf", 255, 255, 255);
+
+		/* Quit button */
+		displaySprite(renderer, quit_button, x-300, y-190);
 
 	}
 	else if(isJoinButton){
@@ -155,8 +170,7 @@ void updateMenu(SDL_Renderer *renderer, int x, int y)
 	}
 	
 
-	/* Quit button */
-	displaySprite(renderer, quit_button, 515, 525);
+	
 
 	/* Bouton musique ON/OFF */
 	if (music_playing){
@@ -267,12 +281,19 @@ int displayMenu(int x, int y)
 						}
 
 						// Bouton "Host"
-						else if ((e.motion.x >= 160 && e.motion.x <= 305 && e.motion.y >= 390 && e.motion.y <= 450) && isMultiMenu == 1)
+						else if ((e.motion.x >= 160 && e.motion.x <= 305 && e.motion.y >= 390 && e.motion.y <= 450) && isMultiMenu == 1 && isHostbutton == 0)
 						{
 							isHostbutton = 1;
 							updateMenu(renderer, x, y);
 							SDL_RenderPresent(renderer);
 							pthread_create (& otherThread.thread_server, NULL, fn_server, NULL);
+							
+						}
+
+						// Nouveau boutton "QUIT" 
+						if (e.motion.x >= 1000 && e.motion.x <= 1190 && e.motion.y >= 627 && e.motion.y <= 680 && isHostbutton == 1){
+							closeWindow(pWindow);
+							freeMenuTextures();
 						}
 
 						// Bouton "Join"
@@ -304,7 +325,7 @@ int displayMenu(int x, int y)
 						}
 						
 						// Bouton "Quit"
-						else if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 613 && e.motion.y <= 673)
+						else if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 613 && e.motion.y <= 673 && isHostbutton == 0)
 						{
 							closeWindow(pWindow);
 							freeMenuTextures();

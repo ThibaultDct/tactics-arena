@@ -16,7 +16,7 @@
 /*
 * Else if program run on Unix
 */
-#elif __UNIX__ || defined __APPLE__ || defined  __linux__
+#else
   /*
   * Avoid differences to close a socket
   * between socket.h and winsock2.h

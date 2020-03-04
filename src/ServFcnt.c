@@ -18,7 +18,7 @@
 /*
 * Else if program run on Linux
 */
-#elif __UNIX__ || defined __APPLE__ || defined  __linux__
+#else
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <netinet/in.h>
@@ -63,7 +63,7 @@ void getLocalIP(){
       */
      #if defined _WIN64 || defined (WIN32) || defined _WIN32
       fgets(s,sizeof(s),fic);
-    #elif __UNIX__ || defined __APPLE__ || defined  __linux__
+    #else
       fscanf(fic,"%s",s);   // C4996
     #endif
       int cpt = 0;

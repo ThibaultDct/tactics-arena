@@ -48,7 +48,7 @@ typedef struct
 }
 multiThread_t;
 
-static multiThread_t server =
+static multiThread_t otherThread =
 {
    .stock = 0,
 };
@@ -57,6 +57,12 @@ static multiThread_t server =
 static void * fn_server (void * p_data)
 {
     startTCPSocketServ();
+    return NULL;
+}
+
+static void * fn_client (void * p_data)
+{
+    startTCPSocketCli();
     return NULL;
 }
 
@@ -266,7 +272,7 @@ int displayMenu(int x, int y)
 							isHostbutton = 1;
 							updateMenu(renderer, x, y);
 							SDL_RenderPresent(renderer);
-							pthread_create (& server.thread_server, NULL, fn_server, NULL);
+							pthread_create (& otherThread.thread_server, NULL, fn_server, NULL);
 						}
 
 						// Bouton "Join"
@@ -275,6 +281,7 @@ int displayMenu(int x, int y)
 							isJoinButton = 1;
 							updateMenu(renderer, x, y);
 							SDL_RenderPresent(renderer);
+							pthread_create (& otherThread.thread_client, NULL, fn_client, NULL);
 						}
 
 						// Switch musique ON/OFF

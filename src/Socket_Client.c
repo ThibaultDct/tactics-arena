@@ -17,7 +17,7 @@
 /*
 * Else if program run on Unix
 */
-#elif __UNIX__ || defined __APPLE__ || defined  __linux__
+#else
 
   #include <sys/types.h>
   #include <sys/socket.h>

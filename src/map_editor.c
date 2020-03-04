@@ -107,6 +107,12 @@ int loadEditorTextures(SDL_Renderer * renderer, TabTexture * textures)
 						NULL,
 						"cancel_button");
 
+	// Loading blue button texture
+	addTextureToTable(	textures,
+						loadTexture(renderer, loadImage("../inc/img/fill_button.png")),
+						NULL,
+						"fill_button");
+
 	// Loading blur effect texture
 	addTextureToTable(	textures,
 						loadTexture(renderer, loadImage("../inc/img/blur.png")),
@@ -201,7 +207,6 @@ int changeTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int 
 
 	xTile = xpos+((((xIndex+yIndex)/2)+1)*pxBase);
 	yTile = ypos+((ySize-(yIndex-xIndex))*(pxBase/4)+(pxBase/4));
-	printf("xTile : %d yTile : %d\n", xTile, yTile);
 
 	// Calcul des coordonnées des 4 coins de la tile
 	Coord A = { xTile, yTile };
@@ -240,6 +245,19 @@ int changeTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int 
 	(*(grid+xIndex*xSize+yIndex)).tile_id = toTile;
 
 	return 1;
+}
+
+void fillMap(Tile * grid, int block_id, int xSize, int ySize)
+// Fill the map with the id_block block
+{
+	for (int i = 0; i < xSize; i++)
+	{
+		for (int j = 0; j < ySize; j++)
+		{
+			(*(grid+i*xSize+j)).tile_id = block_id;
+		}
+	}
+	printf("[EDITOR] Map remplie avec le bloc [%s] id %d\n", textures[block_id].texture_name, block_id);
 }
 
 int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * grid, int xSize, int ySize, int select, int xWinSize, int yWinSize)
@@ -301,6 +319,8 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 	displaySprite(renderer, getTexture(textures, "selection"), selectionPos.x, selectionPos.y);
 
 	// Boutons
+	displaySprite(renderer, getTexture(textures, "fill_button"), 0, yWinSize-160);
+	displayText(renderer, 10, yWinSize-150, 20, "REMPLIR", "../inc/font/Pixels.ttf", 255, 255, 255);
 	displaySprite(renderer, getTexture(textures, "cancel_button"), 0, yWinSize-120);
 	displayText(renderer, 10, yWinSize-110, 20, "QUITTER", "../inc/font/Pixels.ttf", 255, 255, 255);
 	displaySprite(renderer, getTexture(textures, "load_button"), 0, yWinSize-80);
@@ -433,7 +453,7 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 					break;
 					case SDL_MOUSEBUTTONDOWN:
 
-						printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
+						//printf("X: %d | Y: %d\n", e.motion.x, e.motion.y);		// Debug console pos x & y on term
 						if (e.motion.x <= 200)
 						{
 							if (e.motion.x >= 10 && e.motion.x <= 74 && e.motion.y >= 50 && e.motion.y <= 114)							SELECT = 0;
@@ -442,18 +462,23 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 							else if (e.motion.x >= 126 && e.motion.x <= 190 && e.motion.y >= 124 && e.motion.y <= 188)					SELECT = 3;
 							else if (e.motion.y >= 10 && e.motion.x <= 74 && e.motion.y >= 198 && e.motion.y <= 262)					SELECT = 4;
 							else if (e.motion.y >= 126 && e.motion.x <= 190 && e.motion.y >= 198 && e.motion.y <= 262)					SELECT = 5;
-							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= yWinSize-40 && e.motion.y <= yWinSize)		isInSaveMenu = 1;
-							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= yWinSize-80 && e.motion.y <= yWinSize-40) 	loadMap(grid, "map_plains");
-							else if (e.motion.x >= 0 && e.motion.x <= 200 && e.motion.y >= yWinSize-120 && e.motion.y <= yWinSize-80)
+							else if (e.motion.y >= yWinSize-40 && e.motion.y <= yWinSize) isInSaveMenu = 1;
+							else if (e.motion.y >= yWinSize-80 && e.motion.y <= yWinSize-40) loadMap(grid, "map_plains");
+							else if (e.motion.y >= yWinSize-120 && e.motion.y <= yWinSize-80)
 							{
 								closeWindow(pWindow);
 								freeTextures(textures);
+							}
+							else if (e.motion.y >= yWinSize-160 && e.motion.y <= yWinSize-120)
+							{
+								fillMap(grid, SELECT, xSize, ySize);
 							}
 						}
 						else
 						{
 							if (!isInSaveMenu) changeTile(grid, XPOS, YPOS, e.motion.x, e.motion.y, PX, xSize, ySize, SELECT);
 						}
+
 						displayEditorMap(renderer, XPOS, YPOS, PX, grid, xSize, ySize, SELECT,  xWinSize, yWinSize);
 
 					break;

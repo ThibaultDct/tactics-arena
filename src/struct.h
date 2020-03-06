@@ -8,9 +8,10 @@
 
 #define STR_SHORT 25
 #define STR_LONG 50
-#define NUM_STATS 6
+#define NUM_STATS 7
 #define NUM_CLASS 6
 #define NUM_AB 4
+#define NUM_STATUS 8
 
 /* ENUMERATIONS */
 typedef enum {pv, mv, vis, atk, magic, res_physic, res_magic} statId;
@@ -19,8 +20,9 @@ typedef enum {Berserker, Ranger, Goliath, Mage, Valkyrie, Angel} classId;
 
 typedef enum {Slash, Bolt, Bash} abilityId;
 
-typedef enum {Piercing_Damage, Slowed, Blind, Weakened, Benighted, p_res_red, m_res_red} n_effectId;
-typedef enum {Healing, Swifted, Perceptive, Strenghtened, Enlightened, p_res_inc, m_res_inc} p_effectId;
+typedef enum {Dead, Alive, Summoned} lifeId;
+
+typedef enum {Cripple, Detained, Provoked, Burning, Freezing, Paralyzed, Blessed, Deadeye} statusId;
 
 /* BASIC STRUCTURES*/
 typedef struct
@@ -36,7 +38,26 @@ typedef struct
 } Vector;
 
 /* ENTITY STRUCTURES */
+typedef struct
+{
+    int multiplier;
+    statId type;
+} Damage;
 
+typedef struct
+{
+    int value;
+    statId stat;
+    int duration;
+    int chance;
+} Effect;
+
+typedef struct
+{
+    statusId Status;
+    int duration;
+    int chance;
+} Status;
 
 typedef struct
 {
@@ -44,7 +65,14 @@ typedef struct
     char ab_name[STR_SHORT];
     int ab_cost;
     int ab_cooldown;
-    int (*function)(int, Coord *); //Takes caster ID, Coordinates, and pointer to state chain
+    int self_cast;
+    Damage damage;
+    int nb_coords;
+    Coord * coord;
+    int nb_effects;
+    Effect * effects;
+    Status status;
+    int (*function)(int, Coord *, StateList *); //Takes caster ID, Coordinates, and pointer to state chain
     char sprite_folder[STR_LONG];
 } Ability;
 
@@ -71,6 +99,7 @@ typedef struct
     int act_points;
     int base_stats[NUM_STATS];
     int stat_mods[NUM_STATS];
+    State * status[NUM_STATUS]; //Table to pointers that point to status if active from statechain
 } Entity;
 
 /* TERRAIN STRUCTURES */

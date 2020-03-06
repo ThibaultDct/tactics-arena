@@ -7,14 +7,14 @@ BERSERKER
 
 RANGER
 0: Sentinel : The first ennemy that moves in ranger's vision every turn, will get bolted.
-1: Bolt : Attack an ennemy with defence piercing bolts.
+1: Bolt : Attack an ennemy from range.
 2: Focus : Increase by two turns all buffs and decrease by one all debuffs.
 2: Trap : Put a hidden trap that will cripple an ennemy that walks over it.
-3: Deadeye : Increases atck and vision but reduces mp for three turns.
+3: Deadeye : Increases vision and makes bolt piercing but reduces mp for three turns.
 
 GOLIATH
 0: Guardian : Has a 30% chance to block incoming damage.
-1: Bash: Damage and half the ennemy's defence.
+1: Bash: Damage and reduce the ennemy's defence.
 2: Shields Up : Increase passive block chance to 70%.
 2: Detain : Capture an Ennemy for three turns.
 3: Battle Cry : Provoke all ennemies in a zone for one turn and reset all allies' cooldowns
@@ -46,5 +46,6 @@ Detained : Captured by an ennemy, unbale to do anything, can be freed by killing
 Provoked : Can only apply spells on to a specific target.
 Burning : Take damage over time, a burning target is unable to be frozen.
 Freezing : Become unable to do anything, increases resistances, setting a frozen target ablaze thaws them out.
-Paralyzed : Reduces you action points to 1 per turn.
+Paralyzed : Reduces your action points to 1 per turn.
 Blessed : Under God's Blessing.
+Deadeye : Attacks ignore armor.

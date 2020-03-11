@@ -5,6 +5,7 @@
 #include "../SDL2/include/SDL2/SDL_image.h"
 #include "../SDL2/include/SDL2/SDL_ttf.h"
 #include "../SDL2/include/SDL2/SDL_mixer.h"
+#include "state.h"
 
 #define STR_SHORT 25
 #define STR_LONG 50

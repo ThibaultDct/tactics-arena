@@ -12,5 +12,6 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize);
 int saveMap(Tile * grid, const char * name);
 int loadMap(Tile * grid, const char * name);
+int displayLoadMenu(SDL_Renderer * renderer, char *mapList[], int xWinSize, int yWinSize, int index);
 
 #endif

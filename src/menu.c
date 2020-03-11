@@ -10,6 +10,7 @@
 #include "struct.h"
 #include "graphics.h"
 #include "Socket_Server.h"
+#include "map_editor.h"
 
 #if defined (Win32)
 #  include <windows.h>
@@ -21,6 +22,7 @@
 
 #define XPOS 500			// x position of the grid
 #define YPOS 100			// y position of the grid
+#define _NB_MAX_MAPS_ 20
 
 SDL_Texture *background = NULL,
 			*start_button = NULL,
@@ -37,6 +39,10 @@ int music_playing = 1;
 int isMultiMenu = 0;
 int isHostbutton = 0;
 int isJoinButton = 0;
+
+// Map list
+char *mapList[_NB_MAX_MAPS_];
+int mapIndex = 0;
 
 // Initialisation du thread 
 typedef struct
@@ -193,6 +199,10 @@ int displayMenu(int x, int y)
 	SDL_Window* pWindow = NULL;
 	SDL_Renderer *renderer=NULL;
 
+	// x and y sizes of the window
+	int xWinSize;
+	int yWinSize;
+
     /* Initialisation simple */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0 ) {
         fprintf(stdout,"[MENU] Échec de l'initialisation de la SDL (%s)\n",SDL_GetError());
@@ -230,6 +240,7 @@ int displayMenu(int x, int y)
 
 	if( pWindow )
 	{
+		SDL_GetWindowSize(pWindow, &xWinSize, &yWinSize);
 		int running = 1;
 		while(running) {
 			SDL_Event e;
@@ -259,9 +270,7 @@ int displayMenu(int x, int y)
 						// Bouton "Start"
 						if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 394 && e.motion.y <= 443 && isMultiMenu == 0)
 						{
-							closeWindow(pWindow);
-							freeMenuTextures();
-                            return 2;
+							displayLoadMenu(renderer, mapList, xWinSize, yWinSize, mapIndex);
 						}
 
 						// Bouton "Map editor"

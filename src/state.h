@@ -5,10 +5,10 @@ typedef struct {
 } State;
 
 typedef struct {
-  StateList * first;
-} List;
-
-typedef struct {
   State * value;
   struct StateList * suiv;
 } StateList;
+
+typedef struct {
+  StateList * first;
+} List;

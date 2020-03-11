@@ -301,7 +301,7 @@ int changeTile(Tile * grid, int xpos, int ypos, int mx, int my, int pxBase, int 
 
 	if (xIndex > xSize-1 || yIndex > ySize-1 || xIndex < 0 || yIndex < 0) return 0;
 
-	printf("[GRAPHICS] Case sélectionnée : %d, %d\n", xIndex, yIndex);
+	// DEBUG printf("[GRAPHICS] Case sélectionnée : %d, %d\n", xIndex, yIndex);
 	(*(grid+xIndex*xSize+yIndex)).tile_id = toTile;
 
 	return 1;

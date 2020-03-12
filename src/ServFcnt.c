@@ -9,7 +9,7 @@
 /*
 * If program run on Windows
 */
-#if defined _WIN64 || defined (WIN32) || defined _WIN32
+#ifdef _WIN32
   #include <winsock2.h>
   /*
   * Needed  non-existent type with winsock2
@@ -61,7 +61,7 @@ void getLocalIP(){
       /*
       * Get ip from the file named fic
       */
-     #if defined _WIN64 || defined (WIN32) || defined _WIN32
+     #ifdef _WIN32
       fgets(s,sizeof(s),fic);
     #else
       fscanf(fic,"%s",s);   // C4996
@@ -70,7 +70,7 @@ void getLocalIP(){
       dPoint = 1;
       for(int i = 0; s[i]; i++){
         
-        #if defined _WIN64 || defined (WIN32) || defined _WIN32
+        #ifdef _WIN32
           dPoint = 0;
           if((int)s[i - 2] == 58){
             dPoint = 1;

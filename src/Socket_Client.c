@@ -9,7 +9,7 @@
 /*
 * If program run on Windows
 */
-#if defined _WIN64 || defined (WIN32) || defined _WIN32
+#ifdef _WIN32
   #include <winsock2.h>
   /*
   * Needed  non-existent type with winsock2
@@ -46,7 +46,7 @@ int socketCli = 0;
 int sendmvt(sock){
 
 comm sendSrv;
-sendSrv.flag = 2;
+sendSrv.flag = 1;
   
   int test;
   test = send(sock, (void *)&sendSrv, sizeof(sendSrv), 0);
@@ -59,7 +59,7 @@ sendSrv.flag = 2;
 
 int startTCPSocketCli(int socketCli){
 
-  #if defined _WIN64 || defined (WIN32) || defined _WIN32
+  #ifdef _WIN32
     /*
     * Change the cmd codepage
     */
@@ -75,7 +75,7 @@ int startTCPSocketCli(int socketCli){
     * return 0 if there is no problems
     */
     windWSAError = WSAStartup(MAKEWORD(2,2), &WSAData);
-  #elif __UNIX__ || defined __APPLE__ || defined  __linux__
+  #else
     int windWSAError= 0;
   #endif
   printf("\nLancement de la créatoin du client...\n");

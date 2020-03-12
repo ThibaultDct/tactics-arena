@@ -10,7 +10,7 @@
 /*
 * If program run on Windows
 */
-#if defined _WIN64 || defined (WIN32) || defined _WIN32
+#ifdef _WIN32
   #include <winsock2.h>
   /*
   * Needed  non-existent type with winsock2
@@ -51,7 +51,6 @@ listenThread_t;
 
 listenThread_t threadChanges;
 
-static listenThread_t changes = { .stockListen = 0, };
 
 static void * fn_listenChanges ()
 {
@@ -77,28 +76,37 @@ int mouvement(){
 
 int attack(){
   printf("Le perso attaque ! \n");
+  return 0;
 }
 
 int listenChanges(int socketConnected){
 
-int sockEr = 0;
+  int sockEr = 0;
 
-comm recvCli;
-recvCli.flag = 0;
+  comm recvCli;
+  recvCli.flag = 0;
+  while(1){
 
- while(1){
+
    sockEr = recv(socketConnected,(void *)&recvCli, sizeof(recvCli), 0);
    if(sockEr != SOCKET_ERROR){
      printf("Le flag est : %d", recvCli.flag);
+     sockEr = SOCKET_ERROR;
    }
- }
+   switch(recvCli.flag){
+     case 1: attack();break;
+     case 2: mouvement();break;
+   }
+  }
+   printf("Saisir un truc \n");
+   getchar();
   return 0;
 }
 
 
 
 int startTCPSocketServ(){
-  #if defined _WIN64 || defined (WIN32) || defined _WIN32
+  #ifdef _WIN32
     /*
     * Change the cmd codepage
     * Create firewall rules
@@ -130,9 +138,6 @@ int startTCPSocketServ(){
   log = fopen(".logConsole.txt", "w+");
 
   fprintf(log, "Lancement de la création du serveur ... \n");
-
-  
-
 
   printf("\nLancement de la créatoin du serveur...\n");
   /*

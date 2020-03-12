@@ -2,8 +2,8 @@ BERSERKER
 0: Bloodlust : Killing two ennemies in the same turn refills action points and doubles mp and atk stats for one turn.
 1: Slash : Slash at an ennemy
 2: Killing Blow : Slash at an ennemy, killing him permanently increases attack and gives one action point back.
-2: Fury : Remove all debuffs and permanently increase attack for the number of turns removed.
-3: Frenzied Dash : Jump to a zone, deal aoe damage when landing.
+2: Fury : Remove all debuffs and increase attack permanently by the number of turns removed.
+3: Frenzied Dash : Jump to a tile, dealing aoe damage when landing.
 
 RANGER
 0: Sentinel : The first ennemy that moves in ranger's vision every turn, will get bolted.

@@ -7,8 +7,8 @@
 #include "../SDL2/include/SDL2/SDL_mixer.h"
 #include "state.h"
 
-#define STR_SHORT 25
-#define STR_LONG 50
+#define STR_SHORT 50
+#define STR_LONG 256
 #define NUM_STATS 7
 #define NUM_CLASS 6
 #define NUM_AB 4
@@ -19,7 +19,7 @@ typedef enum {pv, mv, vis, atk, magic, res_physic, res_magic} statId;
 
 typedef enum {Berserker, Ranger, Goliath, Mage, Valkyrie, Angel} classId;
 
-typedef enum {Slash, Bolt, Bash} abilityId;
+typedef enum {Slash, Killing_Blow, Fury, Frenzied_Dash} abilityId;
 
 typedef enum {Dead, Alive, Summoned} lifeId;
 
@@ -41,7 +41,13 @@ typedef struct
 /* ENTITY STRUCTURES */
 typedef struct
 {
-    int multiplier;
+    char name[STR_SHORT];
+    char desc[STR_LONG];
+}lang;
+
+typedef struct
+{
+    float multiplier;
     statId type;
 } Damage;
 
@@ -63,17 +69,17 @@ typedef struct
 typedef struct
 {
     abilityId ab_id;
-    char ab_name[STR_SHORT];
     int ab_cost;
     int ab_cooldown;
-    int self_cast;
+    int range;
     Damage damage;
-    int nb_coords;
+    int nb_coords; //0 is self cast
     Coord * coord;
     int nb_effects;
     Effect * effects;
     Status status;
     int (*function)(int, Coord *, StateList *); //Takes caster ID, Coordinates, and pointer to state chain
+    lang eng;
     char sprite_folder[STR_LONG];
 } Ability;
 
@@ -82,6 +88,7 @@ typedef struct
     classId cla_id;
     char cla_name[STR_SHORT];
     int basic_stats[NUM_STATS];
+    lang Passive;
     Ability * cla_abilities;
     char sprite_folder[STR_LONG];
 } Class;
@@ -123,7 +130,5 @@ typedef struct
 
 
 /* COMMUNICATION STRUCTURES */
-
-
 
 #endif

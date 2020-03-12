@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include <time.h>
 #include "Socket_Server.h"
+#include "struct.h"
+
 
 /*
 * If program run on Windows
@@ -28,13 +31,54 @@
   #include <netinet/in.h>
   #include <arpa/inet.h>
   #include <unistd.h>
-  #define closesocket(param) close(param)
   #define INVALID_SOCKET -1
   #define SOCKET_ERROR -1
+  #define closesocket(param) close(param)
   typedef int SOCKET;
   typedef struct sockaddr_in SOCKADDR_IN;
   typedef struct sockaddr SOCKADDR;
 #endif
+
+int socketConnected = 0;
+
+typedef struct
+{
+   int stockListen;
+ 
+   pthread_t thread_changes;
+}
+listenThread_t;
+
+listenThread_t threadChanges;
+
+static listenThread_t changes =
+{
+   .stockListen = 0,
+};
+
+static void * fn_listenChanges (int socketConnected)
+{
+    listenChanges(socketConnected);
+    return NULL;
+} 
+
+int stopTcpSocketServ(int socketConnected){
+  printf("Shutdown socketConnected ...\n");
+  shutdown(socketConnected, 2);
+  
+  printf("Close socket : socketConnected...\n");
+
+  closesocket(socketConnected);
+
+  return 0;
+}
+
+int listenChanges(int socketConnected){
+
+ printf("ListenChanges is ok \n");
+  
+}
+
 
 
 int startTCPSocketServ(){
@@ -59,14 +103,19 @@ int startTCPSocketServ(){
     */
     windWSAError = WSAStartup(MAKEWORD(2,2), &WSAData);
 
-  #elif __linux__ || defined __APPLE__  
+  #else 
     system("ifconfig | grep \"inet 1[97]2.*\" | sed \"s/netmask.*//g\" | sed \"s/inet//g\" > .test.txt");
     int windWSAError= 0;
   #endif
-
-
+  
   
 
+  FILE *log;
+  log = fopen(".logConsole.txt", "w+");
+
+  fprintf(log, "Lancement de la création du serveur ... \n");
+
+  
 
 
   printf("\nLancement de la créatoin du serveur...\n");
@@ -75,7 +124,6 @@ int startTCPSocketServ(){
   */
   SOCKADDR_IN sockServIn = { 0 };
   int sock;
-  int socketConnected;
   int sockError;
   SOCKADDR_IN sockConnectedAddr;
   socklen_t sizeofSocketConnected;
@@ -118,9 +166,6 @@ int startTCPSocketServ(){
           socketConnected = accept(sock, (struct  sockaddr  *)&sockConnectedAddr, &sizeofSocketConnected);
           if(socketConnected != SOCKET_ERROR){
             
-            t_personnage monpersoServ;
-            monpersoServ.id = 1;
-            sprintf(monpersoServ.nom,"Hello world");
             int choixServ = 0;
             
             printf("\nConnexion établie avec le client !\n");
@@ -137,8 +182,6 @@ int startTCPSocketServ(){
             printf("\nVous vous appelez : %s", pseudoCli);
             sprintf(monMsg.pseudo,"%s",pseudoCli);
             
-            // printf("L'id du perso est : %d \n", monpersoServ.id);
-            // printf("Le nom du perso est : %s \n", monpersoServ.nom);
 
             printf("\nPress (1) start chat :");
             printf("\nPress (2) send structure : ");
@@ -146,8 +189,10 @@ int startTCPSocketServ(){
             scanf("%d",&choixServ);
             switch(choixServ){
               // case 1: startChat(socketConnected);break;
-              case 2: sendStruct(socketConnected, (t_personnage)monpersoServ);break;
-              case 3: silentChat(socketConnected, pseudoCli,(t_msgChat)monMsg);break;
+             // case 2 : sendStruct(socketConnected, (t_personnage)monpersoServ);break;
+              case 3 : silentChat(socketConnected, pseudoCli,(t_msgChat)monMsg);break;
+              case 4 : stopTcpSocketServ(socketConnected);break;
+              case 5 : pthread_create (& threadChanges.thread_changes, NULL, fn_listenChanges(socketConnected), NULL);
             }
 
             // if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){
@@ -159,25 +204,29 @@ int startTCPSocketServ(){
             printf("Fin de la partie :( \n");
             /* Il ne faut pas oublier de fermer la connexion (fermée dans les deux sens) */
           }
-          shutdown(socketConnected, 2);
-          closesocket(sock);
+
          // system("netsh advfirewall firewall delete rule name=\"Tactics\"");
       }
       else{
         printf("\nUn problème est survenu lors de la connexion du client :( \n");
+        return 4;
       }
     }
     else{
       printf("\nUn problème est survenu lors de la liaison avec le client :( \n");
+      return 3;
     }
   }
   else{
     printf("\nUn problème est survenu lors de la création de la socket :( \n");
+    return 2;
   }
 }
 else{
   printf("Un problème est survenu avec Windows :( \n");
+  return 1;
 }
+fclose(log);
 getchar();
 return 0;
 }

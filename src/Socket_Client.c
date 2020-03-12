@@ -40,7 +40,9 @@
   typedef struct sockaddr SOCKADDR;
 #endif
 
-int startTCPSocketCli(){
+int socketCli = 0;
+
+int startTCPSocketCli(int socketCli){
 
   #if defined _WIN64 || defined (WIN32) || defined _WIN32
     /*
@@ -125,6 +127,7 @@ int startTCPSocketCli(){
         switch(choixCli){
           case 1: startChat(sock,pseudoCli,(t_msgChat)monMsg);break;
           case 2: sendStruct(sock, (t_personnage)monpersoCli);break;
+          
         }
 
         

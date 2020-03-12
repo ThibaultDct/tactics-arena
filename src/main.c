@@ -18,8 +18,8 @@
 #include "menu.h"
 #include "map_editor.h"
 
-#define X 10
-#define Y 10
+#define X 30
+#define Y 30
 
 /**
  * \fn int main(void)
@@ -61,7 +61,7 @@ int main()
         case 2: startTCPSocketCli();
         break;
         case 3:
-                createGrid((Tile *)matrix, 10, X, Y);
+                createGrid((Tile *)matrix, 7, X, Y);
                 createGrid((Tile *)blankGrid, 1, X, Y);
                 playMenuMusic();
                 selection = displayMenu(1280, 720);

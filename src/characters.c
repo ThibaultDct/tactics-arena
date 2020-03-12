@@ -4,7 +4,6 @@
 #include "../SDL2/include/SDL2/SDL_ttf.h"
 #include "../SDL2/include/SDL2/SDL_mixer.h"
 #include "graphics.h"
-#include "characters.h"
 
 #define _NB_MAX_SPRITES_ 50
 
@@ -31,20 +30,21 @@ int loadSprites(SDL_Renderer * renderer, TabTexture * cSprites)
 int setEntityToTile(Tile * grid, Entity * entity, Coord tile, int xSize, int ySize)
 // Set an entity to a specific tile
 {
-    if (tile.x < 0 || tile.x >= xSize || tile.y < 0 || tile.y >= ySize)
-    {
-        printf("%s\n", error_message[COORD_OUT_OF_BOUND]);
-        return COORD_OUT_OF_BOUND;
-    };
+    // if (tile.x < 0 || tile.x >= xSize || tile.y < 0 || tile.y >= ySize)
+    // {
+    //     printf("%s\n", error_message[COORD_OUT_OF_BOUND]);
+    //     return COORD_OUT_OF_BOUND;
+    // };
 
-    if (entity == NULL || grid == NULL)
-    {
-        printf("%s\n", error_message[POINTER_NULL]);
-        return POINTER_NULL;
-    }
+    // if (entity == NULL || grid == NULL)
+    // {
+    //     printf("%s\n", error_message[POINTER_NULL]);
+    //     return POINTER_NULL;
+    // }
 
     (*(grid+tile.x*xSize+tile.y)).entity = entity;
-    return OK;
+    // return OK;
+    return 1;
 }
 
 int displayCharacters(SDL_Renderer * renderer, Tile * grid, int x, int y)

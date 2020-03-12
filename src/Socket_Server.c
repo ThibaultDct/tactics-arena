@@ -139,9 +139,6 @@ int startTCPSocketServ(){
 
   fprintf(log, "Lancement de la création du serveur ... \n");
 
-  
-
-
   printf("\nLancement de la créatoin du serveur...\n");
   /*
   * Setting up the socket for all systems

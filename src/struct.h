@@ -76,7 +76,7 @@ typedef struct
     int nb_coords; //0 is self cast
     Coord * coord;
     int nb_effects;
-    Effect * effects;
+    Effect * effect;
     Status status;
     int (*function)(int, Coord *, StateList *); //Takes caster ID, Coordinates, and pointer to state chain
     lang eng;

@@ -23,9 +23,14 @@ void createGrid(Tile * grid, int seed, int x, int y)
 // create the grid with x*y size
 {
     srand(time(NULL));
+    Entity * test = malloc(sizeof(Entity));
+    test->act_points = 6;
     for (int i = 0; i < x*y; i++){
         grid[i].tile_id = rand()%seed;
+        int t = rand()%5;
         grid[i].selected = 0;
+        if (t == 1) grid[i].entity = test;
+        else grid[i].entity = NULL;
     }
 }
 
@@ -42,6 +47,7 @@ void debugGrid(Tile * grid, int x, int y)
     for (int i = 0; i < x; i++){
         for (int j = 0; j < y; j++){
             printf("%d ", (*(grid+i*x+j)).tile_id);
+            if ((*(grid+i*x+j)).entity != NULL) printf("X");
         }
         printf("\n");
     }

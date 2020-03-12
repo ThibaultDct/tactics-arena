@@ -131,4 +131,14 @@ typedef struct
 
 /* COMMUNICATION STRUCTURES */
 
+typedef struct {
+    int flag;
+    comm_union action;
+}comm;
+
+union {
+    int mov;
+    char atk;
+}comm_union;
+
 #endif

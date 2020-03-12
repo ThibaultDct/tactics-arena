@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include <time.h>
 #include "Socket_Server.h"
 #include "struct.h"
-#include "common.h">
+
 
 /*
 * If program run on Windows
@@ -30,15 +31,36 @@
   #include <netinet/in.h>
   #include <arpa/inet.h>
   #include <unistd.h>
-  #define closesocket(param) close(param)
   #define INVALID_SOCKET -1
   #define SOCKET_ERROR -1
+  #define closesocket(param) close(param)
   typedef int SOCKET;
   typedef struct sockaddr_in SOCKADDR_IN;
   typedef struct sockaddr SOCKADDR;
 #endif
 
 int socketConnected = 0;
+
+typedef struct
+{
+   int stockListen;
+ 
+   pthread_t thread_changes;
+}
+listenThread_t;
+
+listenThread_t threadChanges;
+
+static listenThread_t changes =
+{
+   .stockListen = 0,
+};
+
+static void * fn_listenChanges (int socketConnected)
+{
+    listenChanges(socketConnected);
+    return NULL;
+} 
 
 int stopTcpSocketServ(int socketConnected){
   printf("Shutdown socketConnected ...\n");
@@ -51,9 +73,15 @@ int stopTcpSocketServ(int socketConnected){
   return 0;
 }
 
+int listenChanges(int socketConnected){
+
+ printf("ListenChanges is ok \n");
+  
+}
 
 
-int startTCPSocketServ(int socketConnected){
+
+int startTCPSocketServ(){
   #if defined _WIN64 || defined (WIN32) || defined _WIN32
     /*
     * Change the cmd codepage
@@ -80,6 +108,8 @@ int startTCPSocketServ(int socketConnected){
     int windWSAError= 0;
   #endif
   
+  
+
   FILE *log;
   log = fopen(".logConsole.txt", "w+");
 
@@ -159,10 +189,10 @@ int startTCPSocketServ(int socketConnected){
             scanf("%d",&choixServ);
             switch(choixServ){
               // case 1: startChat(socketConnected);break;
-              case 2 : sendStruct(socketConnected, (t_personnage)monpersoServ);break;
+             // case 2 : sendStruct(socketConnected, (t_personnage)monpersoServ);break;
               case 3 : silentChat(socketConnected, pseudoCli,(t_msgChat)monMsg);break;
               case 4 : stopTcpSocketServ(socketConnected);break;
-              case 5 : 
+              case 5 : pthread_create (& threadChanges.thread_changes, NULL, fn_listenChanges(socketConnected), NULL);
             }
 
             // if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){

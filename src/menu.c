@@ -40,6 +40,8 @@ int isMultiMenu = 0;
 int isHostbutton = 0;
 int isJoinButton = 0;
 
+
+
 // Map list
 char *mapList[_NB_MAX_MAPS_];
 int mapIndex = 0;
@@ -270,7 +272,9 @@ int displayMenu(int x, int y)
 						// Bouton "Start"
 						if (e.motion.x >= 569 && e.motion.x <= 730 && e.motion.y >= 394 && e.motion.y <= 443 && isMultiMenu == 0)
 						{
-							displayLoadMenu(renderer, mapList, xWinSize, yWinSize, mapIndex);
+							closeWindow(pWindow);
+							freeMenuTextures();
+							return 2;
 						}
 
 						// Bouton "Map editor"

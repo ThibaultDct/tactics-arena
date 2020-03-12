@@ -27,4 +27,6 @@ err_t get_classes(Class all_classes[NUM_CLASS])
         Ability * ab = malloc(sizeof(Ability)*NUM_AB);
         get_ability(ab);
     }*/
+
+    return OK;
 }

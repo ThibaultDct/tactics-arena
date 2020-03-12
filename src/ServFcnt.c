@@ -50,7 +50,7 @@ char monStr[80];
 void getLocalIP(){
   char monIP[81];
   char s[81];
-  int dPoint = 0;
+
   FILE *fic;
   fic=fopen(".test.txt", "r" );
    if( fic == NULL ){
@@ -67,15 +67,8 @@ void getLocalIP(){
       fscanf(fic,"%s",s);   // C4996
     #endif
       int cpt = 0;
-      dPoint = 1;
+  
       for(int i = 0; s[i]; i++){
-        
-        #ifdef _WIN32
-          dPoint = 0;
-          if((int)s[i - 2] == 58){
-            dPoint = 1;
-          }
-        #endif
         if(((int)s[i] >= 46) && ((int)s[i] <= 57)){
           monIP[cpt] = s[i];
           cpt++;

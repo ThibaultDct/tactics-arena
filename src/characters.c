@@ -68,4 +68,5 @@ int displayCharacters(SDL_Renderer * renderer, TabTexture * cSprites, Tile * gri
 // Display the characters on the map
 {
     displaySprite(renderer, (*(cSprites)).texture, x, y);
+    return 0;
 }

@@ -70,11 +70,26 @@ int stopTcpSocketServ(int socketConnected){
   return 0;
 }
 
+int mouvement(){
+  printf("Le perso bouge ! \n");
+  return 0;
+}
+
+int attack(){
+  printf("Le perso attaque ! \n");
+}
+
 int listenChanges(int socketConnected){
 
+int sockEr = 0;
+
+comm recvCli;
+recvCli.flag = 0;
+
  while(1){
-   if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){
-     
+   sockEr = recv(socketConnected,(void *)&recvCli, sizeof(recvCli), 0);
+   if(sockEr != SOCKET_ERROR){
+     printf("Le flag est : %d", recvCli.flag);
    }
  }
   return 0;

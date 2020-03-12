@@ -4,6 +4,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "Socket_Server.h"
+#include "struct.h"
 
 /*
 * If program run on Windows
@@ -41,6 +42,20 @@
 #endif
 
 int socketCli = 0;
+
+int sendmvt(sock){
+
+comm sendSrv;
+sendSrv.flag = 2;
+  
+  int test;
+  test = send(sock, (void *)&sendSrv, sizeof(sendSrv), 0);
+  if(test != SOCKET_ERROR){
+    printf("Message envoyé \n");
+  }
+  return 0;
+}
+
 
 int startTCPSocketCli(int socketCli){
 
@@ -127,6 +142,7 @@ int startTCPSocketCli(int socketCli){
         switch(choixCli){
           case 1: startChat(sock,pseudoCli,(t_msgChat)monMsg);break;
           case 2: sendStruct(sock, (t_personnage)monpersoCli);break;
+          case 3: sendmvt(sock);
           
         }
 

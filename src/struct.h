@@ -131,14 +131,16 @@ typedef struct
 
 /* COMMUNICATION STRUCTURES */
 
+typedef union{
+    int mov;
+    char atk;
+}comm_union;
+
 typedef struct {
     int flag;
     comm_union action;
 }comm;
 
-union {
-    int mov;
-    char atk;
-}comm_union;
+
 
 #endif

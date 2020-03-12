@@ -51,16 +51,13 @@ listenThread_t;
 
 listenThread_t threadChanges;
 
-static listenThread_t changes =
-{
-   .stockListen = 0,
-};
+static listenThread_t changes = { .stockListen = 0, };
 
-static void * fn_listenChanges (int socketConnected)
+static void * fn_listenChanges ()
 {
     listenChanges(socketConnected);
     return NULL;
-} 
+}
 
 int stopTcpSocketServ(int socketConnected){
   printf("Shutdown socketConnected ...\n");
@@ -75,8 +72,12 @@ int stopTcpSocketServ(int socketConnected){
 
 int listenChanges(int socketConnected){
 
- printf("ListenChanges is ok \n");
-  
+ while(1){
+   if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){
+     
+   }
+ }
+  return 0;
 }
 
 
@@ -192,7 +193,7 @@ int startTCPSocketServ(){
              // case 2 : sendStruct(socketConnected, (t_personnage)monpersoServ);break;
               case 3 : silentChat(socketConnected, pseudoCli,(t_msgChat)monMsg);break;
               case 4 : stopTcpSocketServ(socketConnected);break;
-              case 5 : pthread_create (& threadChanges.thread_changes, NULL, fn_listenChanges(socketConnected), NULL);
+              case 5 : pthread_create (&threadChanges.thread_changes, NULL, fn_listenChanges, NULL);
             }
 
             // if(recv(socketConnected,(void *)&monpersoServ, sizeof(monpersoServ), 0) != SOCKET_ERROR){

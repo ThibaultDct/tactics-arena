@@ -13,9 +13,16 @@
 #include "../src/struct.h"
 #include "../src/common.h"
 
+err_t add_effect(Effect * e, int nb, FILE * fp)
+{
+    if(fwrite(e, sizeof(Effect),nb,fp)!=nb) printf("%s\n",strerror(errno));
+    return OK;
+}
+
 err_t add_coord(Coord * c, int nb, FILE * fp)
 {
-
+    if(fwrite(c, sizeof(Coord),nb,fp)!=nb) printf("%s\n",strerror(errno));
+    return OK;
 }
 
 err_t create_Ability(Ability * abilities, FILE * fp)
@@ -23,8 +30,18 @@ err_t create_Ability(Ability * abilities, FILE * fp)
     int i;
     for(i=0; i<NUM_AB; i++)
     {
+        if((abilities+i)->nb_coords>0)
+        {
+          add_coord((abilities+i)->coord,(abilities+i)->nb_coords,fp);
+          (abilities+i)->coord=NULL;
+        }
+        if((abilities+i)->nb_effects>0)
+        {
+          add_coord((abilities+i)->effect,(abilities+i)->nb_effects,fp);
+          (abilities+i)->effect=NULL;
+        }
 
-        if(fwrite(*(abilities + i), sizeof(Ability),1,fp)!=1) printf("%s\n",strerror(errno));
+        if(fwrite((abilities + i), sizeof(Ability),1,fp)!=1) printf("%s\n",strerror(errno));
     }
     return OK;
 }

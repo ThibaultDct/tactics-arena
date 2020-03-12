@@ -10,7 +10,7 @@ RANGER
 1: Bolt : Attack an ennemy from range.
 2: Focus : Increase by two turns all buffs and decrease by one all debuffs.
 2: Trap : Put a hidden trap that will cripple an ennemy that walks over it.
-3: Deadeye : Increases vision and makes bolt piercing but reduces mp for three turns.
+3: Deadeye : Increases range and makes bolt piercing but reduces mp for three turns.
 
 GOLIATH
 0: Guardian : Has a 30% chance to block incoming damage.
@@ -49,3 +49,6 @@ Freezing : Become unable to do anything, increases resistances, setting a frozen
 Paralyzed : Reduces your action points to 1 per turn.
 Blessed : Under God's Blessing.
 Deadeye : Attacks ignore armor.
+
+damage = atk/(1+(def/15))
+range=range_modifier * (vision/10)

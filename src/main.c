@@ -17,6 +17,7 @@
 #include "audio.h"
 #include "menu.h"
 #include "map_editor.h"
+#include "characters.h"
 
 #define X 30
 #define Y 30

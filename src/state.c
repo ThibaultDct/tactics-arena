@@ -49,7 +49,6 @@ void removeFirstState(List *list)
 void printStateList(List *list)
 {
   if (list == NULL) exit(EXIT_FAILURE);
-  StateList temp;
 
   StateList *current = list->first;
 

@@ -5,10 +5,6 @@
 #include "../SDL2/include/SDL2/SDL_mixer.h"
 #include "graphics.h"
 
-#define _NB_MAX_SPRITES_ 50
-
-TabTexture cSprites[_NB_MAX_SPRITES_];
-
 int loadSprites(SDL_Renderer * renderer, TabTexture * cSprites)
 // Load all the textures needed for the characters
 {
@@ -23,32 +19,54 @@ int loadSprites(SDL_Renderer * renderer, TabTexture * cSprites)
                                     NULL,
                                     "base_model");
 
-    printf("[CHARACTERS] %d texture(s) de personnage(s) chargée(s) !", nbSprites);
+    printf("[CHARACTERS] %d texture(s) de personnage(s) chargée(s) !\n", nbSprites+1);
     return nbSprites;
 }
 
-int setEntityToTile(Tile * grid, Entity * entity, Coord tile, int xSize, int ySize)
+void setEntityToTile(Tile * grid, Entity * entity, Coord tile, int xSize, int ySize)
 // Set an entity to a specific tile
-{
-    // if (tile.x < 0 || tile.x >= xSize || tile.y < 0 || tile.y >= ySize)
-    // {
-    //     printf("%s\n", error_message[COORD_OUT_OF_BOUND]);
-    //     return COORD_OUT_OF_BOUND;
-    // };
+{    
+    if (tile.x < 0 || tile.x >= xSize || tile.y < 0 || tile.y >= ySize)
+    {
+        printf("\033[31;01mERRoR\033[00m : Coordinates out of boundaries\n");
+        exit(EXIT_FAILURE);
+    };
 
-    // if (entity == NULL || grid == NULL)
-    // {
-    //     printf("%s\n", error_message[POINTER_NULL]);
-    //     return POINTER_NULL;
-    // }
+    if (entity == NULL || grid == NULL)
+    {
+        printf("\033[34;01mERROR\033[00m : Pointer null on tile or entity\n");
+        exit(EXIT_FAILURE);
+    }
 
     (*(grid+tile.x*xSize+tile.y)).entity = entity;
-    // return OK;
-    return 1;
+
+    exit(EXIT_SUCCESS);
 }
 
-int displayCharacters(SDL_Renderer * renderer, Tile * grid, int x, int y)
+void moveEntity(Tile * grid, Coord from, Coord to, int xSize, int ySize)
+// Move an entity already set on a tile to a new one
+{
+    if (from.x < 0 || from.x >= xSize || from.y < 0 || from.y >= ySize || to.x < 0 || to.x >= xSize || to.y < 0 || to.y >= ySize)
+    {
+        printf("\033[31;01mERROR\033[00m : Coordinates out of boundaries\n");
+        exit(EXIT_FAILURE);
+    };
+
+    if ((*(grid+from.x*xSize+from.y)).entity == NULL || grid == NULL)
+    {
+        printf("\033[34;01mERROR\033[00m : Pointer null on tile or entity\n");
+        exit(EXIT_FAILURE);
+    }
+
+    (*(grid+to.x*xSize+to.y)).entity = (*(grid+from.x*xSize+from.y)).entity;
+    (*(grid+from.x*xSize+from.y)).entity = NULL;
+
+    exit(EXIT_SUCCESS);
+}
+
+int displayCharacters(SDL_Renderer * renderer, TabTexture * cSprites, Tile * grid, int x, int y)
 // Display the characters on the map
 {
-
+    displaySprite(renderer, (*(cSprites)).texture, x, y);
+    return 0;
 }

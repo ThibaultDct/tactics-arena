@@ -150,7 +150,7 @@ int startTCPSocketServ(){
   socklen_t sizeofSocketConnected;
 
   if(!windWSAError){
-    printf("\nLa socket numéro %d en mode TCP/IP est valide  !\n", (int)&sock);
+   
     /*
     * Initialising struct
     * Can change s_addr with given ip inet_addr("192.168.0.0") or INADDR_ANY
@@ -165,6 +165,7 @@ int startTCPSocketServ(){
     * param 3 : Protocole parameter (useless) -> 0
     */
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) != INVALID_SOCKET){
+       printf("\nLa socket numéro %d en mode TCP/IP est valide  !\n", sock);
       /*
       *bind info to the socket
       */

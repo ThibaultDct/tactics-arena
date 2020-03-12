@@ -43,7 +43,7 @@
 
 int socketCli = 0;
 
-int sendmvt(sock){
+int sendmvt(int sock){
 
 comm sendSrv;
 sendSrv.flag = 1;

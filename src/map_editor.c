@@ -9,6 +9,7 @@
 #include "struct.h"
 #include "audio.h"
 #include "map.h"
+#include "characters.h"
 
 #define _NB_MAX_TEXTURES_ 50
 #define _NB_MAX_MAPS_ 20
@@ -18,6 +19,7 @@ int isInLoadMenu = 0;
 
 // Textures table
 TabTexture textures[_NB_MAX_TEXTURES_];
+TabTexture cSprites[_NB_MAX_TEXTURES_];
 
 // Map list
 char *mapList[_NB_MAX_MAPS_];
@@ -354,6 +356,8 @@ int displayEditorMap(SDL_Renderer *renderer, int x, int y, int pxBase, Tile * gr
 				else 				displaySprite(renderer, textures[(*(grid+i*xSize+j)).tile_id].big_texture, blockPos.x, blockPos.y);
 			}
 
+			if ((*(grid+i*xSize+j)).entity != NULL)	displayCharacters(renderer, cSprites, grid, blockPos.x, blockPos.y-pxBase/1.6);
+
 			/*/ -- DEBUG Affichage des indices des tuiles --
 			char pos[6];
 			sprintf(pos, "%d,%d", i, j);
@@ -467,6 +471,8 @@ int createMapEditorWindow(int x, int y, Tile * grid, int xSize, int ySize)
 			printf("Erreur lors du chargement des textures (0 chargée)\n");
 			return 0;
 		}
+
+		loadSprites(renderer, cSprites);
 
 		SDL_GetWindowSize(pWindow, &xWinSize, &yWinSize);
 

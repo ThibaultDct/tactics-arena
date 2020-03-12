@@ -12,7 +12,7 @@
 #include "Socket_Server.h"
 #include "map_editor.h"
 
-#if defined (Win32)
+#ifdef _WIN32
 #  include <windows.h>
 #  define psleep(sec) Sleep ((sec) * 1000)
 #else
@@ -23,6 +23,8 @@
 #define XPOS 500			// x position of the grid
 #define YPOS 100			// y position of the grid
 #define _NB_MAX_MAPS_ 20
+
+
 
 SDL_Texture *background = NULL,
 			*start_button = NULL,
@@ -45,6 +47,13 @@ int isJoinButton = 0;
 // Map list
 char *mapList[_NB_MAX_MAPS_];
 int mapIndex = 0;
+
+// multi
+
+char consoleLog[50] = "log_:";
+char *compo;
+Sint32 cursor;
+Sint32 selection_len;
 
 // Initialisation du thread 
 typedef struct
@@ -73,6 +82,26 @@ static void * fn_client (void * p_data)
     startTCPSocketCli();
     return NULL;
 }
+
+void dispHostMenu(SDL_Renderer *renderer)
+{
+	SDL_Rect console;
+			console.x = 40;
+			console.y = 350;
+			console.w = 600;
+			console.h = 300;
+		/* initialise la couleur sur noir */
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255 );
+		/*remplis le rectange*/
+		SDL_RenderFillRect(renderer, &console);
+		/* Petit text de confirmation */
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255 );
+		displayText(renderer, 50, 400, 15, "Host est séléctioné", "../inc/font/PixelOperator.ttf", 255, 255, 255);
+		displayText(renderer, 50, 422, 15, consoleLog, "../inc/font/PixelOperator.ttf", 255, 255, 255);
+
+		
+}
+
 
 void loadMenuTextures(SDL_Renderer *renderer)
 // Load all the textures needed for the menu
@@ -140,19 +169,21 @@ void updateMenu(SDL_Renderer *renderer, int x, int y)
 	}	
 	else if(isHostbutton){
 
-		SDL_Rect console;
-			console.x = 40;
-			console.y = 350;
-			console.w = 600;
-			console.h = 300;
-		/* initialise la couleur sur noir */
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255 );
+		// SDL_Rect console;
+		// 	console.x = 40;
+		// 	console.y = 350;
+		// 	console.w = 600;
+		// 	console.h = 300;
+		// /* initialise la couleur sur noir */
+		// SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255 );
 		
-		/*remplis le rectange*/
-		SDL_RenderFillRect(renderer, &console);
+		// /*remplis le rectange*/
+		// SDL_RenderFillRect(renderer, &console);
 		
-		/* Petit text de confirmation */
-		displayText(renderer, 50, 400, 15, "Host est séléctioné", "../inc/font/PixelOperator.ttf", 255, 255, 255);
+		// /* Petit text de confirmation */
+		// displayText(renderer, 50, 400, 15, "Host est séléctioné", "../inc/font/PixelOperator.ttf", 255, 255, 255);
+
+		// displayText(renderer, 50, 422, 15, consoleLog, "../inc/font/PixelOperator.ttf", 255, 255, 255);
 
 		/* Quit button */
 		displaySprite(renderer, quit_button, x-300, y-190);
@@ -244,6 +275,7 @@ int displayMenu(int x, int y)
 	{
 		SDL_GetWindowSize(pWindow, &xWinSize, &yWinSize);
 		int running = 1;
+		SDL_StartTextInput();
 		while(running) {
 			SDL_Event e;
 			while(SDL_PollEvent(&e)) {
@@ -260,7 +292,7 @@ int displayMenu(int x, int y)
 
 								loadMenuTextures(renderer);
 								updateMenu(renderer, x, y);
-								SDL_RenderPresent(renderer);
+								// SDL_RenderPresent(renderer);
 								
 							break;
 						}
@@ -290,7 +322,7 @@ int displayMenu(int x, int y)
 						{
 							isMultiMenu = 1;
 							updateMenu(renderer, x, y);
-							SDL_RenderPresent(renderer);
+							// SDL_RenderPresent(renderer);
 						}
 
 						// Bouton "Host"
@@ -298,7 +330,7 @@ int displayMenu(int x, int y)
 						{
 							isHostbutton = 1;
 							updateMenu(renderer, x, y);
-							SDL_RenderPresent(renderer);
+							// SDL_RenderPresent(renderer);
 							pthread_create (& otherThread.thread_server, NULL, fn_server, NULL);
 							
 						}
@@ -314,7 +346,7 @@ int displayMenu(int x, int y)
 						{
 							isJoinButton = 1;
 							updateMenu(renderer, x, y);
-							SDL_RenderPresent(renderer);
+							// SDL_RenderPresent(renderer);
 							pthread_create (& otherThread.thread_client, NULL, fn_client, NULL);
 						}
 
@@ -326,14 +358,14 @@ int displayMenu(int x, int y)
 								music_playing = 0;
 								pauseMenuMusic();
 								displaySprite(renderer, music_off, x-175, y-200);
-								SDL_RenderPresent(renderer);
+								// SDL_RenderPresent(renderer);
 							}
 							else
 							{
 								music_playing = 1;
 								resumeMenuMusic();
 								displaySprite(renderer, music_on, x-175, y-200);
-								SDL_RenderPresent(renderer);
+								// SDL_RenderPresent(renderer);
 							}
 						}
 						
@@ -344,9 +376,38 @@ int displayMenu(int x, int y)
 							freeMenuTextures();
 						}
 					break;
+					case SDL_KEYDOWN:
+						if (e.key.keysym.sym == SDLK_BACKSPACE)
+							{
+								if (strlen(consoleLog) > 9){
+									consoleLog[strlen(consoleLog)-1] = '\0';
+									dispHostMenu(renderer);
+								}
+							}
+					case SDL_TEXTINPUT:
+						if (isHostbutton == 1)
+						{
+							strcat(consoleLog, e.text.text);
+							printf("%s\n",e.text.text);
+							printf("Host : %d \nMulti : %d \n",isHostbutton,isMultiMenu);
+							dispHostMenu(renderer);
+							// SDL_RenderPresent(renderer);
+
+						}
+					break;
+					case SDL_TEXTEDITING:
+						if ( isHostbutton == 1)
+						{
+							compo = e.edit.text;
+							cursor = e.edit.start;
+							selection_len = e.edit.length;
+							dispHostMenu(renderer);
+							// SDL_RenderPresent(renderer);
+						}
 				}
 			}
 			SDL_Delay(16);
+			SDL_RenderPresent(renderer);
 		}
 		closeWindow(pWindow);
 		freeMenuTextures();

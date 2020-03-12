@@ -97,7 +97,7 @@ int startTCPSocketCli(int socketCli){
     */
     if(sock != INVALID_SOCKET){
       const char * servIP = malloc(sizeof(char) * MAX_BUFF_SIZE);
-      printf("\nLa socket numéro %d en mode TCP/IP est valide  !\n", (int)&sock);
+      printf("\nLa socket numéro %d en mode TCP/IP est valide  !\n", sock);
       /*
       * Initialising struct
       * Can change s_addr with given ip inet_addr("192.168.0.0")

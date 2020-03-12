@@ -15,8 +15,9 @@ typedef struct msgChat{
 }t_msgChat;
 
 
-int startTCPSocketServ();
+int startTCPSocketServ(int socketConnected);
 int startTCPSocketCli();
+int stopTCPSocketServ(int socketConnected);
 int sendStruct(int socket, t_personnage monperso);
 void sendMsg(int socket, char pseudo[128], t_msgChat monMsg);
 const char * realStr();
